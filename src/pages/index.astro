@@ -12,6 +12,7 @@ import CodingPresence from '@/components/presence/CodingPresence.astro';
 import SpotifyPlayer from '@/components/presence/SpotifyPlayer.astro';
 import TechMarquee from '@/components/ui/TechMarquee.astro';
 import TextScrollReveal from '@/components/ui/TextScrollReveal.astro';
+import BentoGrid from '@/components/ui/BentoGrid.astro';
 
 const featured = await getFeaturedProjects(3);
 const latestPosts = (await getPublishedPosts()).slice(0, 3);
@@ -138,6 +139,10 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
   <TechMarquee />
 
   <TextScrollReveal />
+
+  <Container>
+    <BentoGrid />
+  </Container>
 
   {featured.length > 0 && (
     <Container class="py-12">
