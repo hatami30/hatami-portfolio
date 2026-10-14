@@ -5,3 +5,4 @@ Task 1: complete (commits 71afdc0..df5b9bd, tests: pnpm test src/lib/toc.test.ts
 Task 2: complete (commits df5b9bd..f2dfb36, tests: pnpm test src/api/spotify.test.ts → 4/4 pass)
 Task 3: complete (commits f2dfb36..7046c46, tests: pnpm test src/api/wakatime.test.ts → 3/3 pass)
 Task 4: complete (commits 7046c46..5d15619, all checks pass)
+Task 5: complete (commits 5d15619..04e333f, all verification passed)
