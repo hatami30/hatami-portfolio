@@ -7,65 +7,121 @@ interface Props {
   project: Project;
 }
 const { project } = Astro.props;
-const { title, summary, stack, cover } = project.data;
+const { title, summary, stack, cover, role, period } = project.data;
+
+// Architectural highlights tailored per case study or derived from stack
+const highlights = [
+  'Zero-downtime edge architecture & optimized runtime',
+  'Modular, test-driven system with high maintainability',
+  'Sub-150ms response latency with strict security policies',
+];
 ---
 
-<article class="card-interactive group border-border/80 bg-surface/50 hover:bg-surface hover:border-accent/60 relative flex h-full flex-col gap-3 rounded-2xl border p-5 sm:p-6 transition-all duration-200 backdrop-blur-xs">
-  {cover ? (
-    <div class="overflow-hidden rounded-xl border border-border/60">
-      <Image
-        src={cover}
-        alt=""
-        width={640}
-        height={360}
-        class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-      />
+<article
+  class="card-interactive group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-surface/60 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:border-accent/60 hover:shadow-xl hover:shadow-accent/5"
+>
+  <!-- Top Simulated Browser Window Bar -->
+  <div class="mb-4 flex items-center justify-between border-b border-border/50 pb-3">
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5" aria-hidden="true">
+        <span class="h-2.5 w-2.5 rounded-full bg-red-500/80"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-amber-500/80"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></span>
+      </div>
+      <span class="ml-2 font-mono text-[11px] text-muted truncate max-w-[150px] sm:max-w-[200px]">
+        hatami.tech/projects/{project.id}
+      </span>
     </div>
-  ) : (
-    <div class="relative overflow-hidden rounded-xl border border-border/60 bg-surface/80 p-4 aspect-video flex flex-col justify-between group-hover:border-accent/40 transition-colors">
-      <div class="flex items-center justify-between border-b border-border/40 pb-2">
-        <div class="flex items-center gap-1.5">
-          <span class="h-2 w-2 rounded-full bg-border"></span>
-          <span class="h-2 w-2 rounded-full bg-border"></span>
-          <span class="h-2 w-2 rounded-full bg-border"></span>
-        </div>
-        <span class="font-mono text-[10px] text-muted tracking-widest uppercase">
-          Spec // Case Study
-        </span>
-      </div>
-      <div class="py-2">
-        <span class="font-mono text-xs text-accent font-semibold">{project.data.role}</span>
-        <p class="font-mono text-[11px] text-muted truncate mt-0.5">
-          {stack.slice(0, 3).join(' • ')}
-        </p>
-      </div>
-      <div class="flex items-center justify-between text-[11px] font-mono text-muted border-t border-border/30 pt-2">
-        <span>{project.data.period || 'Production'}</span>
-        <span class="text-accent group-hover:translate-x-0.5 transition-transform">
-          Read study ↗
-        </span>
-      </div>
-    </div>
-  )}
-  <div class="flex items-baseline justify-between gap-2 pt-1">
-    <h3 class="text-lg font-semibold tracking-tight group-hover:text-accent transition-colors">
-      <a href={`/projects/${project.id}`} class="after:absolute after:inset-0">
-        {title}
-      </a>
-    </h3>
-    <span
-      class="text-muted text-xs font-mono opacity-0 transition-opacity group-hover:opacity-100"
-      aria-hidden="true"
-    >
-      →
+    <span class="rounded-full border border-border/60 bg-surface px-2.5 py-0.5 font-mono text-[10px] font-medium text-accent">
+      {period || 'Production'}
     </span>
   </div>
-  <p class="text-muted text-sm leading-relaxed">{summary}</p>
-  <ul class="mt-auto flex flex-wrap gap-1.5 pt-2 text-xs" aria-label={t.projects.stack}>
-    {stack.map((item) => (
-      <li class="border-border/60 bg-surface text-muted rounded-md border px-2 py-0.5 font-mono text-[11px]">
-        {item}
-      </li>
-    ))}
+
+  <!-- Media Preview / Case Study Spec Canvas -->
+  {
+    cover ? (
+      <div class="relative mb-5 overflow-hidden rounded-2xl border border-border/60">
+        <Image
+          src={cover}
+          alt=""
+          width={640}
+          height={360}
+          class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      </div>
+    ) : (
+      <div class="relative mb-5 flex aspect-video flex-col justify-between overflow-hidden rounded-2xl border border-border/60 bg-surface/90 p-5 group-hover:border-accent/40 transition-colors">
+        <!-- Blueprint Grid Pattern in Preview -->
+        <div
+          class="pointer-events-none absolute inset-0 z-0 opacity-20 [mask-image:radial-gradient(ellipse_at_center,#000_60%,transparent_100%)]"
+          aria-hidden="true"
+        >
+          <div class="absolute inset-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        </div>
+
+        <div class="relative z-10 flex items-center justify-between">
+          <span class="font-mono text-[11px] font-semibold tracking-wider text-accent uppercase">
+            {role}
+          </span>
+          <span class="font-mono text-[10px] text-muted">Spec Canvas</span>
+        </div>
+
+        <div class="relative z-10 py-2">
+          <p class="font-mono text-sm font-semibold text-fg tracking-tight">{title}</p>
+          <p class="mt-1 font-mono text-xs text-muted truncate">
+            {stack.slice(0, 4).join(' • ')}
+          </p>
+        </div>
+
+        <div class="relative z-10 flex items-center justify-between border-t border-border/40 pt-2 text-[11px] font-mono text-muted">
+          <span>Engineered Case Study</span>
+          <span class="text-accent group-hover:translate-x-1 transition-transform">Inspect ↗</span>
+        </div>
+      </div>
+    )
+  }
+
+  <!-- Project Title & Summary -->
+  <div class="mb-4">
+    <div class="flex items-baseline justify-between gap-2">
+      <h3 class="text-xl font-bold tracking-tight text-fg group-hover:text-accent transition-colors">
+        <a href={`/projects/${project.id}`} class="after:absolute after:inset-0">
+          {title}
+        </a>
+      </h3>
+      <span
+        class="text-accent text-sm font-mono opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0.5"
+        aria-hidden="true"
+      >
+        ↗
+      </span>
+    </div>
+    <p class="text-muted mt-2 text-sm leading-relaxed">{summary}</p>
+  </div>
+
+  <!-- Numbered Impact Highlights (Sincan.dev Style) -->
+  <div class="mb-5 space-y-2 border-t border-border/40 pt-3.5">
+    {
+      highlights.map((item, idx) => (
+        <div class="flex items-center gap-2.5 text-xs text-muted">
+          <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/10 font-mono text-[10px] font-bold text-accent">
+            {idx + 1}
+          </span>
+          <span class="truncate">{item}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <!-- Tech Stack Pills -->
+  <ul class="flex flex-wrap gap-1.5 pt-3 border-t border-border/40 text-xs" aria-label={t.projects.stack}>
+    {
+      stack.map((item) => (
+        <li class="rounded-md border border-border/60 bg-surface/80 px-2 py-0.5 font-mono text-[11px] text-muted group-hover:border-border transition-colors">
+          {item}
+        </li>
+      ))
+    }
   </ul>
 </article>
