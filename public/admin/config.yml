@@ -1,0 +1,72 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true
+
+media_folder: 'public/images/uploads'
+public_folder: '/images/uploads'
+
+collections:
+  - name: 'blog'
+    label: 'Blog Posts'
+    folder: 'src/content/blog'
+    create: true
+    slug: '{{slug}}'
+    extension: 'mdx'
+    format: 'frontmatter'
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Description', name: 'description', widget: 'string' }
+      - {
+          label: 'Publish Date',
+          name: 'date',
+          widget: 'datetime',
+          format: 'YYYY-MM-DDTHH:mm:ssZ',
+          date_format: 'YYYY-MM-DD',
+          time_format: 'HH:mm',
+        }
+      - {
+          label: 'Updated Date',
+          name: 'updated',
+          widget: 'datetime',
+          format: 'YYYY-MM-DDTHH:mm:ssZ',
+          date_format: 'YYYY-MM-DD',
+          time_format: 'HH:mm',
+          required: false,
+        }
+      - { label: 'Tags', name: 'tags', widget: 'list', default: [] }
+      - { label: 'Cover Image', name: 'cover', widget: 'image', required: false }
+      - {
+          label: 'Related Project Slug',
+          name: 'project',
+          widget: 'relation',
+          collection: 'projects',
+          search_fields: ['title'],
+          value_field: '{{slug}}',
+          display_fields: ['title'],
+          required: false,
+        }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+
+  - name: 'projects'
+    label: 'Projects'
+    folder: 'src/content/projects'
+    create: true
+    slug: '{{slug}}'
+    extension: 'mdx'
+    format: 'frontmatter'
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Summary', name: 'summary', widget: 'string' }
+      - { label: 'Role', name: 'role', widget: 'string' }
+      - { label: 'Period', name: 'period', widget: 'string', required: false }
+      - { label: 'Tech Stack', name: 'stack', widget: 'list' }
+      - { label: 'Live URL', name: 'liveUrl', widget: 'string', required: false }
+      - { label: 'Repository URL', name: 'repoUrl', widget: 'string', required: false }
+      - { label: 'Cover Image', name: 'cover', widget: 'image', required: false }
+      - { label: 'Featured', name: 'featured', widget: 'boolean', default: false }
+      - { label: 'Order', name: 'order', widget: 'number', default: 100, value_type: 'int' }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - { label: 'Body', name: 'body', widget: 'markdown' }

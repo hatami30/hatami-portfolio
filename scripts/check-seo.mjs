@@ -77,7 +77,12 @@ const meta = (root, selector) =>
 
 const htmlFiles = walk(DIR)
   .map((file) => relative(DIR, file))
-  .filter((file) => file.endsWith('.html') && !file.startsWith(`pagefind${sep}`));
+  .filter(
+    (file) =>
+      file.endsWith('.html') &&
+      !file.startsWith(`pagefind${sep}`) &&
+      !file.startsWith(`admin${sep}`),
+  );
 
 if (!htmlFiles.includes('index.html')) {
   console.error(`check:seo: ${DIR}/index.html not found.`);
