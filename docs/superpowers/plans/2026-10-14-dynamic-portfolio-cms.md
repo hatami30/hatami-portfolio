@@ -31,6 +31,7 @@
 ### Task 1: Interactive Sticky Table of Contents (TOC) with Scroll-Spy & Reading Progress
 
 **Files:**
+
 - Create: `src/lib/toc.ts`
 - Modify: `src/components/blog/TableOfContents.astro`
 - Modify: `src/layouts/PostLayout.astro`
@@ -38,6 +39,7 @@
 - Test: `src/lib/toc.test.ts`
 
 **Interfaces:**
+
 - Produces: `TableOfContents.astro` accepting `headings: MarkdownHeading[]` with interactive desktop sticky sidebar and mobile drawer.
 - Consumes: Astro `render(entry)` headings (`{ depth: number, slug: string, text: string }[]`).
 
@@ -80,6 +82,7 @@ Expected: PASS
 - [ ] **Step 5: Upgrade `TableOfContents.astro` with Scroll-Spy & Sticky layout**
 
 Update `src/components/blog/TableOfContents.astro` with:
+
 - Desktop sticky container (`sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto`).
 - Active state highlight styling (`text-accent font-medium border-l-2 border-accent`).
 - Reading progress bar.
@@ -106,6 +109,7 @@ git commit -m "feat(ui): add interactive sticky TOC with scroll-spy"
 ### Task 2: Spotify Now-Playing Serverless Endpoint & Live Visualizer Component
 
 **Files:**
+
 - Create: `src/api/spotify.ts`
 - Create: `src/api/spotify.test.ts`
 - Create: `api/spotify.ts`
@@ -113,6 +117,7 @@ git commit -m "feat(ui): add interactive sticky TOC with scroll-spy"
 - Modify: `.env.example`
 
 **Interfaces:**
+
 - Produces: `GET /api/spotify` returning JSON `{ isPlaying: boolean, title?: string, artist?: string, songUrl?: string, albumArt?: string }`.
 - Produces: `<SpotifyPlayer />` component fetching `/api/spotify` on the client.
 
@@ -132,17 +137,25 @@ describe('handleSpotify', () => {
   });
 
   it('returns currently playing song when Spotify API returns 200', async () => {
-    const mockFetch = vi.fn()
-      .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: 'fake_token' }), { status: 200 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify({
-        is_playing: true,
-        item: {
-          name: 'Track Name',
-          artists: [{ name: 'Artist Name' }],
-          external_urls: { spotify: 'https://open.spotify.com/track/123' },
-          album: { images: [{ url: 'https://img.spotify.com/123.jpg' }] }
-        }
-      }), { status: 200 }));
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ access_token: 'fake_token' }), { status: 200 }),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            is_playing: true,
+            item: {
+              name: 'Track Name',
+              artists: [{ name: 'Artist Name' }],
+              external_urls: { spotify: 'https://open.spotify.com/track/123' },
+              album: { images: [{ url: 'https://img.spotify.com/123.jpg' }] },
+            },
+          }),
+          { status: 200 },
+        ),
+      );
 
     const req = new Request('https://hatami.tech/api/spotify');
     const env = {
@@ -205,6 +218,7 @@ git commit -m "feat(api): add spotify now-playing serverless handler and visuali
 ### Task 3: Live Coding Activity (Hybrid Lanyard + WakaTime)
 
 **Files:**
+
 - Create: `src/api/wakatime.ts`
 - Create: `src/api/wakatime.test.ts`
 - Create: `api/wakatime.ts`
@@ -213,6 +227,7 @@ git commit -m "feat(api): add spotify now-playing serverless handler and visuali
 - Modify: `.env.example`
 
 **Interfaces:**
+
 - Produces: `GET /api/wakatime` returning JSON `{ success: boolean, totalHours?: string, topLanguages?: string[] }`.
 - Produces: `<CodingPresence />` component that checks Lanyard WebSocket/REST first; falls back to `/api/wakatime` if idle.
 
@@ -231,12 +246,17 @@ describe('handleWakatime', () => {
   });
 
   it('parses coding stats correctly when WakaTime API returns data', async () => {
-    const mockFetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({
-      data: {
-        human_readable_total: '3 hrs 45 mins',
-        languages: [{ name: 'TypeScript' }, { name: 'Astro' }]
-      }
-    }), { status: 200 }));
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          data: {
+            human_readable_total: '3 hrs 45 mins',
+            languages: [{ name: 'TypeScript' }, { name: 'Astro' }],
+          },
+        }),
+        { status: 200 },
+      ),
+    );
 
     const req = new Request('https://hatami.tech/api/wakatime');
     const res = await handleWakatime(req, { WAKATIME_API_KEY: 'test_key' }, mockFetch);
@@ -265,6 +285,7 @@ Expected: PASS
 - [ ] **Step 5: Create `src/components/presence/CodingPresence.astro`**
 
 Implement hybrid client logic:
+
 1. Connect to `https://api.lanyard.rest/v1/users/{PUBLIC_DISCORD_USER_ID}`.
 2. If Discord rich presence reports VS Code / NeoVim active: display `"Editing <file> in <workspace>"`.
 3. If not active or offline: fetch `/api/wakatime` and display `"Coded <totalHours> today"`.
@@ -290,12 +311,14 @@ git commit -m "feat(presence): add hybrid lanyard and wakatime coding activity w
 ### Task 4: Decap CMS Integration (`/admin`) for Git-Backed Dynamic Content
 
 **Files:**
+
 - Create: `public/admin/index.html`
 - Create: `public/admin/config.yml`
 - Create: `public/admin/cms.js`
 - Modify: `vercel.json` (ensure `noindex` header on `/admin`)
 
 **Interfaces:**
+
 - Produces: `/admin` Single Page Application allowing authoring of `src/content/blog/` and `src/content/projects/`.
 
 - [ ] **Step 1: Create `public/admin/index.html`**
@@ -309,6 +332,7 @@ Register custom editor component for `<Callout type="..." title="...">` so writi
 - [ ] **Step 3: Create `public/admin/config.yml` matching collection schemas**
 
 Configure backend (`git-gateway` or GitHub repo), media folder (`public/images/uploads`), public folder (`/images/uploads`), and exact frontmatter fields for:
+
 - Collection `blog`: `title`, `description`, `date`, `updated`, `tags`, `cover`, `project`, `draft`, `body`.
 - Collection `projects`: `title`, `summary`, `role`, `period`, `stack`, `liveUrl`, `repoUrl`, `cover`, `featured`, `order`, `draft`, `body`.
 
@@ -333,6 +357,7 @@ git commit -m "feat(cms): integrate decap cms for git-backed content authoring"
 ### Task 5: End-to-End Verification & Documentation
 
 **Files:**
+
 - Modify: `README.md`
 - Modify: `docs/PRD.md`
 
@@ -347,6 +372,7 @@ pnpm check:links
 pnpm check:seo
 pnpm check:seo --live
 ```
+
 Expected: All commands pass with 0 errors.
 
 - [ ] **Step 2: Document setup instructions for Owner in `README.md`**

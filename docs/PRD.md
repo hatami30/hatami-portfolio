@@ -64,7 +64,7 @@ User accounts, database, CMS backend, e-commerce, server-rendered pages, heavy a
 Home, About, Projects (list + case study), Blog (list + post + tags), Contact (form + email), resume download, dark mode, SEO foundation (meta, canonical, sitemap, robots, linked JSON-LD, OG images, breadcrumbs, related posts), AI-readable files (`llms.txt`, `llms-full.txt`, `.md` versions), RSS, 404, CI checks (including the SEO audit), deploy with custom domain.
 
 **v1.0 (shortly after launch)**
-Search (Pagefind), comments (Giscus), privacy-friendly analytics (Umami), Lighthouse budgets enforced in CI.
+Search (Pagefind), comments (Giscus), privacy-friendly analytics (Umami), Lighthouse budgets enforced in CI, interactive sticky Table of Contents with scroll-spy, hybrid developer coding presence (Lanyard / WakaTime), Spotify currently-playing visualizer, Git-backed Decap CMS at `/admin`.
 
 **Later (not planned)**
 Second language, newsletter, "Uses" page, testimonials, project demo videos, experience timeline page.

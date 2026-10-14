@@ -37,6 +37,44 @@ pnpm dev                 # http://localhost:4321 (site + POST /api/contact)
 
 Publishing a post: add `src/content/blog/<slug>.mdx` with `draft: false`, push to `main`. `draft: true` keeps it out of production (visible in dev).
 
+## Dynamic Features & Presence
+
+### 1. Interactive Table of Contents (TOC)
+
+- Posts and project case studies automatically render a responsive TOC from `h2` and `h3` headings.
+- On desktop screens (`lg:`), TOC is displayed as a sticky right sidebar with reading progress calculation and scroll-spy highlighting via `IntersectionObserver`.
+
+### 2. Spotify Now-Playing Widget
+
+- Serverless endpoint: `GET /api/spotify` caches Spotify's currently-playing track with edge cache (`s-maxage=30`).
+- If you aren't currently playing anything or credentials are not yet set, it gracefully renders an idle indicator without error.
+- Setup:
+  1. Create an app in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+  2. Set redirect URI to `http://localhost:4321/callback` or `https://hatami.tech/callback`.
+  3. Generate your refresh token with scope `user-read-currently-playing`.
+  4. Add to `.env` (and Vercel environment variables):
+     - `SPOTIFY_CLIENT_ID`
+     - `SPOTIFY_CLIENT_SECRET`
+     - `SPOTIFY_REFRESH_TOKEN`
+
+### 3. Developer Coding Presence
+
+- Displays active coding status in the hero badge on the homepage.
+- **Hybrid fallback**:
+  1. Real-time active editor status (VS Code / Neovim) fetched directly via Lanyard Discord RPC if `PUBLIC_DISCORD_USER_ID` is provided.
+  2. If offline/idle on Discord, queries `GET /api/wakatime` to display today's total coding hours and top languages.
+  3. If both are unconfigured, displays standard availability message.
+- Setup in `.env`:
+  - `PUBLIC_DISCORD_USER_ID`: your 18-digit Discord snowflake ID (join the Lanyard Discord server first to activate).
+  - `WAKATIME_API_KEY`: Secret API Key from [WakaTime Settings > Account](https://wakatime.com/settings/account).
+
+### 4. Git-Backed Content Management (Decap CMS)
+
+- Access the content manager at `/admin`.
+- Supports editing `src/content/blog/` and `src/content/projects/` directly with live preview and custom `<Callout>` MDX support.
+- **Local development**: run `npx decap-server` in a separate terminal and navigate to `http://localhost:4321/admin/`.
+- **Production**: authenticate via GitHub OAuth or Netlify/Vercel Git Gateway.
+
 ## SEO and AI-readability
 
 - `sitemap.xml`, `robots.txt`, canonical URLs, Open Graph, and a linked JSON-LD graph (Person, WebSite, BlogPosting, ...) are generated from the content and `src/config/site.ts`.
