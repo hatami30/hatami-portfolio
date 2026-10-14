@@ -58,4 +58,15 @@ jobs:
           LAUNCH_READY: ${{ vars.LAUNCH_READY }}
         run: pnpm check:placeholders
 
-      # Lighthouse CI (budgets in AGENTS.md section 10) is the remaining part of Phase 7.
+      # Lighthouse CI (budgets in AGENTS.md section 10): >= 0.95 for mobile.
+      # Rebuilds dist with indexing enabled to test post-launch SEO / crawlability.
+      - name: Build for Lighthouse (indexing enabled)
+        env:
+          PUBLIC_ALLOW_INDEXING: 'true'
+        run: pnpm build
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12.1.0
+        with:
+          configPath: './lighthouserc.json'
+          uploadNewUrl: false
