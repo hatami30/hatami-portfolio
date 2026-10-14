@@ -38,7 +38,8 @@ const faqs: FaqItem[] = [
         Ready to collaborate or discuss an architectural challenge?
       </h2>
       <p class="text-muted mt-4 text-base sm:text-lg leading-relaxed">
-        I am always open to discussing new opportunities, systems architecture, or freelance projects. Let's build something fast and reliable.
+        I am always open to discussing new opportunities, systems architecture, or freelance
+        projects. Let's build something fast and reliable.
       </p>
 
       <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3.5">
@@ -49,38 +50,36 @@ const faqs: FaqItem[] = [
 
     <!-- Right Accordion List -->
     <div class="lg:col-span-7 space-y-4">
-      {
-        faqs.map((faq, index) => (
-          <details
-            class="group rounded-2xl border border-border/80 bg-surface/60 p-5 sm:p-6 backdrop-blur-md transition-all duration-200 hover:border-accent/40 open:border-accent/60 open:bg-surface/90 open:shadow-md open:shadow-accent/5"
-            {...(index === 0 ? { open: true } : {})}
-          >
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-base sm:text-lg text-fg focus-visible:outline-hidden">
-              <span class="flex items-center gap-3">
-                <span class="font-mono text-xs text-accent font-bold">0{index + 1}</span>
-                <span>{faq.q}</span>
-              </span>
-              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-surface text-muted transition-transform duration-200 group-open:rotate-180 group-open:text-accent">
-                <svg
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </span>
-            </summary>
-            <p class="text-muted mt-4 text-sm sm:text-base leading-relaxed border-t border-border/40 pt-3.5">
-              {faq.a}
-            </p>
-          </details>
-        ))
-      }
+      {faqs.map((faq, index) => (
+        <details
+          class="group rounded-2xl border border-border/80 bg-surface/60 p-5 sm:p-6 backdrop-blur-md transition-all duration-200 hover:border-accent/40 open:border-accent/60 open:bg-surface/90 open:shadow-md open:shadow-accent/5"
+          {...(index === 0 ? { open: true } : {})}
+        >
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-base sm:text-lg text-fg focus-visible:outline-hidden">
+            <span class="flex items-center gap-3">
+              <span class="font-mono text-xs text-accent font-bold">0{index + 1}</span>
+              <span>{faq.q}</span>
+            </span>
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-surface text-muted transition-transform duration-200 group-open:rotate-180 group-open:text-accent">
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </span>
+          </summary>
+          <p class="text-muted mt-4 text-sm sm:text-base leading-relaxed border-t border-border/40 pt-3.5">
+            {faq.a}
+          </p>
+        </details>
+      ))}
     </div>
   </div>
 </section>

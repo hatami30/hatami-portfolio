@@ -8,11 +8,7 @@ interface Props {
 const defaultText =
   'Engineering resilient high-performance systems, crafting tactile interfaces, and designing clean modular architectures that turn complex technical challenges into effortless user experiences.';
 
-const {
-  text = defaultText,
-  tagline = 'ENGINEERING PHILOSOPHY',
-  class: className,
-} = Astro.props;
+const { text = defaultText, tagline = 'ENGINEERING PHILOSOPHY', class: className } = Astro.props;
 
 const words = text.split(' ');
 ---
@@ -41,16 +37,14 @@ const words = text.split(' ');
         id="scroll-reveal-paragraph"
         class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-snug sm:leading-tight"
       >
-        {
-          words.map((word, idx) => (
-            <span
-              class="reveal-word inline-block mx-1 sm:mx-1.5 transition-opacity duration-150 text-fg opacity-20"
-              data-idx={idx}
-            >
-              {word}
-            </span>
-          ))
-        }
+        {words.map((word, idx) => (
+          <span
+            class="reveal-word inline-block mx-1 sm:mx-1.5 transition-opacity duration-150 text-fg opacity-20"
+            data-idx={idx}
+          >
+            {word}
+          </span>
+        ))}
       </p>
     </div>
   </div>

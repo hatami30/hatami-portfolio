@@ -1,0 +1,89 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    'live-telemetry flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-surface/40 px-3.5 py-2 text-xs font-mono backdrop-blur-xs',
+    className,
+  ]}
+>
+  <!-- Live Clock -->
+  <div class="flex items-center gap-2 text-muted">
+    <span class="relative flex h-2 w-2">
+      <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+      <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+    </span>
+    <span id="telemetry-clock">00:00:00 UTC</span>
+    <span class="text-[10px] text-muted/60">LOCAL</span>
+  </div>
+
+  <!-- Live Edge Latency -->
+  <div class="flex items-center gap-1.5 text-muted">
+    <svg
+      class="h-3.5 w-3.5 text-emerald-500"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+    <span id="telemetry-ping" class="text-fg font-medium">
+      measuring ping...
+    </span>
+  </div>
+</div>
+
+<script>
+  function initTelemetry() {
+    const clockEl = document.getElementById('telemetry-clock');
+    const pingEl = document.getElementById('telemetry-ping');
+
+    // 1. Live Ticking Clock (Format: HH:mm:ss)
+    function updateClock() {
+      if (!clockEl) return;
+      const now = new Date();
+      clockEl.textContent = now.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+    }
+
+    updateClock();
+    const clockInterval = setInterval(updateClock, 1000);
+
+    // 2. Measure actual HTTP roundtrip latency
+    async function measureLatency() {
+      if (!pingEl) return;
+      try {
+        const start = performance.now();
+        await fetch('/', { method: 'HEAD', cache: 'no-store' });
+        const latency = Math.round(performance.now() - start);
+        pingEl.textContent = `${latency}ms edge ping`;
+      } catch {
+        pingEl.textContent = 'edge online';
+      }
+    }
+
+    measureLatency();
+    const pingInterval = setInterval(measureLatency, 30000);
+
+    document.addEventListener('astro:before-swap', () => {
+      clearInterval(clockInterval);
+      clearInterval(pingInterval);
+    });
+  }
+
+  initTelemetry();
+  document.addEventListener('astro:page-load', initTelemetry);
+</script>

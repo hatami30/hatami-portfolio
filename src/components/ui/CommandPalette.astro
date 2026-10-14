@@ -11,7 +11,16 @@ import { site } from '@/config/site';
   <div class="flex flex-col overflow-hidden">
     <!-- Search Input Bar -->
     <div class="flex items-center gap-3 border-b border-border/60 px-4 py-3.5">
-      <svg class="h-4 w-4 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg
+        class="h-4 w-4 text-muted shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
         <circle cx="11" cy="11" r="8" />
         <line x1="21" y1="21" x2="16.65" y2="16.65" />
       </svg>
@@ -23,14 +32,21 @@ import { site } from '@/config/site';
         spellcheck="false"
         class="w-full bg-transparent text-sm outline-hidden placeholder:text-muted/60"
       />
-      <kbd class="rounded-md border border-border/80 bg-surface px-1.5 py-0.5 font-mono text-[10px] text-muted">ESC</kbd>
+      <kbd class="rounded-md border border-border/80 bg-surface px-1.5 py-0.5 font-mono text-[10px] text-muted">
+        ESC
+      </kbd>
     </div>
 
     <!-- Command List -->
     <ul id="palette-list" class="max-h-72 overflow-y-auto p-2 text-xs">
-      <li class="px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase text-muted">Navigation</li>
+      <li class="px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase text-muted">
+        Navigation
+      </li>
       <li>
-        <a href="/" class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors">
+        <a
+          href="/"
+          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+        >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">01</span>
             <span class="font-medium">Home Page</span>
@@ -39,7 +55,10 @@ import { site } from '@/config/site';
         </a>
       </li>
       <li>
-        <a href="/projects" class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors">
+        <a
+          href="/projects"
+          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+        >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">02</span>
             <span class="font-medium">Projects & Case Studies</span>
@@ -48,7 +67,10 @@ import { site } from '@/config/site';
         </a>
       </li>
       <li>
-        <a href="/blog" class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors">
+        <a
+          href="/blog"
+          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+        >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">03</span>
             <span class="font-medium">Technical Blog</span>
@@ -57,7 +79,10 @@ import { site } from '@/config/site';
         </a>
       </li>
       <li>
-        <a href="/about" class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors">
+        <a
+          href="/about"
+          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+        >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">04</span>
             <span class="font-medium">About & Career</span>
@@ -66,7 +91,10 @@ import { site } from '@/config/site';
         </a>
       </li>
       <li>
-        <a href="/contact" class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors">
+        <a
+          href="/contact"
+          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+        >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">05</span>
             <span class="font-medium">Get in Touch</span>
@@ -75,23 +103,54 @@ import { site } from '@/config/site';
         </a>
       </li>
 
-      <li class="mt-2 px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase text-muted">Quick Actions</li>
+      <li class="mt-2 px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase text-muted">
+        Quick Actions
+      </li>
       <li>
-        <button id="palette-action-copy-email" type="button" data-email={site.email} class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors">
+        <button
+          id="palette-action-copy-email"
+          type="button"
+          data-email={site.email}
+          class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors"
+        >
           <span class="flex items-center gap-2">
-            <svg class="h-3.5 w-3.5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg
+              class="h-3.5 w-3.5 text-muted"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
             </svg>
-            <span id="copy-email-label" class="font-medium">Copy Direct Email</span>
+            <span id="copy-email-label" class="font-medium">
+              Copy Direct Email
+            </span>
           </span>
           <span class="font-mono text-[10px] text-muted">Action</span>
         </button>
       </li>
       <li>
-        <button id="palette-action-toggle-theme" type="button" class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors">
+        <button
+          id="palette-action-toggle-theme"
+          type="button"
+          class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors"
+        >
           <span class="flex items-center gap-2">
-            <svg class="h-3.5 w-3.5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg
+              class="h-3.5 w-3.5 text-muted"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
               <circle cx="12" cy="12" r="5" />
               <line x1="12" y1="1" x2="12" y2="3" />
               <line x1="12" y1="21" x2="12" y2="23" />
@@ -105,8 +164,13 @@ import { site } from '@/config/site';
 
     <!-- Footer Helper -->
     <div class="flex items-center justify-between border-t border-border/50 bg-surface/50 px-4 py-2.5 text-[11px] font-mono text-muted">
-      <span>Navigate with <kbd class="rounded border border-border px-1">↑</kbd> <kbd class="rounded border border-border px-1">↓</kbd></span>
-      <span>Press <kbd class="rounded border border-border px-1">ESC</kbd> to close</span>
+      <span>
+        Navigate with <kbd class="rounded border border-border px-1">↑</kbd>{' '}
+        <kbd class="rounded border border-border px-1">↓</kbd>
+      </span>
+      <span>
+        Press <kbd class="rounded border border-border px-1">ESC</kbd> to close
+      </span>
     </div>
   </div>
 </dialog>
