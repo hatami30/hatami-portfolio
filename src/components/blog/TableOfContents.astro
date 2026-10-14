@@ -1,28 +1,68 @@
 ---
 import type { MarkdownHeading } from 'astro';
 import { t } from '@/config/strings';
+import { filterTocHeadings } from '@/lib/toc';
 
 interface Props {
   headings: MarkdownHeading[];
+  class?: string;
 }
-const items = Astro.props.headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+
+const { class: className } = Astro.props;
+const items = filterTocHeadings(Astro.props.headings);
 ---
 
 {items.length >= 2 && (
   <nav
-    aria-labelledby="toc-title"
-    class="border-border bg-surface mb-8 rounded-xl border p-5 text-sm"
+    aria-labelledby="toc-heading"
+    class:list={[
+      'toc-container border-border/80 bg-surface/40 rounded-2xl border p-4 sm:p-5 text-sm backdrop-blur-xs',
+      className,
+    ]}
     data-pagefind-ignore
   >
-    <p id="toc-title" class="mb-3 font-semibold">
-      {t.blog.toc}
-    </p>
-    <ol class="space-y-2">
+    <div class="mb-3 flex items-center justify-between border-b border-border/50 pb-2.5">
+      <p
+        id="toc-heading"
+        class="flex items-center gap-2 font-semibold tracking-tight text-xs uppercase font-mono text-muted"
+      >
+        <svg
+          class="h-3.5 w-3.5 text-accent"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="21" y1="10" x2="3" y2="10" />
+          <line x1="21" y1="6" x2="3" y2="6" />
+          <line x1="21" y1="14" x2="3" y2="14" />
+          <line x1="21" y1="18" x2="3" y2="18" />
+        </svg>
+        <span>{t.blog.toc}</span>
+      </p>
+      <span class="text-[11px] font-mono text-muted" id="toc-progress">
+        0%
+      </span>
+    </div>
+
+    <!-- Reading progress indicator bar -->
+    <div class="bg-border/60 mb-3 h-1 w-full overflow-hidden rounded-full">
+      <div id="toc-progress-bar" class="bg-accent h-full w-0 transition-all duration-150" />
+    </div>
+
+    <ol class="space-y-1 text-xs sm:text-sm">
       {items.map((heading) => (
-        <li class={heading.depth === 3 ? 'pl-4' : undefined}>
+        <li>
           <a
             href={`#${heading.slug}`}
-            class="text-muted hover:text-fg underline-offset-4 hover:underline"
+            data-toc-link={heading.slug}
+            class:list={[
+              'toc-link text-muted hover:text-fg block rounded-lg px-2.5 py-1.5 transition-colors duration-150',
+              heading.depth === 3 ? 'pl-5 text-xs text-muted/80' : 'font-medium',
+            ]}
           >
             {heading.text}
           </a>
@@ -31,3 +71,73 @@ const items = Astro.props.headings.filter((heading) => heading.depth === 2 || he
     </ol>
   </nav>
 )}
+
+<script>
+  function setupToc() {
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.toc-link'));
+    if (links.length === 0) return;
+
+    const slugs = links.map((l) => l.getAttribute('data-toc-link')).filter(Boolean) as string[];
+    const headings = slugs
+      .map((slug) => document.getElementById(slug))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (headings.length === 0) return;
+
+    // 1. Reading progress calculation
+    const progressBar = document.getElementById('toc-progress-bar');
+    const progressText = document.getElementById('toc-progress');
+
+    function updateProgress() {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+      const scrolled = Math.min(100, Math.max(0, Math.round((window.scrollY / docHeight) * 100)));
+      if (progressBar) progressBar.style.width = `${scrolled}%`;
+      if (progressText) progressText.textContent = `${scrolled}%`;
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    // 2. Scroll-spy using IntersectionObserver
+    let activeSlug = '';
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            activeSlug = entry.target.id;
+            break;
+          }
+        }
+
+        if (activeSlug) {
+          links.forEach((link) => {
+            const matches = link.getAttribute('data-toc-link') === activeSlug;
+            if (matches) {
+              link.classList.add('text-accent', 'font-semibold', 'bg-accent/10');
+              link.setAttribute('aria-current', 'location');
+            } else {
+              link.classList.remove('text-accent', 'font-semibold', 'bg-accent/10');
+              link.removeAttribute('aria-current');
+            }
+          });
+        }
+      },
+      {
+        rootMargin: '0px 0px -60% 0px',
+        threshold: 0,
+      },
+    );
+
+    headings.forEach((h) => observer.observe(h));
+  }
+
+  // Support direct execution and Astro page transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupToc);
+  } else {
+    setupToc();
+  }
+  document.addEventListener('astro:page-load', setupToc);
+</script>

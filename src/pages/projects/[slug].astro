@@ -9,6 +9,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/ui/Container.astro';
 import ProjectMeta from '@/components/projects/ProjectMeta.astro';
 import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import TableOfContents from '@/components/blog/TableOfContents.astro';
 
 export async function getStaticPaths() {
   const projects = await getPublishedProjects();
@@ -16,7 +17,7 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { Content } = await render(project);
+const { Content, headings } = await render(project);
 const { title, summary, cover, stack, liveUrl, repoUrl } = project.data;
 const relatedPosts = await getPostsForProject(project.id);
 const path = `/projects/${project.id}`;
@@ -45,46 +46,58 @@ const crumbs = [
   ]}
 >
   <Container class="py-12">
-    <article data-pagefind-body class="mx-auto max-w-[70ch]">
-      <Breadcrumbs items={crumbs} class="mb-6" />
-      <header class="mb-8">
-        <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>
-        <p class="text-muted mt-3 text-lg">{summary}</p>
-      </header>
+    <div class="lg:grid lg:grid-cols-[1fr_260px] xl:grid-cols-[1fr_280px] lg:gap-12 items-start justify-center">
+      <article data-pagefind-body class="mx-auto w-full max-w-[70ch]">
+        <Breadcrumbs items={crumbs} class="mb-6" />
+        <header class="mb-8">
+          <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>
+          <p class="text-muted mt-3 text-lg">{summary}</p>
+        </header>
 
-      <div data-pagefind-ignore class="mb-8">
-        <ProjectMeta project={project} />
-      </div>
+        <div data-pagefind-ignore class="mb-8">
+          <ProjectMeta project={project} />
+        </div>
 
-      {cover && (
-        <Image
-          src={cover}
-          alt=""
-          width={1200}
-          height={630}
-          class="mb-8 aspect-[1200/630] w-full rounded-xl object-cover"
-        />
-      )}
+        {cover && (
+          <Image
+            src={cover}
+            alt=""
+            width={1200}
+            height={630}
+            class="mb-8 aspect-[1200/630] w-full rounded-xl object-cover"
+          />
+        )}
 
-      <div class="prose">
-        <Content />
-      </div>
+        <div class="lg:hidden mb-8">
+          <TableOfContents headings={headings} />
+        </div>
 
-      {relatedPosts.length > 0 && (
-        <section class="border-border mt-12 border-t pt-8" data-pagefind-ignore>
-          <h2 class="text-xl font-semibold">{t.projects.related}</h2>
-          <ul class="mt-4 space-y-2">
-            {relatedPosts.map((post) => (
-              <li>
-                <a href={`/blog/${post.id}`} class="text-accent underline underline-offset-4">
-                  {post.data.title}
-                </a>
-                <span class="text-muted text-sm"> · {formatDate(post.data.date)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-    </article>
+        <div class="prose">
+          <Content />
+        </div>
+
+        {relatedPosts.length > 0 && (
+          <section class="border-border mt-12 border-t pt-8" data-pagefind-ignore>
+            <h2 id="related-posts" class="text-xl font-semibold">
+              {t.projects.related}
+            </h2>
+            <ul class="mt-4 space-y-2">
+              {relatedPosts.map((post) => (
+                <li>
+                  <a href={`/blog/${post.id}`} class="text-accent underline underline-offset-4">
+                    {post.data.title}
+                  </a>
+                  <span class="text-muted text-sm"> · {formatDate(post.data.date)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </article>
+
+      <aside class="hidden lg:block sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+        <TableOfContents headings={headings} />
+      </aside>
+    </div>
   </Container>
 </BaseLayout>

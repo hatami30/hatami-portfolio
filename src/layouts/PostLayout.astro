@@ -55,104 +55,112 @@ const crumbs = [
   ]}
 >
   <Container class="py-12">
-    <article data-pagefind-body class="mx-auto max-w-[70ch]">
-      <Breadcrumbs items={crumbs} class="mb-6" />
-      <header class="mb-8">
-        <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>
-        <p class="text-muted mt-3 text-sm" data-pagefind-ignore>
-          <time datetime={date.toISOString()}>{formatDate(date)}</time>
-          {updated && (
-            <>
-              <span aria-hidden="true"> · </span>
-              {t.blog.updated} <time datetime={updated.toISOString()}>{formatDate(updated)}</time>
-            </>
-          )}
-          <span aria-hidden="true"> · </span>
-          {t.blog.readingTime(minutes)}
-        </p>
-        <TagList tags={tags} class="mt-4" />
-      </header>
+    <div class="lg:grid lg:grid-cols-[1fr_260px] xl:grid-cols-[1fr_280px] lg:gap-12 items-start justify-center">
+      <article data-pagefind-body class="mx-auto w-full max-w-[70ch]">
+        <Breadcrumbs items={crumbs} class="mb-6" />
+        <header class="mb-8">
+          <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>
+          <p class="text-muted mt-3 text-sm" data-pagefind-ignore>
+            <time datetime={date.toISOString()}>{formatDate(date)}</time>
+            {updated && (
+              <>
+                <span aria-hidden="true"> · </span>
+                {t.blog.updated} <time datetime={updated.toISOString()}>{formatDate(updated)}</time>
+              </>
+            )}
+            <span aria-hidden="true"> · </span>
+            {t.blog.readingTime(minutes)}
+          </p>
+          <TagList tags={tags} class="mt-4" />
+        </header>
 
-      {cover && (
-        <Image
-          src={cover}
-          alt=""
-          width={1200}
-          height={630}
-          class="mb-8 aspect-[1200/630] w-full rounded-xl object-cover"
-        />
-      )}
+        {cover && (
+          <Image
+            src={cover}
+            alt=""
+            width={1200}
+            height={630}
+            class="mb-8 aspect-[1200/630] w-full rounded-xl object-cover"
+          />
+        )}
 
-      <TableOfContents headings={headings} />
+        <div class="lg:hidden mb-8">
+          <TableOfContents headings={headings} />
+        </div>
 
-      <div class="prose">
-        <slot />
-      </div>
+        <div class="prose">
+          <slot />
+        </div>
 
-      {project && (
-        <aside class="border-border mt-12 rounded-xl border p-5" data-pagefind-ignore>
-          <p class="text-muted text-sm">{t.blog.relatedProject}</p>
-          <a
-            href={`/projects/${project.id}`}
-            class="text-accent mt-1 inline-block font-medium underline underline-offset-4"
+        {project && (
+          <aside class="border-border mt-12 rounded-xl border p-5" data-pagefind-ignore>
+            <p class="text-muted text-sm">{t.blog.relatedProject}</p>
+            <a
+              href={`/projects/${project.id}`}
+              class="text-accent mt-1 inline-block font-medium underline underline-offset-4"
+            >
+              {project.data.title}
+            </a>
+          </aside>
+        )}
+
+        {related.length > 0 && (
+          <section
+            aria-labelledby="related-posts"
+            class="border-border mt-12 border-t pt-8"
+            data-pagefind-ignore
           >
-            {project.data.title}
-          </a>
-        </aside>
-      )}
+            <h2 id="related-posts" class="text-xl font-semibold">
+              {t.blog.relatedPosts}
+            </h2>
+            <ul class="mt-4 space-y-2">
+              {related.map((item) => (
+                <li>
+                  <a href={`/blog/${item.id}`} class="text-accent underline underline-offset-4">
+                    {item.data.title}
+                  </a>
+                  <span class="text-muted text-sm"> · {formatDate(item.data.date)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-      {related.length > 0 && (
-        <section
-          aria-labelledby="related-posts"
-          class="border-border mt-12 border-t pt-8"
-          data-pagefind-ignore
-        >
-          <h2 id="related-posts" class="text-xl font-semibold">
-            {t.blog.relatedPosts}
-          </h2>
-          <ul class="mt-4 space-y-2">
-            {related.map((item) => (
-              <li>
-                <a href={`/blog/${item.id}`} class="text-accent underline underline-offset-4">
-                  {item.data.title}
+        {(newer || older) && (
+          <nav
+            aria-label="Posts"
+            class="border-border mt-12 grid gap-6 border-t pt-6 text-sm sm:grid-cols-2"
+            data-pagefind-ignore
+          >
+            <div>
+              {newer && (
+                <a href={`/blog/${newer.id}`} rel="next" class="group block">
+                  <span class="text-muted">← {t.blog.newer}</span>
+                  <span class="group-hover:text-accent mt-1 block font-medium">
+                    {newer.data.title}
+                  </span>
                 </a>
-                <span class="text-muted text-sm"> · {formatDate(item.data.date)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+              )}
+            </div>
+            <div class="sm:text-right">
+              {older && (
+                <a href={`/blog/${older.id}`} rel="prev" class="group block">
+                  <span class="text-muted">{t.blog.older} →</span>
+                  <span class="group-hover:text-accent mt-1 block font-medium">
+                    {older.data.title}
+                  </span>
+                </a>
+              )}
+            </div>
+          </nav>
+        )}
 
-      {(newer || older) && (
-        <nav
-          aria-label="Posts"
-          class="border-border mt-12 grid gap-6 border-t pt-6 text-sm sm:grid-cols-2"
-          data-pagefind-ignore
-        >
-          <div>
-            {newer && (
-              <a href={`/blog/${newer.id}`} rel="next" class="group block">
-                <span class="text-muted">← {t.blog.newer}</span>
-                <span class="group-hover:text-accent mt-1 block font-medium">
-                  {newer.data.title}
-                </span>
-              </a>
-            )}
-          </div>
-          <div class="sm:text-right">
-            {older && (
-              <a href={`/blog/${older.id}`} rel="prev" class="group block">
-                <span class="text-muted">{t.blog.older} →</span>
-                <span class="group-hover:text-accent mt-1 block font-medium">
-                  {older.data.title}
-                </span>
-              </a>
-            )}
-          </div>
-        </nav>
-      )}
+        <Giscus />
+      </article>
 
-      <Giscus />
-    </article>
+      <aside class="hidden lg:block sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+        <TableOfContents headings={headings} />
+      </aside>
+    </div>
   </Container>
 </BaseLayout>
