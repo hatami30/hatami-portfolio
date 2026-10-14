@@ -1,0 +1,86 @@
+---
+import Button from '@/components/ui/Button.astro';
+import CopyEmailButton from '@/components/ui/CopyEmailButton.astro';
+
+interface FaqItem {
+  q: string;
+  a: string;
+}
+
+const faqs: FaqItem[] = [
+  {
+    q: 'What is your primary tech stack for production systems?',
+    a: 'My primary stack is centered around TypeScript, Node.js/Fastify, PostgreSQL, Redis, Astro, and Tailwind CSS. For cloud architecture, I deploy on Vercel Edge, Docker containers, and Cloudflare. I prioritize static speed, type safety, and minimal client JS overhead.',
+  },
+  {
+    q: 'Are you available for full-time roles or contract engineering?',
+    a: 'Yes. I am actively open to high-impact full-time software engineering opportunities, long-term technical consulting, and greenfield project builds. Feel free to reach out via the contact form or direct email.',
+  },
+  {
+    q: 'How do you guarantee 100/100 performance and zero layout shift?',
+    a: 'Every page is statically generated, assets carry explicit aspect ratios, fonts are self-hosted via Fontsource with font-display: swap, and every build must pass automated Lighthouse CI gates (>= 0.95 across mobile categories) before deploying.',
+  },
+  {
+    q: 'How does your collaboration and development workflow work?',
+    a: 'Transparent and milestone-driven: clear architecture proposals, test-driven implementations (TDD), frequent git commits, automated CI testing, and production preview deployments at every stage.',
+  },
+];
+---
+
+<section class="py-16 sm:py-24 border-t border-border/50" aria-labelledby="faq-heading">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+    <!-- Left Sticky Sidebar -->
+    <div class="lg:col-span-5 lg:sticky lg:top-28">
+      <div class="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3.5 py-1 text-xs font-mono font-medium text-accent backdrop-blur-md mb-4">
+        <span>FREQUENT QUESTIONS</span>
+      </div>
+      <h2 id="faq-heading" class="text-3xl font-bold tracking-tight sm:text-4xl leading-tight">
+        Ready to collaborate or discuss an architectural challenge?
+      </h2>
+      <p class="text-muted mt-4 text-base sm:text-lg leading-relaxed">
+        I am always open to discussing new opportunities, systems architecture, or freelance projects. Let's build something fast and reliable.
+      </p>
+
+      <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3.5">
+        <Button href="/contact">Start a Conversation</Button>
+        <CopyEmailButton />
+      </div>
+    </div>
+
+    <!-- Right Accordion List -->
+    <div class="lg:col-span-7 space-y-4">
+      {
+        faqs.map((faq, index) => (
+          <details
+            class="group rounded-2xl border border-border/80 bg-surface/60 p-5 sm:p-6 backdrop-blur-md transition-all duration-200 hover:border-accent/40 open:border-accent/60 open:bg-surface/90 open:shadow-md open:shadow-accent/5"
+            {...(index === 0 ? { open: true } : {})}
+          >
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-base sm:text-lg text-fg focus-visible:outline-hidden">
+              <span class="flex items-center gap-3">
+                <span class="font-mono text-xs text-accent font-bold">0{index + 1}</span>
+                <span>{faq.q}</span>
+              </span>
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-surface text-muted transition-transform duration-200 group-open:rotate-180 group-open:text-accent">
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </summary>
+            <p class="text-muted mt-4 text-sm sm:text-base leading-relaxed border-t border-border/40 pt-3.5">
+              {faq.a}
+            </p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
