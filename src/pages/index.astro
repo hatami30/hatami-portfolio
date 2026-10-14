@@ -1,0 +1,112 @@
+---
+import { site } from '@/config/site';
+import { t } from '@/config/strings';
+import { getFeaturedProjects, getPublishedPosts } from '@/lib/content';
+import { personJsonLd, websiteJsonLd } from '@/lib/seo';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+import Button from '@/components/ui/Button.astro';
+import ProjectCard from '@/components/projects/ProjectCard.astro';
+import PostCard from '@/components/blog/PostCard.astro';
+
+const featured = await getFeaturedProjects(3);
+const latestPosts = (await getPublishedPosts()).slice(0, 3);
+---
+
+<BaseLayout title={site.role} home jsonLd={[personJsonLd(), websiteJsonLd()]}>
+  <div class="relative overflow-hidden">
+    <div class="glow-ambient" aria-hidden="true"></div>
+    <div class="bg-grid absolute inset-0 -z-10 opacity-70" aria-hidden="true"></div>
+
+    <Container class="relative z-10 py-20 sm:py-28">
+      <div class="inline-flex items-center gap-2 rounded-full border border-border/80 bg-surface/80 px-3.5 py-1 text-xs font-mono text-muted backdrop-blur-md shadow-xs">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+        </span>
+        <span>{t.home.statusAvailable}</span>
+      </div>
+
+      <h1 class="mt-5 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">{site.name}</h1>
+      <p class="text-accent mt-3 text-xl font-medium sm:text-2xl tracking-tight">{site.role}</p>
+      <p class="text-muted mt-6 max-w-[62ch] text-lg sm:text-xl leading-relaxed">
+        {site.description}
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3.5">
+        <Button href="/projects">{t.home.ctaProjects}</Button>
+        <Button href="/contact" variant="secondary">
+          {t.home.ctaContact}
+        </Button>
+      </div>
+    </Container>
+  </div>
+
+  {featured.length > 0 && (
+    <Container class="py-12">
+      <section aria-labelledby="featured-title">
+        <div class="mb-8 flex flex-wrap items-baseline justify-between gap-2 border-b border-border/60 pb-4">
+          <div>
+            <h2 id="featured-title" class="text-2xl font-bold tracking-tight">
+              {t.home.featuredProjects}
+            </h2>
+            <p class="text-muted mt-1 text-sm">{t.projects.intro}</p>
+          </div>
+          <a
+            href="/projects"
+            class="text-accent text-sm font-medium hover:underline underline-offset-4"
+          >
+            {t.home.allProjects} →
+          </a>
+        </div>
+        <ul class="grid gap-6 sm:grid-cols-2">
+          {featured.map((project) => (
+            <li>
+              <ProjectCard project={project} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    </Container>
+  )}
+
+  {latestPosts.length > 0 && (
+    <Container class="py-12">
+      <section aria-labelledby="latest-title">
+        <div class="mb-8 flex flex-wrap items-baseline justify-between gap-2 border-b border-border/60 pb-4">
+          <div>
+            <h2 id="latest-title" class="text-2xl font-bold tracking-tight">
+              {t.home.latestPosts}
+            </h2>
+            <p class="text-muted mt-1 text-sm">{t.blog.intro}</p>
+          </div>
+          <a
+            href="/blog"
+            class="text-accent text-sm font-medium hover:underline underline-offset-4"
+          >
+            {t.home.allPosts} →
+          </a>
+        </div>
+        <div class="divide-y divide-border/60">
+          {latestPosts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      </section>
+    </Container>
+  )}
+
+  <Container class="py-20">
+    <section class="relative overflow-hidden rounded-3xl border border-border/80 bg-surface/60 p-8 sm:p-14 text-center backdrop-blur-md shadow-lg shadow-accent/5">
+      <div class="glow-ambient -top-24" aria-hidden="true"></div>
+      <div class="relative z-10">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">{t.home.closingTitle}</h2>
+        <p class="text-muted mx-auto mt-4 max-w-[52ch] text-base sm:text-lg leading-relaxed">
+          {t.home.closingText}
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <Button href="/contact">{t.home.ctaContact}</Button>
+        </div>
+      </div>
+    </section>
+  </Container>
+</BaseLayout>

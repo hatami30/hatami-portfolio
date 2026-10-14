@@ -1,0 +1,31 @@
+---
+import { t } from '@/config/strings';
+
+interface Props {
+  page: number;
+  totalPages: number;
+  prevUrl?: string;
+  nextUrl?: string;
+}
+const { page, totalPages, prevUrl, nextUrl } = Astro.props;
+---
+
+{totalPages > 1 && (
+  <nav aria-label="Pagination" class="mt-10 flex items-center justify-between gap-4 text-sm">
+    {prevUrl ? (
+      <a href={prevUrl} rel="prev" class="text-accent underline underline-offset-4">
+        ← {t.blog.newerPosts}
+      </a>
+    ) : (
+      <span />
+    )}
+    <span class="text-muted">{t.blog.pageOf(page, totalPages)}</span>
+    {nextUrl ? (
+      <a href={nextUrl} rel="next" class="text-accent underline underline-offset-4">
+        {t.blog.olderPosts} →
+      </a>
+    ) : (
+      <span />
+    )}
+  </nav>
+)}

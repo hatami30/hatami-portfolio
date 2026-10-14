@@ -1,0 +1,195 @@
+---
+import { site } from '@/config/site';
+import { t } from '@/config/strings';
+import { hasValue } from '@/lib/placeholder';
+import { breadcrumbJsonLd, webPageJsonLd } from '@/lib/seo';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+
+const field = 'border-border bg-bg mt-1.5 w-full rounded-lg border px-3 py-2';
+const fieldError = 'mt-1 hidden text-sm text-red-700 dark:text-red-400';
+---
+
+<BaseLayout
+  title={t.contact.title}
+  description={t.contact.metaDescription(site.name)}
+  jsonLd={[
+    webPageJsonLd({
+      type: 'ContactPage',
+      name: t.contact.title,
+      description: t.contact.metaDescription(site.name),
+      path: '/contact',
+    }),
+    breadcrumbJsonLd([{ name: t.contact.title, path: '/contact' }]),
+  ]}
+>
+  <Container class="py-12">
+    <div class="max-w-xl">
+      <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{t.contact.title}</h1>
+      <p class="text-muted mt-3">{t.contact.intro}</p>
+
+      <form
+        id="contact-form"
+        novalidate
+        class="mt-8 grid gap-5"
+        data-errors={JSON.stringify(t.contact.fieldErrors)}
+        data-sending={t.contact.sending}
+        data-success={t.contact.success}
+        data-failure={t.contact.error}
+      >
+        <div>
+          <label for="name" class="block text-sm font-medium">
+            {t.contact.name}
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            maxlength="100"
+            aria-describedby="name-error"
+            class={field}
+          />
+          <p id="name-error" class={fieldError}></p>
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium">
+            {t.contact.email}
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            maxlength="254"
+            aria-describedby="email-error"
+            class={field}
+          />
+          <p id="email-error" class={fieldError}></p>
+        </div>
+
+        <div>
+          <label for="message" class="block text-sm font-medium">
+            {t.contact.message}
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            rows="6"
+            required
+            maxlength="2000"
+            aria-describedby="message-error"
+            class={field}
+          ></textarea>
+          <p id="message-error" class={fieldError}></p>
+        </div>
+
+        <!-- Honeypot: real visitors never see or fill this. -->
+        <div class="absolute -left-[9999px] size-px overflow-hidden" aria-hidden="true">
+          <label for="website">Website</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <button
+            type="submit"
+            class="bg-accent text-accent-fg rounded-lg px-5 py-2.5 text-sm font-medium transition hover:opacity-90 disabled:opacity-60"
+          >
+            {t.contact.send}
+          </button>
+          <p id="form-status" role="status" class="text-sm"></p>
+        </div>
+      </form>
+
+      {hasValue(site.email) && (
+        <p class="text-muted mt-10 text-sm">
+          {t.contact.directEmail}:{' '}
+          <a href={`mailto:${site.email}`} class="text-accent underline underline-offset-4">
+            {site.email}
+          </a>
+        </p>
+      )}
+    </div>
+  </Container>
+</BaseLayout>
+
+<script>
+  type Fields = 'name' | 'email' | 'message';
+  const FIELDS: Fields[] = ['name', 'email', 'message'];
+
+  const form = document.querySelector<HTMLFormElement>('#contact-form');
+  const status = document.querySelector<HTMLElement>('#form-status');
+  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  if (form && status && button) {
+    const messages = JSON.parse(form.dataset.errors ?? '{}') as Record<string, string>;
+    const idleLabel = button.textContent ?? '';
+    const track = (name: string) => {
+      (window as unknown as { umami?: { track: (event: string) => void } }).umami?.track(name);
+    };
+
+    const input = (name: Fields) =>
+      form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+    const errorBox = (name: Fields) => document.getElementById(`${name}-error`) as HTMLElement;
+
+    function clearErrors() {
+      for (const name of FIELDS) {
+        input(name).removeAttribute('aria-invalid');
+        const box = errorBox(name);
+        box.textContent = '';
+        box.classList.add('hidden');
+      }
+      status!.textContent = '';
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearErrors();
+      button.disabled = true;
+      button.textContent = form.dataset.sending ?? '';
+
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        const body = (await response.json().catch(() => ({}))) as {
+          ok?: boolean;
+          error?: string;
+          fields?: Record<string, string>;
+        };
+
+        if (response.ok && body.ok) {
+          form.reset();
+          status.textContent = form.dataset.success ?? '';
+          track('contact_submit_success');
+        } else if (response.status === 400 && body.error === 'validation' && body.fields) {
+          let firstInvalid: Fields | undefined;
+          for (const name of FIELDS) {
+            const code = body.fields[name];
+            if (!code) continue;
+            input(name).setAttribute('aria-invalid', 'true');
+            const box = errorBox(name);
+            box.textContent = messages[code] ?? messages.required ?? '';
+            box.classList.remove('hidden');
+            firstInvalid ??= name;
+          }
+          if (firstInvalid) input(firstInvalid).focus();
+          track('contact_submit_error');
+        } else {
+          throw new Error('request failed');
+        }
+      } catch {
+        status.textContent = form.dataset.failure ?? '';
+        track('contact_submit_error');
+      } finally {
+        button.disabled = false;
+        button.textContent = idleLabel;
+      }
+    });
+  }
+</script>

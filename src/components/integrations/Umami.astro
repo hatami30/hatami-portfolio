@@ -1,0 +1,9 @@
+---
+// Renders nothing unless both variables are set. Cookie-free analytics.
+const src = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL;
+const websiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
+---
+
+{src && websiteId && (
+  <script defer src={src} data-website-id={websiteId} data-do-not-track="true" />
+)}

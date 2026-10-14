@@ -1,0 +1,47 @@
+---
+import { site } from '@/config/site';
+import { t } from '@/config/strings';
+import { hasValue } from '@/lib/placeholder';
+import { breadcrumbJsonLd, personJsonLd, webPageJsonLd } from '@/lib/seo';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+import Button from '@/components/ui/Button.astro';
+---
+
+<BaseLayout
+  title={t.about.title}
+  description={t.about.metaDescription(site.name, site.role)}
+  jsonLd={[
+    webPageJsonLd({
+      type: 'ProfilePage',
+      name: t.about.title,
+      description: t.about.metaDescription(site.name, site.role),
+      path: '/about',
+    }),
+    personJsonLd(),
+    breadcrumbJsonLd([{ name: t.about.title, path: '/about' }]),
+  ]}
+>
+  <Container class="py-12">
+    <div class="prose">
+      <h1>{t.about.title}</h1>
+      {site.bio.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+
+      <h2>{t.about.skills}</h2>
+      <ul>
+        {site.skills.map((skill) => (
+          <li>{skill}</li>
+        ))}
+      </ul>
+    </div>
+    {hasValue(site.resumeUrl) && (
+      <div class="mt-8">
+        <Button href={site.resumeUrl} variant="secondary">
+          {t.about.resume}
+        </Button>
+      </div>
+    )}
+  </Container>
+</BaseLayout>

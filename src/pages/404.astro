@@ -1,0 +1,22 @@
+---
+import { t } from '@/config/strings';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+import Button from '@/components/ui/Button.astro';
+---
+
+<BaseLayout title={t.notFound.title} description={t.notFound.text} noindex>
+  <Container class="py-24 text-center">
+    <h1 class="text-4xl font-semibold tracking-tight">{t.notFound.title}</h1>
+    <p class="text-muted mx-auto mt-4 max-w-[50ch]">{t.notFound.text}</p>
+    <nav class="mt-8 flex flex-wrap justify-center gap-3" aria-label={t.mainNav}>
+      <Button href="/">{t.notFound.home}</Button>
+      <Button href="/projects" variant="secondary">
+        {t.nav.projects}
+      </Button>
+      <Button href="/blog" variant="secondary">
+        {t.nav.blog}
+      </Button>
+    </nav>
+  </Container>
+</BaseLayout>

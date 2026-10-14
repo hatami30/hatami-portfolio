@@ -1,0 +1,33 @@
+---
+import type { MarkdownHeading } from 'astro';
+import { t } from '@/config/strings';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+const items = Astro.props.headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{items.length >= 2 && (
+  <nav
+    aria-labelledby="toc-title"
+    class="border-border bg-surface mb-8 rounded-xl border p-5 text-sm"
+    data-pagefind-ignore
+  >
+    <p id="toc-title" class="mb-3 font-semibold">
+      {t.blog.toc}
+    </p>
+    <ol class="space-y-2">
+      {items.map((heading) => (
+        <li class={heading.depth === 3 ? 'pl-4' : undefined}>
+          <a
+            href={`#${heading.slug}`}
+            class="text-muted hover:text-fg underline-offset-4 hover:underline"
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}

@@ -1,0 +1,36 @@
+---
+import { t } from '@/config/strings';
+---
+
+<section aria-label={t.blog.search} class="my-8">
+  <div id="search" data-fallback={t.blog.searchUnavailable}></div>
+</section>
+
+<script>
+  // Pagefind builds its index in `pnpm build` (into dist/pagefind). It does not exist in `astro dev`.
+  const container = document.getElementById('search');
+
+  function showFallback() {
+    if (!container) return;
+    container.textContent = container.dataset.fallback ?? '';
+    container.className = 'text-sm text-muted';
+  }
+
+  if (container) {
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = '/pagefind/pagefind-ui.css';
+    document.head.appendChild(stylesheet);
+
+    const script = document.createElement('script');
+    script.src = '/pagefind/pagefind-ui.js';
+    script.onload = () => {
+      const { PagefindUI } = window as unknown as {
+        PagefindUI: new (options: Record<string, unknown>) => unknown;
+      };
+      new PagefindUI({ element: '#search', showSubResults: true, showImages: false });
+    };
+    script.onerror = showFallback;
+    document.head.appendChild(script);
+  }
+</script>

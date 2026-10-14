@@ -1,0 +1,67 @@
+---
+import { site } from '@/config/site';
+import { absoluteUrl, allowIndexing, canonicalUrl, pageTitle } from '@/lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  home?: boolean;
+  image?: string;
+  type?: 'website' | 'article';
+  /** This page must stay out of search results even after launch (404, thin tag pages). */
+  noindex?: boolean;
+  /** Path of the Markdown version of this page (posts and projects), advertised to AI tools. */
+  markdownPath?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+}
+
+const {
+  title,
+  description,
+  home = false,
+  image = '/og/default.png',
+  type = 'website',
+  noindex = false,
+  markdownPath,
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
+
+const fullTitle = pageTitle(title, home);
+const canonical = canonicalUrl(Astro.url.pathname);
+const imageUrl = absoluteUrl(image);
+// Before launch everything is closed. After launch a noindex page still passes link value on.
+const robots = !allowIndexing
+  ? 'noindex, nofollow'
+  : noindex
+    ? 'noindex, follow'
+    : 'index, follow, max-image-preview:large';
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+<meta name="author" content={site.name} />
+<link rel="canonical" href={canonical} />
+<link rel="describedby" type="text/plain" href="/llms.txt" title="llms.txt" />
+{markdownPath && <link rel="alternate" type="text/markdown" href={markdownPath} />}
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={fullTitle} />
+<meta property="og:locale" content={site.lang === 'id' ? 'id_ID' : 'en_US'} />
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={fullTitle} />

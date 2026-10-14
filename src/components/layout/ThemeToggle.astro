@@ -1,0 +1,71 @@
+---
+import { t } from '@/config/strings';
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  aria-label={t.themeToggle}
+  aria-pressed="false"
+  class="hover:bg-surface text-muted hover:text-fg rounded-lg p-2 transition"
+>
+  <!-- sun (shown in dark mode) -->
+  <svg
+    class="hidden size-5 dark:block"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+  </svg>
+  <!-- moon (shown in light mode) -->
+  <svg
+    class="block size-5 dark:hidden"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+  </svg>
+</button>
+
+<script>
+  const root = document.documentElement;
+  const button = document.getElementById('theme-toggle');
+
+  function apply(theme: 'light' | 'dark') {
+    root.dataset.theme = theme;
+    button?.setAttribute('aria-pressed', String(theme === 'dark'));
+  }
+
+  apply(root.dataset.theme === 'dark' ? 'dark' : 'light');
+
+  button?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      // Storage can be blocked (private mode); the toggle still works for this visit.
+    }
+  });
+
+  // Follow the system theme until the visitor makes an explicit choice.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    try {
+      if (localStorage.getItem('theme')) return;
+    } catch {
+      // ignore
+    }
+    apply(event.matches ? 'dark' : 'light');
+  });
+</script>

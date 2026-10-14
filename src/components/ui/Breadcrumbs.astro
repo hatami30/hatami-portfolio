@@ -1,0 +1,39 @@
+---
+// Visible breadcrumb trail. Pass the part below Home; the matching JSON-LD comes from
+// breadcrumbJsonLd() with the same items, so the page and the structured data never differ.
+import { t } from '@/config/strings';
+import { breadcrumbTrail, type Crumb } from '@/lib/seo';
+
+interface Props {
+  items: Crumb[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+const trail = breadcrumbTrail(items);
+---
+
+<nav aria-label={t.breadcrumbs.label} class={className} data-pagefind-ignore>
+  <ol class="text-muted flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+    {trail.map((item, index) => {
+      const last = index === trail.length - 1;
+      return (
+        <li class="flex items-center gap-2">
+          {last ? (
+            <span
+              aria-current="page"
+              class="text-fg inline-block max-w-[32ch] truncate align-bottom"
+            >
+              {item.name}
+            </span>
+          ) : (
+            <a href={item.path} class="hover:text-fg underline underline-offset-4">
+              {item.name}
+            </a>
+          )}
+          {!last && <span aria-hidden="true">/</span>}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

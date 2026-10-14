@@ -1,0 +1,46 @@
+---
+import { Image } from 'astro:assets';
+import { t } from '@/config/strings';
+import type { Project } from '@/lib/content';
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+const { title, summary, stack, cover } = project.data;
+---
+
+<article class="group border-border/80 bg-surface/40 hover:bg-surface hover:border-accent/60 relative flex h-full flex-col gap-3 rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 backdrop-blur-xs">
+  {cover && (
+    <div class="overflow-hidden rounded-xl border border-border/60">
+      <Image
+        src={cover}
+        alt=""
+        width={640}
+        height={360}
+        class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+      />
+    </div>
+  )}
+  <div class="flex items-baseline justify-between gap-2 pt-1">
+    <h3 class="text-lg font-semibold tracking-tight group-hover:text-accent transition-colors">
+      <a href={`/projects/${project.id}`} class="after:absolute after:inset-0">
+        {title}
+      </a>
+    </h3>
+    <span
+      class="text-muted text-xs font-mono opacity-0 transition-opacity group-hover:opacity-100"
+      aria-hidden="true"
+    >
+      →
+    </span>
+  </div>
+  <p class="text-muted text-sm leading-relaxed">{summary}</p>
+  <ul class="mt-auto flex flex-wrap gap-1.5 pt-2 text-xs" aria-label={t.projects.stack}>
+    {stack.map((item) => (
+      <li class="border-border/60 bg-surface text-muted rounded-md border px-2 py-0.5 font-mono text-[11px]">
+        {item}
+      </li>
+    ))}
+  </ul>
+</article>

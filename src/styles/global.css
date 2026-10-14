@@ -1,0 +1,160 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* Dark mode is driven by data-theme on <html> (set before paint, see BaseLayout). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* Design tokens. Every colour pair used for text meets WCAG AA (4.5:1). */
+:root {
+  color-scheme: light;
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --fg: #09090b;
+  --muted: #52525b;
+  --border: #e4e4e7;
+  --accent: #4f46e5;
+  --accent-fg: #ffffff;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #09090b;
+  --surface: #121316;
+  --fg: #f4f4f5;
+  --muted: #a1a1aa;
+  --border: #27272a;
+  --accent: #818cf8;
+  --accent-fg: #09090b;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Subtle Linear-style ambient background grid & spotlight effects */
+.bg-grid {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -19px -19px;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 100%);
+}
+
+.glow-ambient {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 800px;
+  height: 380px;
+  background: radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.15), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+html {
+  scroll-padding-top: 1.5rem;
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Article typography: map the typography plugin onto our tokens (works in both themes). */
+.prose {
+  --tw-prose-body: var(--fg);
+  --tw-prose-headings: var(--fg);
+  --tw-prose-lead: var(--muted);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--fg);
+  --tw-prose-counters: var(--muted);
+  --tw-prose-bullets: var(--muted);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--fg);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted);
+  --tw-prose-code: var(--fg);
+  --tw-prose-pre-code: inherit;
+  --tw-prose-pre-bg: transparent;
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+  max-width: 70ch;
+}
+
+.prose :where(code):not(:where(pre *))::before,
+.prose :where(code):not(:where(pre *))::after {
+  content: none;
+}
+
+.prose :where(code):not(:where(pre *)) {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  padding: 0.1em 0.35em;
+  font-size: 0.875em;
+}
+
+.prose :where(a) {
+  text-underline-offset: 0.2em;
+}
+
+/* Code blocks (Shiki, dual theme). Text wraps only by scrolling inside the block. */
+.astro-code {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+[data-theme='dark'] .astro-code,
+[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+/* Pagefind search UI follows the theme. */
+#search {
+  --pagefind-ui-scale: 0.95;
+  --pagefind-ui-primary: var(--accent);
+  --pagefind-ui-text: var(--fg);
+  --pagefind-ui-background: var(--bg);
+  --pagefind-ui-border: var(--border);
+  --pagefind-ui-tag: var(--surface);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 8px;
+  --pagefind-ui-font: inherit;
+}

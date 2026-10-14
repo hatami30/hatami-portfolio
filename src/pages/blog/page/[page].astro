@@ -1,0 +1,38 @@
+---
+// Pages 2..N of the blog index. Page 1 is /blog/ (src/pages/blog/index.astro).
+import { site } from '@/config/site';
+import { t } from '@/config/strings';
+import { getPublishedPosts } from '@/lib/content';
+import { paginate } from '@/lib/pagination';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+import PostCard from '@/components/blog/PostCard.astro';
+import Pagination from '@/components/blog/Pagination.astro';
+
+export async function getStaticPaths() {
+  const { totalPages } = paginate(await getPublishedPosts(), 1);
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => ({
+    params: { page: String(index + 2) },
+  }));
+}
+
+const current = paginate(await getPublishedPosts(), Number(Astro.params.page));
+---
+
+<BaseLayout
+  title={`${t.blog.title} (${t.blog.pageOf(current.page, current.totalPages)})`}
+  description={`${t.blog.metaDescription(site.name)} ${t.blog.pageOf(current.page, current.totalPages)}`}
+>
+  <Container class="py-12">
+    <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{t.blog.title}</h1>
+    <section aria-labelledby="posts-title" class="mt-8">
+      <h2 id="posts-title" class="sr-only">
+        {t.home.allPosts}
+      </h2>
+      {current.items.map((post) => (
+        <PostCard post={post} />
+      ))}
+    </section>
+    <Pagination {...current} />
+  </Container>
+</BaseLayout>

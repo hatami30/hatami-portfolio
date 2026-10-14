@@ -1,0 +1,45 @@
+---
+import { site } from '@/config/site';
+import { t } from '@/config/strings';
+import { getPublishedProjects } from '@/lib/content';
+import { breadcrumbJsonLd, webPageJsonLd } from '@/lib/seo';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+import ProjectCard from '@/components/projects/ProjectCard.astro';
+
+const projects = await getPublishedProjects();
+---
+
+<BaseLayout
+  title={t.projects.title}
+  description={t.projects.metaDescription(site.name)}
+  jsonLd={[
+    webPageJsonLd({
+      type: 'CollectionPage',
+      name: t.projects.title,
+      description: t.projects.metaDescription(site.name),
+      path: '/projects',
+    }),
+    breadcrumbJsonLd([{ name: t.projects.title, path: '/projects' }]),
+  ]}
+>
+  <Container class="py-12">
+    <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{t.projects.title}</h1>
+    <p class="text-muted mt-3 max-w-[60ch]">{t.projects.intro}</p>
+
+    <h2 id="projects-list-title" class="sr-only">
+      {t.home.allProjects}
+    </h2>
+    {projects.length > 0 ? (
+      <ul class="mt-10 grid gap-6 sm:grid-cols-2" aria-labelledby="projects-list-title">
+        {projects.map((project) => (
+          <li>
+            <ProjectCard project={project} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-muted mt-10">{t.projects.empty}</p>
+    )}
+  </Container>
+</BaseLayout>

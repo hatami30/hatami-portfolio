@@ -1,0 +1,32 @@
+---
+import { render } from 'astro:content';
+import { getPublishedPosts, getPublishedProjects, getRelatedPosts } from '@/lib/content';
+import { readingTime } from '@/lib/readingTime';
+import PostLayout from '@/layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts(); // newest first
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[index - 1], older: posts[index + 1] },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
+const projects = await getPublishedProjects();
+const project = projects.find((item) => item.id === post.data.project?.id);
+const related = await getRelatedPosts(post);
+---
+
+<PostLayout
+  post={post}
+  headings={headings}
+  minutes={readingTime(post.body ?? '')}
+  project={project}
+  related={related}
+  newer={newer}
+  older={older}
+>
+  <Content />
+</PostLayout>

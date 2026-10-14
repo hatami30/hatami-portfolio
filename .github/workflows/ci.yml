@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the pinned version from "packageManager" in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint (ESLint + Prettier)
+        run: pnpm lint
+
+      - name: Unit tests
+        run: pnpm test
+
+      # Runs astro check (types + content schemas), astro build, and the Pagefind index.
+      - name: Build
+        run: pnpm build
+
+      - name: Internal links
+        run: pnpm check:links
+
+      # Title, description, canonical, h1, JSON-LD, sitemap, robots, llms.txt and .md files of
+      # the build above (indexing still closed) ...
+      - name: SEO audit
+        run: pnpm check:seo
+
+      # ... and of a second build with PUBLIC_ALLOW_INDEXING=true: the state after launch.
+      - name: SEO audit (indexing enabled)
+        run: pnpm check:seo --live
+
+      # Report-only until the repository variable LAUNCH_READY is "true"
+      # (Settings > Secrets and variables > Actions > Variables).
+      - name: Placeholders (launch gate)
+        env:
+          LAUNCH_READY: ${{ vars.LAUNCH_READY }}
+        run: pnpm check:placeholders
+
+      # Lighthouse CI (budgets in AGENTS.md section 10) is the remaining part of Phase 7.

@@ -1,0 +1,38 @@
+---
+import { site } from '@/config/site';
+import { t } from '@/config/strings';
+import { hasValue } from '@/lib/placeholder';
+import Container from '@/components/ui/Container.astro';
+
+const socials = [
+  { label: 'GitHub', href: site.socials.github },
+  { label: 'LinkedIn', href: site.socials.linkedin },
+].filter((item) => hasValue(item.href));
+---
+
+<footer class="border-border mt-16 border-t">
+  <Container class="text-muted flex flex-wrap items-center justify-between gap-4 py-8 text-sm">
+    <p>{t.footer.rights(new Date().getFullYear(), site.name)}</p>
+    <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
+      {socials.map((item) => (
+        <li>
+          <a href={item.href} rel="me noopener" class="hover:text-fg">
+            {item.label}
+          </a>
+        </li>
+      ))}
+      {hasValue(site.resumeUrl) && (
+        <li>
+          <a href={site.resumeUrl} class="hover:text-fg">
+            {t.footer.resume}
+          </a>
+        </li>
+      )}
+      <li>
+        <a href="/rss.xml" class="hover:text-fg">
+          {t.footer.rss}
+        </a>
+      </li>
+    </ul>
+  </Container>
+</footer>

@@ -1,0 +1,18 @@
+# build output
+dist/
+.astro/
+.vercel/
+
+# dependencies
+node_modules/
+
+# local environment (only .env.example is committed)
+.env
+.env.*
+!.env.example
+
+# misc
+.DS_Store
+*.log
+coverage/
+dist-live/

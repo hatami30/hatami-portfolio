@@ -1,0 +1,71 @@
+---
+import { site } from '@/config/site';
+import { t } from '@/config/strings';
+import { getPublishedPosts, getTags } from '@/lib/content';
+import { paginate } from '@/lib/pagination';
+import { blogJsonLd, breadcrumbJsonLd } from '@/lib/seo';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+import PostCard from '@/components/blog/PostCard.astro';
+import Pagination from '@/components/blog/Pagination.astro';
+import Search from '@/components/blog/Search.astro';
+
+const posts = await getPublishedPosts();
+const tags = await getTags();
+const current = paginate(posts, 1);
+---
+
+<BaseLayout
+  title={t.blog.title}
+  description={t.blog.metaDescription(site.name)}
+  jsonLd={[
+    blogJsonLd(
+      current.items.map((post) => ({
+        title: post.data.title,
+        path: `/blog/${post.id}`,
+        datePublished: post.data.date,
+      })),
+    ),
+    breadcrumbJsonLd([{ name: t.blog.title, path: '/blog' }]),
+  ]}
+>
+  <Container class="py-12">
+    <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{t.blog.title}</h1>
+    <p class="text-muted mt-3 max-w-[60ch]">{t.blog.intro}</p>
+
+    <Search />
+
+    {tags.length > 0 && (
+      <section aria-labelledby="topics-title" class="mb-10">
+        <h2 id="topics-title" class="mb-3 text-sm font-semibold">
+          {t.blog.topics}
+        </h2>
+        <ul class="flex flex-wrap gap-2 text-sm">
+          {tags.map(({ tag, count }) => (
+            <li>
+              <a
+                href={`/blog/tag/${tag}`}
+                class="border-border text-muted hover:border-accent hover:text-fg rounded-full border px-3 py-1 transition"
+              >
+                #{tag} <span class="opacity-70">({count})</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <section aria-labelledby="posts-title">
+      <h2 id="posts-title" class="sr-only">
+        {t.home.allPosts}
+      </h2>
+      {current.items.length > 0 ? (
+        current.items.map((post) => <PostCard post={post} />)
+      ) : (
+        <p class="text-muted">{t.blog.empty}</p>
+      )}
+    </section>
+
+    <Pagination {...current} />
+  </Container>
+</BaseLayout>

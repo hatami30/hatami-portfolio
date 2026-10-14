@@ -1,0 +1,46 @@
+---
+import { t } from '@/config/strings';
+import type { Project } from '@/lib/content';
+
+interface Props {
+  project: Project;
+}
+const { role, period, stack, liveUrl, repoUrl } = Astro.props.project.data;
+---
+
+<dl class="border-border grid gap-x-8 gap-y-4 rounded-xl border p-5 text-sm sm:grid-cols-2">
+  <div>
+    <dt class="text-muted">{t.projects.role}</dt>
+    <dd class="mt-1 font-medium">{role}</dd>
+  </div>
+  {period && (
+    <div>
+      <dt class="text-muted">{t.projects.period}</dt>
+      <dd class="mt-1 font-medium">{period}</dd>
+    </div>
+  )}
+  <div class="sm:col-span-2">
+    <dt class="text-muted">{t.projects.stack}</dt>
+    <dd class="mt-2">
+      <ul class="flex flex-wrap gap-2 text-xs">
+        {stack.map((item) => (
+          <li class="border-border rounded-full border px-2.5 py-0.5">{item}</li>
+        ))}
+      </ul>
+    </dd>
+  </div>
+  {(liveUrl || repoUrl) && (
+    <div class="flex flex-wrap gap-x-6 gap-y-2 sm:col-span-2">
+      {liveUrl && (
+        <a href={liveUrl} rel="noopener" class="text-accent underline underline-offset-4">
+          {t.projects.live}
+        </a>
+      )}
+      {repoUrl && (
+        <a href={repoUrl} rel="noopener" class="text-accent underline underline-offset-4">
+          {t.projects.repo}
+        </a>
+      )}
+    </div>
+  )}
+</dl>

@@ -1,0 +1,29 @@
+---
+import { t } from '@/config/strings';
+import { formatDate } from '@/lib/format';
+import { readingTime } from '@/lib/readingTime';
+import type { Post } from '@/lib/content';
+
+interface Props {
+  post: Post;
+}
+const { post } = Astro.props;
+const { title, description, date } = post.data;
+const minutes = readingTime(post.body ?? '');
+---
+
+<article class="group relative py-6 transition-colors">
+  <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-4">
+    <h3 class="text-lg sm:text-xl font-semibold tracking-tight group-hover:text-accent transition-colors">
+      <a href={`/blog/${post.id}`} class="after:absolute after:inset-0">
+        {title}
+      </a>
+    </h3>
+    <p class="text-muted text-xs font-mono shrink-0">
+      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      <span aria-hidden="true"> · </span>
+      {t.blog.readingTime(minutes)}
+    </p>
+  </div>
+  <p class="text-muted mt-2 text-sm leading-relaxed max-w-[65ch]">{description}</p>
+</article>

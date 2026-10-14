@@ -1,0 +1,68 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '@/styles/global.css';
+
+import { site } from '@/config/site';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import SkipLink from '@/components/layout/SkipLink.astro';
+import SEO from '@/components/seo/SEO.astro';
+import JsonLd from '@/components/seo/JsonLd.astro';
+import Umami from '@/components/integrations/Umami.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Home page: the <title> becomes "Name: Role". */
+  home?: boolean;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  markdownPath?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  jsonLd?: object | object[];
+}
+
+const { description = site.description, jsonLd, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1013" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} RSS`} href="/rss.xml" />
+    <!-- Sets the theme before first paint so there is no flash of the wrong theme. -->
+    <script is:inline>
+      (() => {
+        const system = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        let theme = system;
+        try {
+          theme = localStorage.getItem('theme') || system;
+        } catch {
+          // Storage is blocked: fall back to the system theme.
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <SEO description={description} {...seo} />
+    {jsonLd && <JsonLd data={jsonLd} />}
+  </head>
+  <body class="bg-bg text-fg font-sans antialiased flex min-h-dvh flex-col">
+    <SkipLink />
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <Umami />
+  </body>
+</html>

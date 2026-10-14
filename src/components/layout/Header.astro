@@ -1,0 +1,39 @@
+---
+import { site } from '@/config/site';
+import { t } from '@/config/strings';
+import Container from '@/components/ui/Container.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="border-border/60 bg-bg/80 sticky top-0 z-40 border-b backdrop-blur-md transition-colors">
+  <Container class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-3.5">
+    <a href="/" class="flex items-center gap-2 font-semibold tracking-tight hover:opacity-90">
+      <span class="bg-accent/20 border-accent/40 text-accent flex h-7 w-7 items-center justify-center rounded-lg border text-xs font-mono font-bold">
+        H
+      </span>
+      <span>{site.name}</span>
+    </a>
+    <div class="flex items-center gap-4">
+      <nav aria-label={t.mainNav}>
+        <ul class="flex flex-wrap items-center gap-x-1 sm:gap-x-2 text-sm">
+          {site.nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class="text-muted hover:text-fg aria-[current=page]:text-fg aria-[current=page]:bg-surface aria-[current=page]:border-border/80 rounded-md border border-transparent px-3 py-1.5 transition-colors"
+              >
+                {t.nav[item.key]}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div class="bg-border/60 h-4 w-px"></div>
+      <ThemeToggle />
+    </div>
+  </Container>
+</header>
