@@ -1,0 +1,120 @@
+---
+interface Props {
+  text?: string;
+  tagline?: string;
+  class?: string;
+}
+
+const defaultText =
+  'Engineering resilient high-performance systems, crafting tactile interfaces, and designing clean modular architectures that turn complex technical challenges into effortless user experiences.';
+
+const {
+  text = defaultText,
+  tagline = 'ENGINEERING PHILOSOPHY',
+  class: className,
+} = Astro.props;
+
+const words = text.split(' ');
+---
+
+<section
+  id="scroll-reveal-container"
+  class:list={['relative min-h-[170vh] bg-surface/20 border-b border-border/50', className]}
+  aria-label="Engineering manifesto"
+>
+  <div class="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-4 sm:px-8">
+    <!-- Subtle architectural noise & radial backdrop -->
+    <div
+      class="pointer-events-none absolute inset-0 z-0 opacity-40 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"
+      aria-hidden="true"
+    >
+      <div class="absolute inset-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-4xl text-center">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3.5 py-1 text-xs font-mono font-medium text-accent backdrop-blur-md shadow-xs">
+        <span class="h-1.5 w-1.5 rounded-full bg-accent animate-pulse"></span>
+        <span>{tagline}</span>
+      </div>
+
+      <p
+        id="scroll-reveal-paragraph"
+        class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-snug sm:leading-tight"
+      >
+        {
+          words.map((word, idx) => (
+            <span
+              class="reveal-word inline-block mx-1 sm:mx-1.5 transition-opacity duration-150 text-fg opacity-20"
+              data-idx={idx}
+            >
+              {word}
+            </span>
+          ))
+        }
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  function setupScrollReveal() {
+    const container = document.getElementById('scroll-reveal-container');
+    const words = document.querySelectorAll<HTMLElement>('.reveal-word');
+    if (!container || words.length === 0) return;
+
+    // Respect prefers-reduced-motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      words.forEach((w) => (w.style.opacity = '1'));
+      return;
+    }
+
+    let ticking = false;
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateWordOpacities);
+        ticking = true;
+      }
+    }
+
+    function updateWordOpacities() {
+      ticking = false;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const totalScrollable = rect.height - windowHeight;
+
+      if (totalScrollable <= 0) return;
+
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+
+      const totalWords = words.length;
+      const litIndex = progress * totalWords;
+
+      words.forEach((w, i) => {
+        if (i < litIndex) {
+          // Calculate individual word interpolation for ultra smooth lighting
+          const diff = litIndex - i;
+          if (diff >= 1) {
+            w.style.opacity = '1';
+          } else {
+            w.style.opacity = `${0.2 + diff * 0.8}`;
+          }
+        } else {
+          w.style.opacity = '0.2';
+        }
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateWordOpacities();
+
+    document.addEventListener('astro:before-swap', () => {
+      window.removeEventListener('scroll', onScroll);
+    });
+  }
+
+  setupScrollReveal();
+  document.addEventListener('astro:page-load', setupScrollReveal);
+</script>
