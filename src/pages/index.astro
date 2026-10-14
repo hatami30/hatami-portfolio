@@ -10,6 +10,7 @@ import ProjectCard from '@/components/projects/ProjectCard.astro';
 import PostCard from '@/components/blog/PostCard.astro';
 import CodingPresence from '@/components/presence/CodingPresence.astro';
 import SpotifyPlayer from '@/components/presence/SpotifyPlayer.astro';
+import TechMarquee from '@/components/ui/TechMarquee.astro';
 
 const featured = await getFeaturedProjects(3);
 const latestPosts = (await getPublishedPosts()).slice(0, 3);
@@ -132,6 +133,8 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
       </div>
     </Container>
   </div>
+
+  <TechMarquee />
 
   {featured.length > 0 && (
     <Container class="py-12">

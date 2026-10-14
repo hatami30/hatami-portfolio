@@ -74,6 +74,26 @@
   box-shadow: 0 12px 32px -12px rgba(99, 102, 241, 0.12);
 }
 
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
 html {
   scroll-padding-top: 1.5rem;
   scroll-behavior: smooth;

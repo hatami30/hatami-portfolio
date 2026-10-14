@@ -1,0 +1,63 @@
+---
+interface Props {
+  items?: string[];
+  class?: string;
+}
+
+const defaultItems = [
+  'HIGH-PERFORMANCE SYSTEMS',
+  'FULL-STACK ARCHITECTURE',
+  'AUTONOMOUS AI AGENTS',
+  'REALTIME & EDGE COMPUTING',
+  'ROBUST DISTRIBUTED SERVICES',
+  'PRECISION UI & ACCESSIBILITY',
+];
+
+const { items = defaultItems, class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    'relative w-full overflow-hidden border-y border-border/60 bg-surface/30 py-3.5 backdrop-blur-xs select-none',
+    className,
+  ]}
+  aria-label="Engineering specializations marquee"
+>
+  <!-- Fade mask edges -->
+  <div
+    class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 sm:w-28 bg-gradient-to-r from-bg to-transparent"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 sm:w-28 bg-gradient-to-l from-bg to-transparent"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="animate-marquee flex items-center gap-8 sm:gap-12">
+    <!-- Track 1 -->
+    <div class="flex shrink-0 items-center gap-8 sm:gap-12">
+      {
+        items.map((item) => (
+          <span class="flex items-center gap-3 font-mono text-xs sm:text-sm font-semibold tracking-wider text-muted hover:text-fg transition-colors">
+            <span class="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+            <span>{item}</span>
+          </span>
+        ))
+      }
+    </div>
+
+    <!-- Track 2 (duplicate for seamless loop) -->
+    <div class="flex shrink-0 items-center gap-8 sm:gap-12" aria-hidden="true">
+      {
+        items.map((item) => (
+          <span class="flex items-center gap-3 font-mono text-xs sm:text-sm font-semibold tracking-wider text-muted hover:text-fg transition-colors">
+            <span class="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+            <span>{item}</span>
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</div>
