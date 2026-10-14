@@ -10,8 +10,8 @@ const { project } = Astro.props;
 const { title, summary, stack, cover } = project.data;
 ---
 
-<article class="group border-border/80 bg-surface/40 hover:bg-surface hover:border-accent/60 relative flex h-full flex-col gap-3 rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 backdrop-blur-xs">
-  {cover && (
+<article class="card-interactive group border-border/80 bg-surface/50 hover:bg-surface hover:border-accent/60 relative flex h-full flex-col gap-3 rounded-2xl border p-5 sm:p-6 transition-all duration-200 backdrop-blur-xs">
+  {cover ? (
     <div class="overflow-hidden rounded-xl border border-border/60">
       <Image
         src={cover}
@@ -20,6 +20,31 @@ const { title, summary, stack, cover } = project.data;
         height={360}
         class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
       />
+    </div>
+  ) : (
+    <div class="relative overflow-hidden rounded-xl border border-border/60 bg-surface/80 p-4 aspect-video flex flex-col justify-between group-hover:border-accent/40 transition-colors">
+      <div class="flex items-center justify-between border-b border-border/40 pb-2">
+        <div class="flex items-center gap-1.5">
+          <span class="h-2 w-2 rounded-full bg-border"></span>
+          <span class="h-2 w-2 rounded-full bg-border"></span>
+          <span class="h-2 w-2 rounded-full bg-border"></span>
+        </div>
+        <span class="font-mono text-[10px] text-muted tracking-widest uppercase">
+          Spec // Case Study
+        </span>
+      </div>
+      <div class="py-2">
+        <span class="font-mono text-xs text-accent font-semibold">{project.data.role}</span>
+        <p class="font-mono text-[11px] text-muted truncate mt-0.5">
+          {stack.slice(0, 3).join(' • ')}
+        </p>
+      </div>
+      <div class="flex items-center justify-between text-[11px] font-mono text-muted border-t border-border/30 pt-2">
+        <span>{project.data.period || 'Production'}</span>
+        <span class="text-accent group-hover:translate-x-0.5 transition-transform">
+          Read study ↗
+        </span>
+      </div>
     </div>
   )}
   <div class="flex items-baseline justify-between gap-2 pt-1">

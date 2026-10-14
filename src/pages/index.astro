@@ -16,27 +16,119 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
 ---
 
 <BaseLayout title={site.role} home jsonLd={[personJsonLd(), websiteJsonLd()]}>
-  <div class="relative overflow-hidden">
-    <div class="glow-ambient" aria-hidden="true"></div>
-    <div class="bg-grid absolute inset-0 -z-10 opacity-70" aria-hidden="true"></div>
+  <div class="relative overflow-hidden border-b border-border/50">
+    <div class="bg-ambient-top" aria-hidden="true"></div>
 
-    <Container class="relative z-10 py-20 sm:py-28">
-      <CodingPresence />
+    <Container class="relative z-10 py-16 sm:py-24 lg:py-28">
+      <div class="grid items-start gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+        <!-- Left: Editorial Identity -->
+        <div class="flex flex-col items-start">
+          <div class="mb-5">
+            <CodingPresence />
+          </div>
 
-      <h1 class="mt-5 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">{site.name}</h1>
-      <p class="text-accent mt-3 text-xl font-medium sm:text-2xl tracking-tight">{site.role}</p>
-      <p class="text-muted mt-6 max-w-[62ch] text-lg sm:text-xl leading-relaxed">
-        {site.description}
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3.5">
-        <Button href="/projects">{t.home.ctaProjects}</Button>
-        <Button href="/contact" variant="secondary">
-          {t.home.ctaContact}
-        </Button>
-      </div>
+          <h1 class="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">{site.name}</h1>
+          <p class="text-accent mt-3 text-xl font-medium sm:text-2xl tracking-tight">{site.role}</p>
+          <p class="text-muted mt-5 max-w-[54ch] text-base sm:text-lg leading-relaxed">
+            {site.description}
+          </p>
 
-      <div class="mt-10 max-w-sm">
-        <SpotifyPlayer />
+          <div class="mt-8 flex flex-wrap items-center gap-3.5">
+            <Button href="/projects">{t.home.ctaProjects}</Button>
+            <Button href="/contact" variant="secondary">
+              {t.home.ctaContact}
+            </Button>
+          </div>
+
+          <!-- Architecture & Stack Spec Line -->
+          <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border/50 pt-6 text-xs font-mono text-muted">
+            <span class="flex items-center gap-1.5">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+              High-Performance Systems
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+              Full-Stack & Cloud Architecture
+            </span>
+          </div>
+        </div>
+
+        <!-- Right: Telemetry & Activity Console -->
+        <div class="w-full">
+          <div class="card-interactive rounded-2xl border border-border/80 bg-surface/80 p-5 sm:p-6 backdrop-blur-md shadow-xs">
+            <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
+              <div class="flex items-center gap-2">
+                <span class="relative flex h-2 w-2">
+                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                </span>
+                <span class="font-mono text-xs font-semibold tracking-wider uppercase text-fg">
+                  Developer Telemetry
+                </span>
+              </div>
+              <span class="font-mono text-[11px] text-muted">Live Feed</span>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Live Audio / Spotify -->
+              <div>
+                <p class="font-mono text-[11px] text-muted uppercase tracking-wider mb-1.5">
+                  Listening Activity
+                </p>
+                <SpotifyPlayer />
+              </div>
+
+              <!-- Quick System Specs / Stack -->
+              <div class="rounded-xl border border-border/50 bg-surface/50 p-3.5 text-xs">
+                <div class="flex items-center justify-between font-mono text-[11px] text-muted mb-2">
+                  <span>TECH ARSENAL</span>
+                  <span>PRODUCTION</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
+                    TypeScript
+                  </span>
+                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
+                    Astro
+                  </span>
+                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
+                    Tailwind CSS
+                  </span>
+                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
+                    Node.js
+                  </span>
+                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
+                    Vercel Edge
+                  </span>
+                </div>
+              </div>
+
+              <!-- Location & Availability -->
+              <div class="flex items-center justify-between rounded-xl border border-border/50 px-3.5 py-2.5 text-xs font-mono text-muted">
+                <span class="flex items-center gap-1.5">
+                  <svg
+                    class="h-3.5 w-3.5 text-muted"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  </svg>
+                  <span>Remote / Global Reach</span>
+                </span>
+                <span class="text-emerald-700 dark:text-emerald-400 font-medium">
+                  Open to Connect
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Container>
   </div>
@@ -96,8 +188,7 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
   )}
 
   <Container class="py-20">
-    <section class="relative overflow-hidden rounded-3xl border border-border/80 bg-surface/60 p-8 sm:p-14 text-center backdrop-blur-md shadow-lg shadow-accent/5">
-      <div class="glow-ambient -top-24" aria-hidden="true"></div>
+    <section class="card-interactive relative overflow-hidden rounded-3xl border border-border/80 bg-surface/80 p-8 sm:p-14 text-center backdrop-blur-md shadow-xs">
       <div class="relative z-10">
         <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">{t.home.closingTitle}</h2>
         <p class="text-muted mx-auto mt-4 max-w-[52ch] text-base sm:text-lg leading-relaxed">

@@ -18,13 +18,13 @@ const isActive = (href: string) => path === href || path.startsWith(href);
     </a>
     <div class="flex items-center gap-4">
       <nav aria-label={t.mainNav}>
-        <ul class="flex flex-wrap items-center gap-x-1 sm:gap-x-2 text-sm">
+        <ul class="flex items-center gap-1 sm:gap-2 text-sm">
           {site.nav.map((item) => (
             <li>
               <a
                 href={item.href}
                 aria-current={isActive(item.href) ? 'page' : undefined}
-                class="text-muted hover:text-fg aria-[current=page]:text-fg aria-[current=page]:bg-surface aria-[current=page]:border-border/80 rounded-md border border-transparent px-3 py-1.5 transition-colors"
+                class="text-muted hover:text-fg aria-[current=page]:text-fg aria-[current=page]:bg-surface aria-[current=page]:border-border/80 inline-flex items-center min-h-[36px] rounded-md border border-transparent px-2.5 py-1 transition-colors"
               >
                 {t.nav[item.key]}
               </a>

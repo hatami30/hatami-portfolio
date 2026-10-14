@@ -39,25 +39,39 @@
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Subtle Linear-style ambient background grid & spotlight effects */
-.bg-grid {
-  background-image: radial-gradient(var(--border) 1px, transparent 1px);
-  background-size: 24px 24px;
-  background-position: -19px -19px;
-  mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 100%);
-}
-
-.glow-ambient {
+/* Architectural top rule & subtle tactile card transitions */
+.bg-ambient-top {
   position: absolute;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 800px;
-  height: 380px;
-  background: radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.15), transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border),
+    var(--accent),
+    var(--border),
+    transparent
+  );
+  opacity: 0.8;
+}
+
+.card-interactive {
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] .card-interactive:hover {
+  box-shadow: 0 12px 32px -12px rgba(99, 102, 241, 0.12);
 }
 
 html {
