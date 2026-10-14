@@ -8,6 +8,8 @@ import Container from '@/components/ui/Container.astro';
 import Button from '@/components/ui/Button.astro';
 import ProjectCard from '@/components/projects/ProjectCard.astro';
 import PostCard from '@/components/blog/PostCard.astro';
+import CodingPresence from '@/components/presence/CodingPresence.astro';
+import SpotifyPlayer from '@/components/presence/SpotifyPlayer.astro';
 
 const featured = await getFeaturedProjects(3);
 const latestPosts = (await getPublishedPosts()).slice(0, 3);
@@ -19,13 +21,7 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
     <div class="bg-grid absolute inset-0 -z-10 opacity-70" aria-hidden="true"></div>
 
     <Container class="relative z-10 py-20 sm:py-28">
-      <div class="inline-flex items-center gap-2 rounded-full border border-border/80 bg-surface/80 px-3.5 py-1 text-xs font-mono text-muted backdrop-blur-md shadow-xs">
-        <span class="relative flex h-2 w-2">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-        </span>
-        <span>{t.home.statusAvailable}</span>
-      </div>
+      <CodingPresence />
 
       <h1 class="mt-5 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">{site.name}</h1>
       <p class="text-accent mt-3 text-xl font-medium sm:text-2xl tracking-tight">{site.role}</p>
@@ -37,6 +33,10 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
         <Button href="/contact" variant="secondary">
           {t.home.ctaContact}
         </Button>
+      </div>
+
+      <div class="mt-10 max-w-sm">
+        <SpotifyPlayer />
       </div>
     </Container>
   </div>

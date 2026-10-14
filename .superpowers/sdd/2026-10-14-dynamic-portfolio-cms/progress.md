@@ -2,3 +2,4 @@
 
 Pre-flight: no shared interface conflicts between independent tasks
 Task 1: complete (commits 71afdc0..df5b9bd, tests: pnpm test src/lib/toc.test.ts → 2/2 pass)
+Task 2: complete (commits df5b9bd..f2dfb36, tests: pnpm test src/api/spotify.test.ts → 4/4 pass)

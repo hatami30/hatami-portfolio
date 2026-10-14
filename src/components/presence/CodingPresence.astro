@@ -1,0 +1,109 @@
+---
+interface Props {
+  discordId?: string;
+  class?: string;
+}
+
+const { discordId = import.meta.env.PUBLIC_DISCORD_USER_ID, class: className } = Astro.props;
+---
+
+<div
+  id="coding-presence-widget"
+  data-discord-id={discordId}
+  class:list={[
+    'coding-presence border-border/80 bg-surface/60 inline-flex items-center gap-2.5 rounded-full border px-3.5 py-1 text-xs font-mono text-muted backdrop-blur-md transition-colors shadow-xs',
+    className,
+  ]}
+>
+  <span class="relative flex h-2 w-2 shrink-0">
+    <span
+      id="presence-ping"
+      class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 hidden"
+    ></span>
+    <span id="presence-dot" class="relative inline-flex h-2 w-2 rounded-full bg-zinc-500"></span>
+  </span>
+  <span id="presence-text" class="truncate max-w-[320px] sm:max-w-[450px]">
+    Checking developer activity…
+  </span>
+</div>
+
+<script>
+  async function initPresence() {
+    const container = document.getElementById('coding-presence-widget');
+    const dot = document.getElementById('presence-dot');
+    const ping = document.getElementById('presence-ping');
+    const text = document.getElementById('presence-text');
+
+    if (!container || !dot || !ping || !text) return;
+
+    const discordId = container.getAttribute('data-discord-id');
+    let handled = false;
+
+    // 1. Try Lanyard if Discord ID is provided
+    if (discordId) {
+      try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
+        if (res.ok) {
+          const json = await res.json();
+          const d = json.data;
+          if (
+            d &&
+            (d.discord_status === 'online' ||
+              d.discord_status === 'dnd' ||
+              d.discord_status === 'idle')
+          ) {
+            const vsCodeActivity = d.activities?.find(
+              (a: { name?: string }) =>
+                a.name === 'Visual Studio Code' ||
+                a.name === 'Neovim' ||
+                a.name === 'Code' ||
+                a.name?.toLowerCase().includes('code'),
+            );
+
+            if (vsCodeActivity) {
+              const file = vsCodeActivity.details || 'active workspace';
+              const workspace = vsCodeActivity.state ? ` (${vsCodeActivity.state})` : '';
+
+              dot.className = 'relative inline-flex h-2 w-2 rounded-full bg-emerald-500';
+              ping.classList.remove('hidden');
+              text.innerHTML = `<span class="text-fg font-medium">Coding:</span> <span class="text-emerald-400 font-semibold">${file}</span>${workspace}`;
+              container.classList.add('border-emerald-500/30', 'bg-emerald-500/5');
+              handled = true;
+            }
+          }
+        }
+      } catch {
+        // Fallback to WakaTime
+      }
+    }
+
+    if (handled) return;
+
+    // 2. Fallback to WakaTime daily summary
+    try {
+      const wakaRes = await fetch('/api/wakatime');
+      if (wakaRes.ok) {
+        const wakaData = await wakaRes.json();
+        if (wakaData.success && wakaData.totalHours && wakaData.totalHours !== '0 mins') {
+          dot.className = 'relative inline-flex h-2 w-2 rounded-full bg-indigo-500';
+          ping.classList.add('hidden');
+          const langs = wakaData.topLanguages?.slice(0, 2).join(', ');
+          const langText = langs ? ` · ${langs}` : '';
+          text.innerHTML = `<span class="text-muted">Coded today:</span> <span class="text-fg font-medium">${wakaData.totalHours}</span><span class="text-muted text-[11px]">${langText}</span>`;
+          container.classList.remove('border-emerald-500/30', 'bg-emerald-500/5');
+          handled = true;
+        }
+      }
+    } catch {
+      // Fallback to idle
+    }
+
+    if (!handled) {
+      dot.className = 'relative inline-flex h-2 w-2 rounded-full bg-emerald-500';
+      ping.classList.remove('hidden');
+      text.textContent = 'Available for new projects & roles';
+    }
+  }
+
+  initPresence();
+</script>
