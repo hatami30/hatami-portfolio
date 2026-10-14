@@ -10,6 +10,7 @@ import SkipLink from '@/components/layout/SkipLink.astro';
 import SEO from '@/components/seo/SEO.astro';
 import JsonLd from '@/components/seo/JsonLd.astro';
 import Umami from '@/components/integrations/Umami.astro';
+import CommandPalette from '@/components/ui/CommandPalette.astro';
 
 interface Props {
   title: string;
@@ -63,6 +64,7 @@ const { description = site.description, jsonLd, ...seo } = Astro.props;
       <slot />
     </main>
     <Footer />
+    <CommandPalette />
     <Umami />
   </body>
 </html>

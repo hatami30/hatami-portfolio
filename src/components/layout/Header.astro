@@ -33,7 +33,30 @@ const isActive = (href: string) => path === href || path.startsWith(href);
         </ul>
       </nav>
       <div class="bg-border/60 h-4 w-px"></div>
+      <button
+        id="header-cmd-palette-btn"
+        type="button"
+        class="text-muted hover:text-fg hover:border-accent/80 border-border/70 bg-surface/80 hidden sm:inline-flex items-center gap-1.5 rounded-lg border px-2 py-1 font-mono text-xs transition-colors cursor-pointer"
+        title="Open command palette (Cmd+K)"
+        aria-label="Open command palette"
+      >
+        <span class="text-[10px]">⌘</span>
+        <span>K</span>
+      </button>
       <ThemeToggle />
     </div>
   </Container>
 </header>
+
+<script>
+  function setupHeaderCmdBtn() {
+    const btn = document.getElementById('header-cmd-palette-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('open-command-palette'));
+    });
+  }
+
+  setupHeaderCmdBtn();
+  document.addEventListener('astro:page-load', setupHeaderCmdBtn);
+</script>
