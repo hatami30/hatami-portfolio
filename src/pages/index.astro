@@ -13,97 +13,115 @@ import BentoGrid from '@/components/ui/BentoGrid.astro';
 import LiveFromTheDesk from '@/components/presence/LiveFromTheDesk.astro';
 import FaqAccordion from '@/components/ui/FaqAccordion.astro';
 import HeroBackground from '@/components/ui/HeroBackground.astro';
+import HeroOrbit from '@/components/ui/HeroOrbit.astro';
 
 const featured = await getFeaturedProjects(3);
 const latestPosts = (await getPublishedPosts()).slice(0, 3);
 ---
 
 <BaseLayout title={site.role} home jsonLd={[personJsonLd(), websiteJsonLd()]}>
-  <div class="relative flex min-h-screen flex-col justify-center overflow-hidden">
+  <div class="relative min-h-screen overflow-hidden pt-20">
     <HeroBackground />
+    <HeroOrbit />
 
-    <Container class="relative z-10 pt-28 sm:pt-32 pb-16 sm:pb-24 lg:pb-28">
-      <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-        <!-- Left: Editorial identity -->
-        <div class="flex flex-col items-start">
-          <div class="border-border/80 bg-surface/60 mb-6 inline-flex items-center gap-2.5 rounded-full border px-3.5 py-1 font-mono text-xs text-muted shadow-xs backdrop-blur-md">
-            <span class="relative flex h-2 w-2 shrink-0">
-              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-            </span>
-            <span>{t.home.statusAvailable}</span>
-          </div>
+    <Container class="relative z-10 flex min-h-[calc(100vh-8rem)] flex-col justify-center py-12 lg:py-0">
+      <!-- Availability: in flow on mobile, pinned to the top-centre on desktop -->
+      <div class="z-20 mb-8 flex justify-center lg:absolute lg:top-32 lg:right-0 lg:left-0 lg:mb-0">
+        <div class="border-border/80 bg-surface/70 inline-flex items-center gap-2 rounded-full border px-4 py-2 shadow-sm backdrop-blur-md">
+          <span class="relative flex h-2 w-2 shrink-0">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+          </span>
+          <span class="text-fg text-xs font-medium sm:text-sm">{t.home.statusAvailable}</span>
+        </div>
+      </div>
 
-          <h1 class="flex flex-col">
-            <span class="text-base font-medium tracking-wide text-muted sm:text-lg">
+      <div class="flex w-full flex-col items-center justify-between gap-8 lg:flex-row">
+        <!-- Left: editorial identity, pulled up so the name sits on the optical centre -->
+        <div class="z-10 flex flex-col items-center text-center lg:-mt-20 lg:w-6/12 lg:items-start lg:text-left">
+          <h1 class="mb-4 flex flex-col items-center lg:items-start">
+            <span class="text-fg mb-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
               {t.home.greeting}
             </span>
-            <span class="mt-1 text-4xl font-extrabold leading-[1.05] tracking-tight text-accent sm:text-5xl lg:text-6xl">
+            <span class="text-accent text-4xl leading-[1.15] font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
               {site.name}
             </span>
           </h1>
 
-          <h2 class="mt-5 text-xl font-medium leading-snug tracking-tight text-fg sm:text-2xl">
-            {site.role}
+          <h2 class="text-muted mt-2 max-w-lg text-xl font-medium tracking-tight sm:text-2xl md:text-3xl">
+            {t.home.taglineLead}{' '}
+            <span class="text-accent block font-bold">{t.home.taglineHighlight}</span>
           </h2>
-
-          <p class="mt-5 max-w-[52ch] text-base leading-relaxed text-muted sm:text-lg">
-            {site.description}
-          </p>
-
-          <div class="mt-8 flex flex-wrap items-center gap-3.5">
-            <Button href="/projects">{t.home.ctaProjects}</Button>
-            <Button href="/contact" variant="secondary">
-              {t.home.ctaContact}
-            </Button>
-          </div>
         </div>
 
-        <!-- Right: Speech bubble with live micro-telemetry -->
-        <div class="relative w-full lg:mt-6">
-          <!-- Bubble tail (desktop: pointing left toward the intro) -->
-          <svg
-            class="absolute -left-9 bottom-1 hidden h-12 w-12 text-surface lg:block"
-            viewBox="0 0 32 32"
-            aria-hidden="true"
-          >
-            <path
-              d="M32 0v24C24 24 16 32 0 32C12 28 20 20 24 12C28 4 30 0 32 0Z"
-              fill="currentColor"
-            />
-            <path
-              d="M32 24C24 24 16 32 0 32C12 28 20 20 24 12"
-              fill="none"
-              stroke="var(--border)"
-              stroke-width="1"
-              vector-effect="non-scaling-stroke"
-              stroke-linecap="round"
-            />
-          </svg>
-          <!-- Bubble tail (mobile: pointing up toward the intro) -->
-          <svg
-            class="absolute -top-[35px] left-3 h-12 w-12 text-surface lg:hidden"
-            viewBox="0 0 32 32"
-            aria-hidden="true"
-          >
-            <path
-              d="M0 32h24C24 24 32 16 32 0C28 12 20 20 12 24C4 28 0 30 0 32Z"
-              fill="currentColor"
-            />
-            <path
-              d="M24 32C24 24 32 16 32 0C28 12 20 20 12 24"
-              fill="none"
-              stroke="var(--border)"
-              stroke-width="1"
-              vector-effect="non-scaling-stroke"
-              stroke-linecap="round"
-            />
-          </svg>
+        <!-- Mobile only: the orbit centrepiece needs headroom above the bubble -->
+        <div class="pointer-events-none h-[260px] w-full sm:h-[320px] lg:hidden"></div>
 
-          <div class="relative rounded-3xl rounded-tl-none border border-border/80 bg-surface px-6 py-6 shadow-sm sm:px-7 sm:py-7 lg:rounded-tl-3xl lg:rounded-bl-none">
-            <p class="text-[15px] font-medium leading-relaxed tracking-wide text-fg sm:text-base">
-              {t.home.speechBubble}
-            </p>
+        <!-- Right: speech bubble and CTAs, dropped to sit below the orbit core -->
+        <div class="z-10 flex w-full flex-col items-center text-center lg:mt-32 lg:w-5/12 lg:items-start lg:text-left">
+          <div class="relative mb-10 flex w-full justify-center lg:justify-start">
+            <!-- Bubble tail (desktop: pointing left toward the intro) -->
+            <svg
+              class="text-surface absolute bottom-1 -left-9 hidden h-12 w-12 lg:block"
+              viewBox="0 0 32 32"
+              aria-hidden="true"
+            >
+              <path
+                d="M32 0v24C24 24 16 32 0 32C12 28 20 20 24 12C28 4 30 0 32 0Z"
+                fill="currentColor"
+              />
+              <path
+                d="M32 24C24 24 16 32 0 32C12 28 20 20 24 12"
+                fill="none"
+                stroke="var(--border)"
+                stroke-width="1"
+                vector-effect="non-scaling-stroke"
+                stroke-linecap="round"
+              />
+            </svg>
+            <!-- Bubble tail (mobile: pointing up toward the intro) -->
+            <svg
+              class="text-surface absolute -top-[35px] left-3 h-12 w-12 lg:hidden"
+              viewBox="0 0 32 32"
+              aria-hidden="true"
+            >
+              <path
+                d="M0 32h24C24 24 32 16 32 0C28 12 20 20 12 24C4 28 0 30 0 32Z"
+                fill="currentColor"
+              />
+              <path
+                d="M24 32C24 24 32 16 32 0C28 12 20 20 12 24"
+                fill="none"
+                stroke="var(--border)"
+                stroke-width="1"
+                vector-effect="non-scaling-stroke"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            <div class="border-border/80 bg-surface relative inline-block w-fit max-w-[90%] rounded-[32px] rounded-tl-none border px-6 py-4 text-left shadow-sm sm:max-w-md lg:rounded-tl-[32px] lg:rounded-bl-none">
+              <!-- Travelling hairline that traces the bubble edge. One accent, one element. -->
+              <div class="bubble-shimmer" aria-hidden="true"></div>
+              <p class="text-fg relative z-10 text-[15px] leading-relaxed font-medium tracking-wide sm:text-base">
+                <span class="hidden sm:inline">{t.home.speechBubble}</span>
+                <span class="sm:hidden">{t.home.speechBubbleMobile}</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex w-full flex-col gap-4 px-4 sm:w-auto sm:flex-row sm:gap-5 lg:flex-col lg:px-0">
+            <Button href="/projects" size="lg" shape="pill" class="w-full sm:w-auto">
+              {t.home.ctaProjects}
+            </Button>
+            <Button
+              href="/contact"
+              variant="secondary"
+              size="lg"
+              shape="pill"
+              class="w-full sm:w-auto"
+            >
+              {t.home.ctaContact}
+            </Button>
           </div>
         </div>
       </div>
@@ -192,3 +210,56 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
     </section>
   </Container>
 </BaseLayout>
+
+<style>
+  /*
+   * Hairline that travels once around the speech bubble, then rests. The mask keeps the
+   * gradient on the 1px padding box only, so it reads as a moving border highlight.
+   */
+  .bubble-shimmer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    /* Fallback for engines without @property: keeps the highlight off-canvas. */
+    --bubble-x: 100%;
+    background-image: linear-gradient(
+      -75deg,
+      transparent calc(var(--bubble-x) + 20%),
+      color-mix(in oklab, var(--accent) 55%, transparent) calc(var(--bubble-x) + 25%),
+      transparent calc(var(--bubble-x) + 100%)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    animation: bubble-shimmer 8s ease-in-out infinite;
+  }
+
+  @keyframes bubble-shimmer {
+    0% {
+      --bubble-x: 100%;
+    }
+    55%,
+    100% {
+      --bubble-x: -100%;
+    }
+  }
+
+  @property --bubble-x {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bubble-shimmer {
+      animation: none;
+      opacity: 0;
+    }
+  }
+</style>

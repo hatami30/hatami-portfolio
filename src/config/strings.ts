@@ -19,8 +19,12 @@ const en = {
   home: {
     statusAvailable: 'Available for new projects & roles',
     greeting: 'Hello, I am',
+    taglineLead: 'I build products that',
+    taglineHighlight: 'actually move the needle.',
     speechBubble:
       'Building high-performance web systems and intuitive user interfaces. Focused on turning complex technical challenges into simple, reliable software. Open for collaboration!',
+    speechBubbleMobile:
+      'Complex technical problems, turned into simple, reliable software. Open for collaboration.',
     ctaProjects: 'View projects',
     ctaContact: 'Get in touch',
     featuredProjects: 'Featured projects',
@@ -155,8 +159,12 @@ const id: Strings = {
   home: {
     statusAvailable: 'Terbuka untuk proyek & peran baru',
     greeting: 'Halo, saya',
+    taglineLead: 'Saya bikin produk yang',
+    taglineHighlight: 'beneran berdampak.',
     speechBubble:
       'Membangun sistem web berperforma tinggi dan antarmuka yang intuitif. Fokus mengubah tantangan teknis yang rumit jadi perangkat lunak yang simpel dan andal. Terbuka untuk kolaborasi!',
+    speechBubbleMobile:
+      'Masalah teknis yang rumit, diubah jadi perangkat lunak yang simpel dan andal. Terbuka untuk kolaborasi.',
     ctaProjects: 'Lihat proyek',
     ctaContact: 'Hubungi saya',
     featuredProjects: 'Proyek pilihan',

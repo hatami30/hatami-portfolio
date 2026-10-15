@@ -1,0 +1,174 @@
+---
+import { site } from '@/config/site';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+/**
+ * The hero centrepiece: two counter-rotating orbit rings of technology labels around a
+ * monogram core, on top of the ambient grid. Structure mirrors the reference hero; the
+ * labels and the core are this site's own (no third-party logo art is copied).
+ */
+const outerItems = ['TypeScript', 'Node.js', 'PostgreSQL', 'Astro', 'Docker', 'Redis'];
+const innerItems = ['Tailwind', 'Vercel', 'MCP', 'RAG'];
+
+const place = (items: string[], offset = 0) =>
+  items.map((label, index) => ({ label, angle: offset + (360 / items.length) * index }));
+
+const outerNodes = place(outerItems);
+const innerNodes = place(innerItems, 45);
+
+/**
+ * Initials from the configured name. While `site.name` is still a `[PLACEHOLDER: ...]`
+ * marker the letters are stripped and the monogram falls back to the domain initial, so
+ * the hero never renders placeholder punctuation.
+ */
+function monogram(name: string, url: string): string {
+  const cleaned = name.replace(/\[[^\]]*\]/g, '').trim();
+  const parts = cleaned.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return new URL(url).hostname
+    .replace(/^www\./, '')
+    .charAt(0)
+    .toUpperCase();
+}
+
+const initials = monogram(site.name, site.url);
+---
+
+<div
+  class:list={[
+    'pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden',
+    className,
+  ]}
+  aria-hidden="true"
+>
+  <div class="orbit-stage relative flex h-[500px] w-[500px] origin-center scale-[0.7] flex-col items-center justify-center opacity-30 sm:scale-[0.9] md:h-[600px] md:w-[600px] lg:scale-100 dark:opacity-25">
+    <!-- Orbit paths: make the ring geometry legible instead of floating pills -->
+    <span class="orbit-guide" style="--radius: 160px;"></span>
+    <span class="orbit-guide" style="--radius: 260px;"></span>
+
+    <!-- Core: the identity mark at the centre of the rings -->
+    <div class="orbit-core relative z-10 flex h-40 w-40 items-center justify-center rounded-full border border-accent/25 bg-accent/10 shadow-sm sm:h-48 sm:w-48 md:h-52 md:w-52">
+      <span class="font-mono text-6xl font-bold tracking-tight text-accent sm:text-7xl">
+        {initials}
+      </span>
+    </div>
+
+    <!-- Outer ring, clockwise -->
+    <div class="orbit-ring orbit-ring--fwd z-20" style="--radius: 260px; --duration: 35s;">
+      {outerNodes.map((node) => (
+        <div class="orbit-node" style={`--angle: ${node.angle}deg;`}>
+          <span class="orbit-label">{node.label}</span>
+        </div>
+      ))}
+    </div>
+
+    <!-- Inner ring, counter-clockwise -->
+    <div class="orbit-ring orbit-ring--rev z-20" style="--radius: 160px; --duration: 25s;">
+      {innerNodes.map((node) => (
+        <div class="orbit-node" style={`--angle: ${node.angle}deg;`}>
+          <span class="orbit-label">{node.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .orbit-guide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--radius) * 2);
+    height: calc(var(--radius) * 2);
+    margin-top: calc(var(--radius) * -1);
+    margin-left: calc(var(--radius) * -1);
+    border: 1px solid var(--accent);
+    border-radius: 9999px;
+    opacity: 0.25;
+  }
+
+  .orbit-ring {
+    position: absolute;
+    inset: 0;
+    transform-origin: center;
+    animation: orbit-spin var(--duration) linear infinite;
+  }
+
+  .orbit-ring--rev {
+    animation-direction: reverse;
+  }
+
+  .orbit-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform: rotate(var(--angle)) translateY(calc(-1 * var(--radius)));
+  }
+
+  /* Counter-rotation keeps every label upright while its ring carries it around. */
+  .orbit-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    background: var(--surface);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    font-weight: 500;
+    white-space: nowrap;
+    animation: orbit-counter var(--duration) linear infinite;
+  }
+
+  @media (min-width: 40rem) {
+    .orbit-label {
+      display: block;
+    }
+  }
+
+  .orbit-ring--rev .orbit-label {
+    animation-direction: reverse;
+  }
+
+  @keyframes orbit-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes orbit-counter {
+    from {
+      transform: translate(-50%, -50%) rotate(calc(-1 * var(--angle)));
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(calc(-1 * var(--angle) - 360deg));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orbit-ring,
+    .orbit-label {
+      animation: none;
+    }
+
+    /* Rings stop spinning, so the labels hold their own angle upright. */
+    .orbit-label {
+      transform: translate(-50%, -50%) rotate(calc(-1 * var(--angle)));
+    }
+  }
+</style>

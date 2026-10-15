@@ -2,20 +2,38 @@
 interface Props {
   href: string;
   variant?: 'primary' | 'secondary';
+  size?: 'sm' | 'lg';
+  shape?: 'rounded' | 'pill';
   class?: string;
 }
-const { href, variant = 'primary', class: className } = Astro.props;
-const styles =
-  variant === 'primary'
-    ? 'bg-accent text-accent-fg hover:opacity-95 shadow-sm hover:shadow-accent/20 hover:shadow-md'
-    : 'border border-border/80 bg-surface/80 hover:bg-surface text-fg hover:border-border backdrop-blur-xs';
+
+const { href, variant = 'primary', size = 'sm', shape = 'rounded', class: className } = Astro.props;
+
+const variants = {
+  primary:
+    'bg-accent text-accent-fg hover:opacity-95 shadow-sm hover:shadow-accent/20 hover:shadow-md',
+  secondary:
+    'border border-border/80 bg-surface/80 hover:bg-surface text-fg hover:border-border backdrop-blur-xs',
+};
+
+const sizes = {
+  sm: 'px-5 py-2.5 text-sm',
+  lg: 'px-8 py-3.5 text-base',
+};
+
+const shapes = {
+  rounded: 'rounded-xl',
+  pill: 'rounded-full',
+};
 ---
 
 <a
   href={href}
   class:list={[
-    'inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
-    styles,
+    'inline-flex items-center justify-center font-medium transition-all duration-200 active:scale-[0.98]',
+    variants[variant],
+    sizes[size],
+    shapes[shape],
     className,
   ]}
 >
