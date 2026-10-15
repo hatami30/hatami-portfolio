@@ -6,6 +6,7 @@ import { site } from '@/config/site';
 
 <dialog
   id="command-palette-dialog"
+  aria-label="Command palette"
   class="fixed inset-0 z-50 m-auto w-full max-w-lg rounded-2xl border border-border/80 bg-surface/95 p-0 text-fg shadow-2xl backdrop-blur-xl backdrop:bg-black/60 backdrop:backdrop-blur-xs open:animate-in open:fade-in open:zoom-in-95"
 >
   <div class="flex flex-col overflow-hidden">
@@ -21,13 +22,14 @@ import { site } from '@/config/site';
         stroke-linejoin="round"
         aria-hidden="true"
       >
-        <circle cx="11" cy="11" r="8" />
-        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
       <input
         id="palette-input"
         type="text"
-        placeholder="Type a command or search destination..."
+        placeholder="Type a command or jump to page..."
+        aria-label="Search commands and destinations"
         autocomplete="off"
         spellcheck="false"
         class="w-full bg-transparent text-sm outline-hidden placeholder:text-muted/60"
@@ -38,13 +40,19 @@ import { site } from '@/config/site';
     </div>
 
     <!-- Command List -->
-    <ul id="palette-list" class="max-h-72 overflow-y-auto p-2 text-xs">
-      <li class="px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase text-muted">
+    <ul id="palette-list" class="max-h-72 overflow-y-auto p-2 text-xs" role="listbox">
+      <li
+        class="px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase text-muted"
+        role="presentation"
+      >
         Navigation
       </li>
-      <li>
+      <li role="presentation">
         <a
           href="/"
+          role="option"
+          aria-selected="true"
+          tabindex="-1"
           class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
@@ -54,9 +62,12 @@ import { site } from '@/config/site';
           <span class="font-mono text-[10px] text-muted">Jump ↵</span>
         </a>
       </li>
-      <li>
+      <li role="presentation">
         <a
           href="/projects"
+          role="option"
+          aria-selected="false"
+          tabindex="-1"
           class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
@@ -66,9 +77,12 @@ import { site } from '@/config/site';
           <span class="font-mono text-[10px] text-muted">Jump ↵</span>
         </a>
       </li>
-      <li>
+      <li role="presentation">
         <a
           href="/blog"
+          role="option"
+          aria-selected="false"
+          tabindex="-1"
           class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
@@ -78,9 +92,12 @@ import { site } from '@/config/site';
           <span class="font-mono text-[10px] text-muted">Jump ↵</span>
         </a>
       </li>
-      <li>
+      <li role="presentation">
         <a
           href="/about"
+          role="option"
+          aria-selected="false"
+          tabindex="-1"
           class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
@@ -90,9 +107,12 @@ import { site } from '@/config/site';
           <span class="font-mono text-[10px] text-muted">Jump ↵</span>
         </a>
       </li>
-      <li>
+      <li role="presentation">
         <a
           href="/contact"
+          role="option"
+          aria-selected="false"
+          tabindex="-1"
           class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
@@ -103,15 +123,21 @@ import { site } from '@/config/site';
         </a>
       </li>
 
-      <li class="mt-2 px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase text-muted">
+      <li
+        class="mt-2 px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase text-muted"
+        role="presentation"
+      >
         Quick Actions
       </li>
-      <li>
+      <li role="presentation">
         <button
           id="palette-action-copy-email"
           type="button"
+          role="option"
+          aria-selected="false"
+          tabindex="-1"
           data-email={site.email}
-          class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors"
+          class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
         >
           <span class="flex items-center gap-2">
             <svg
@@ -124,21 +150,24 @@ import { site } from '@/config/site';
               stroke-linejoin="round"
               aria-hidden="true"
             >
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
             </svg>
-            <span id="copy-email-label" class="font-medium">
+            <span id="copy-email-label" aria-live="polite" class="font-medium">
               Copy Direct Email
             </span>
           </span>
           <span class="font-mono text-[10px] text-muted">Action</span>
         </button>
       </li>
-      <li>
+      <li role="presentation">
         <button
           id="palette-action-toggle-theme"
           type="button"
-          class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors"
+          role="option"
+          aria-selected="false"
+          tabindex="-1"
+          class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
         >
           <span class="flex items-center gap-2">
             <svg
@@ -151,11 +180,11 @@ import { site } from '@/config/site';
               stroke-linejoin="round"
               aria-hidden="true"
             >
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
             </svg>
-            <span class="font-medium">Toggle Dark / Light Mode</span>
+            <span class="font-medium">Toggle Dark / Light Theme</span>
           </span>
           <span class="font-mono text-[10px] text-muted">Switch</span>
         </button>
@@ -186,10 +215,32 @@ import { site } from '@/config/site';
 
     if (!dialog || !input || !list) return;
 
+    let activeIndex = 0;
+
+    function getVisibleItems(): HTMLElement[] {
+      return Array.from(list?.querySelectorAll<HTMLElement>('.palette-item') || []).filter(
+        (item) => item.closest('li')?.style.display !== 'none',
+      );
+    }
+
+    function updateActiveHighlight(items: HTMLElement[]) {
+      items.forEach((item, idx) => {
+        if (idx === activeIndex) {
+          item.classList.add('bg-accent/15', 'text-accent');
+          item.setAttribute('aria-selected', 'true');
+        } else {
+          item.classList.remove('bg-accent/15', 'text-accent');
+          item.setAttribute('aria-selected', 'false');
+        }
+      });
+    }
+
     function openPalette() {
       if (!dialog?.open) {
         dialog?.showModal();
         input?.focus();
+        activeIndex = 0;
+        updateActiveHighlight(getVisibleItems());
       }
     }
 
@@ -199,14 +250,28 @@ import { site } from '@/config/site';
       filterItems('');
     }
 
-    // Global Keybind: Cmd+K or Ctrl+K
-    window.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    // Keyboard Navigation within Palette
+    dialog.addEventListener('keydown', (e) => {
+      const items = getVisibleItems();
+      if (e.key === 'ArrowDown') {
         e.preventDefault();
-        if (dialog.open) {
-          closePalette();
-        } else {
-          openPalette();
+        if (items.length > 0) {
+          activeIndex = (activeIndex + 1) % items.length;
+          updateActiveHighlight(items);
+          items[activeIndex]?.scrollIntoView({ block: 'nearest' });
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (items.length > 0) {
+          activeIndex = (activeIndex - 1 + items.length) % items.length;
+          updateActiveHighlight(items);
+          items[activeIndex]?.scrollIntoView({ block: 'nearest' });
+        }
+      } else if (e.key === 'Enter') {
+        const currentItem = items[activeIndex];
+        if (currentItem) {
+          e.preventDefault();
+          currentItem.click();
         }
       }
     });
@@ -219,14 +284,16 @@ import { site } from '@/config/site';
     // Filter list
     function filterItems(query: string) {
       const q = query.toLowerCase().trim();
-      const items = list?.querySelectorAll<HTMLElement>('.palette-item') || [];
-      items.forEach((item) => {
+      const allItems = list?.querySelectorAll<HTMLElement>('.palette-item') || [];
+      allItems.forEach((item) => {
         const text = item.textContent?.toLowerCase() || '';
         const li = item.closest('li');
         if (li) {
           li.style.display = text.includes(q) ? '' : 'none';
         }
       });
+      activeIndex = 0;
+      updateActiveHighlight(getVisibleItems());
     }
 
     input.addEventListener('input', () => filterItems(input.value));
@@ -234,15 +301,16 @@ import { site } from '@/config/site';
     // Copy Email Action
     copyBtn?.addEventListener('click', async () => {
       const email = copyBtn.getAttribute('data-email');
-      if (email && !email.includes('[PLACEHOLDER')) {
-        await navigator.clipboard.writeText(email);
+      const textToCopy = email && !email.includes('[PLACEHOLDER') ? email : 'hello@hatami.tech';
+      try {
+        await navigator.clipboard.writeText(textToCopy);
         if (copyLabel) copyLabel.textContent = 'Copied to clipboard! ✓';
         setTimeout(() => {
           if (copyLabel) copyLabel.textContent = 'Copy Direct Email';
           closePalette();
         }, 1200);
-      } else {
-        if (copyLabel) copyLabel.textContent = 'Email copied (contact form)';
+      } catch {
+        if (copyLabel) copyLabel.textContent = 'hello@hatami.tech';
         setTimeout(() => {
           if (copyLabel) copyLabel.textContent = 'Copy Direct Email';
           closePalette();
@@ -250,17 +318,39 @@ import { site } from '@/config/site';
       }
     });
 
-    // Theme Toggle Action
+    // Theme Toggle Action: delegate to canonical button
     themeBtn?.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+      const canonicalToggle = document.getElementById('theme-toggle');
+      if (canonicalToggle) {
+        canonicalToggle.click();
+      } else {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+      }
       closePalette();
     });
 
-    // Listen to custom open event
-    window.addEventListener('open-command-palette', openPalette);
+    // Global listeners only registered once
+    if (!(window as unknown as { __cmdPaletteBound?: boolean }).__cmdPaletteBound) {
+      (window as unknown as { __cmdPaletteBound?: boolean }).__cmdPaletteBound = true;
+
+      window.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          const currentDialog = document.getElementById(
+            'command-palette-dialog',
+          ) as HTMLDialogElement | null;
+          if (currentDialog?.open) {
+            currentDialog.close();
+          } else {
+            openPalette();
+          }
+        }
+      });
+
+      window.addEventListener('open-command-palette', openPalette);
+    }
   }
 
   setupCommandPalette();

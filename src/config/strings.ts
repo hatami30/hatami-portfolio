@@ -28,6 +28,19 @@ const en = {
     closingTitle: 'Let’s work together',
     closingText: 'Have a role or a project in mind? Send me a message.',
   },
+  capabilities: {
+    tag: 'SERVICES & CAPABILITIES',
+    title: 'What I Build & Engineer',
+    description:
+      'A foundation in core software engineering principles, low-latency architectures, and precision craftsmanship across the entire stack.',
+  },
+  faq: {
+    tag: 'FREQUENT QUESTIONS',
+    title: 'Ready to collaborate or discuss an architectural challenge?',
+    description:
+      'I am always open to discussing new opportunities, systems architecture, or freelance projects. Let’s build something fast and reliable.',
+    cta: 'Start a Conversation',
+  },
   projects: {
     title: 'Projects',
     intro: 'Selected work, written up as case studies.',
@@ -137,6 +150,19 @@ const id: Strings = {
     allPosts: 'Semua tulisan',
     closingTitle: 'Mari berkolaborasi',
     closingText: 'Punya peran atau proyek yang ingin dibicarakan? Kirim pesan kepada saya.',
+  },
+  capabilities: {
+    tag: 'LAYANAN & SPESIALISASI',
+    title: 'Keahlian & Rekayasa Sistem',
+    description:
+      'Fondasi rekayasa perangkat lunak yang kokoh, arsitektur rendah latensi, dan ketelitian detail di seluruh tumpukan teknologi.',
+  },
+  faq: {
+    tag: 'PERTANYAAN UMUM',
+    title: 'Tertarik kolaborasi atau diskusi tantangan teknis?',
+    description:
+      'Saya selalu terbuka untuk membahas peluang kerja baru, arsitektur sistem, atau proyek freelance. Mari bangun sistem yang cepat dan andal.',
+    cta: 'Mulai Diskusi',
   },
   projects: {
     title: 'Proyek',

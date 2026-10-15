@@ -9,11 +9,10 @@ const { class: className } = Astro.props;
 ---
 
 <button
-  id="copy-email-trigger"
   type="button"
   data-email={site.email}
   class:list={[
-    'group relative inline-flex items-center gap-2 rounded-xl border border-border/80 bg-surface/80 px-3.5 py-2 text-xs font-mono text-muted backdrop-blur-xs transition-all duration-150 hover:border-accent hover:text-fg hover:shadow-xs active:scale-95',
+    'copy-email-btn group relative inline-flex items-center gap-2 rounded-xl border border-border/80 bg-surface/80 px-3.5 py-2 text-xs font-mono text-muted backdrop-blur-xs transition-all duration-150 hover:border-accent hover:text-fg hover:shadow-xs active:scale-95 cursor-pointer',
     className,
   ]}
   title="Click to copy email address"
@@ -28,41 +27,48 @@ const { class: className } = Astro.props;
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
   </svg>
-  <span id="copy-email-status" class="truncate max-w-[180px]">
+  <span class="copy-email-status truncate max-w-[180px]" aria-live="polite">
     {site.email.includes('[PLACEHOLDER') ? 'hello@hatami.tech' : site.email}
   </span>
   <span class="rounded bg-accent/10 px-1 py-0.5 text-[10px] text-accent">Copy</span>
 </button>
 
 <script>
-  function setupCopyEmail() {
-    const btn = document.getElementById('copy-email-trigger');
-    const label = document.getElementById('copy-email-status');
-    if (!btn || !label) return;
+  function setupCopyEmailButtons() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.copy-email-btn');
 
-    btn.addEventListener('click', async () => {
-      const email = btn.getAttribute('data-email');
-      const textToCopy = email && !email.includes('[PLACEHOLDER') ? email : 'hello@hatami.tech';
+    buttons.forEach((btn) => {
+      if ((btn as unknown as { __copyBound?: boolean }).__copyBound) return;
+      (btn as unknown as { __copyBound?: boolean }).__copyBound = true;
 
-      try {
-        await navigator.clipboard.writeText(textToCopy);
-        const originalText = label.textContent;
-        label.textContent = 'Copied to clipboard! ✓';
-        btn.classList.add('border-emerald-500/60', 'text-emerald-500');
+      const label = btn.querySelector<HTMLElement>('.copy-email-status');
+      if (!label) return;
 
-        setTimeout(() => {
-          label.textContent = originalText;
-          btn.classList.remove('border-emerald-500/60', 'text-emerald-500');
-        }, 2000);
-      } catch {
-        // Fallback
-      }
+      btn.addEventListener('click', async () => {
+        const email = btn.getAttribute('data-email');
+        const textToCopy = email && !email.includes('[PLACEHOLDER') ? email : 'hello@hatami.tech';
+
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          const originalText = label.textContent;
+          label.textContent = 'Copied to clipboard! ✓';
+          btn.classList.add('border-emerald-500/60', 'text-emerald-500');
+
+          setTimeout(() => {
+            label.textContent = originalText;
+            btn.classList.remove('border-emerald-500/60', 'text-emerald-500');
+          }, 2000);
+        } catch {
+          // Fallback if clipboard API blocked
+          label.textContent = textToCopy;
+        }
+      });
     });
   }
 
-  setupCopyEmail();
-  document.addEventListener('astro:page-load', setupCopyEmail);
+  setupCopyEmailButtons();
+  document.addEventListener('astro:page-load', setupCopyEmailButtons);
 </script>

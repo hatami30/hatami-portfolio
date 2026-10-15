@@ -1,4 +1,6 @@
 ---
+import { t } from '@/config/strings';
+
 interface Capability {
   num: string;
   title: string;
@@ -56,14 +58,13 @@ const capabilities: Capability[] = [
 <section class="py-16 sm:py-24" aria-labelledby="capabilities-title">
   <div class="mb-12">
     <div class="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3.5 py-1 text-xs font-mono font-medium text-accent backdrop-blur-md mb-3">
-      <span>SERVICES & CAPABILITIES</span>
+      <span>{t.capabilities.tag}</span>
     </div>
     <h2 id="capabilities-title" class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-      What I Build & Engineer
+      {t.capabilities.title}
     </h2>
     <p class="text-muted mt-3 max-w-[62ch] text-base sm:text-lg leading-relaxed">
-      A foundation in core software engineering principles, low-latency architectures, and precision
-      craftsmanship across the entire stack.
+      {t.capabilities.description}
     </p>
   </div>
 
@@ -84,7 +85,7 @@ const capabilities: Capability[] = [
 
         <!-- Monolithic Watermark Number -->
         <div
-          class="pointer-events-none absolute -bottom-6 -right-2 font-mono text-[7rem] sm:text-[9rem] font-extrabold leading-none text-foreground/5 dark:text-foreground/5 select-none transition-all duration-500 group-hover:text-accent/10 group-hover:-translate-y-2 group-hover:scale-105"
+          class="pointer-events-none absolute -bottom-6 -right-2 font-mono text-[7rem] sm:text-[9rem] font-extrabold leading-none text-fg/5 dark:text-fg/10 select-none transition-all duration-500 group-hover:text-accent/15 group-hover:-translate-y-2 group-hover:scale-105"
           aria-hidden="true"
         >
           {item.num}

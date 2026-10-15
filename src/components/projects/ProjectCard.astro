@@ -9,11 +9,11 @@ interface Props {
 const { project } = Astro.props;
 const { title, summary, stack, cover, role, period } = project.data;
 
-// Architectural highlights tailored per case study or derived from stack
+// Verified architectural facets directly derived from project schema
 const highlights = [
-  'Zero-downtime edge architecture & optimized runtime',
-  'Modular, test-driven system with high maintainability',
-  'Sub-150ms response latency with strict security policies',
+  `Role // ${role}`,
+  `Core // ${stack.slice(0, 3).join(' • ')}`,
+  `Scope // ${period || 'Production Case Study'}`,
 ];
 ---
 

@@ -16,7 +16,7 @@ const defaultItems = [
 const { items = defaultItems, class: className } = Astro.props;
 ---
 
-<div
+<section
   class:list={[
     'relative w-full overflow-hidden border-y border-border/60 bg-surface/30 py-3.5 backdrop-blur-xs select-none',
     className,
@@ -54,4 +54,4 @@ const { items = defaultItems, class: className } = Astro.props;
       ))}
     </div>
   </div>
-</div>
+</section>

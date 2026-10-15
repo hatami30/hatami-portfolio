@@ -39,7 +39,7 @@ const words = text.split(' ');
       >
         {words.map((word, idx) => (
           <span
-            class="reveal-word inline-block mx-1 sm:mx-1.5 transition-opacity duration-150 text-fg opacity-20"
+            class="reveal-word inline-block mx-1 sm:mx-1.5 transition-opacity duration-150 text-fg"
             data-idx={idx}
           >
             {word}
@@ -61,6 +61,9 @@ const words = text.split(' ');
       words.forEach((w) => (w.style.opacity = '1'));
       return;
     }
+
+    // Initialize baseline dimmed state dynamically
+    words.forEach((w) => (w.style.opacity = '0.2'));
 
     let ticking = false;
 
