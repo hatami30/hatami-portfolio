@@ -30,6 +30,15 @@ const en = {
     closingTitle: 'Let’s work together',
     closingText: 'Have a role or a project in mind? Send me a message.',
   },
+  desk: {
+    tag: 'LIVE FROM THE DESK',
+    title: 'Currently at my desk',
+    description:
+      'Real signals from my workstation: what I am listening to, what I am building, and where I am working from. Updated as I go.',
+    nowPlaying: 'Now playing',
+    currently: 'Currently',
+    local: 'Local',
+  },
   manifesto:
     'Writing clean code and designing intuitive UI that never confuses users. The focus: turning complex business challenges into simple, elegant software.',
   capabilities: {
@@ -156,6 +165,15 @@ const id: Strings = {
     allPosts: 'Semua tulisan',
     closingTitle: 'Mari berkolaborasi',
     closingText: 'Punya peran atau proyek yang ingin dibicarakan? Kirim pesan kepada saya.',
+  },
+  desk: {
+    tag: 'LANGSUNG DARI MEJA KERJA',
+    title: 'Sedang ada di meja kerja',
+    description:
+      'Sinyal nyata dari workstation saya: apa yang sedang didengar, apa yang sedang dibangun, dan dari mana saya bekerja. Diperbarui berkala.',
+    nowPlaying: 'Sedang diputar',
+    currently: 'Aktivitas',
+    local: 'Lokal',
   },
   manifesto:
     'Nulis kode yang rapi dan bikin desain UI yang gak bikin user bingung. Fokusnya: nyelesaiin masalah bisnis kamu yang ribet jadi simpel.',

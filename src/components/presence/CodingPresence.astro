@@ -2,19 +2,22 @@
 interface Props {
   discordId?: string;
   class?: string;
+  variant?: 'pill' | 'ghost';
 }
 
-const { discordId = import.meta.env.PUBLIC_DISCORD_USER_ID, class: className } = Astro.props;
+const {
+  discordId = import.meta.env.PUBLIC_DISCORD_USER_ID,
+  class: className,
+  variant = 'pill',
+} = Astro.props;
+
+const baseStyles =
+  variant === 'ghost'
+    ? 'coding-presence inline-flex items-center gap-2.5 text-xs text-muted transition-colors'
+    : 'coding-presence border-border/80 bg-surface/60 inline-flex items-center gap-2.5 rounded-full border px-3.5 py-1 text-xs font-mono text-muted backdrop-blur-md transition-colors shadow-xs';
 ---
 
-<div
-  id="coding-presence-widget"
-  data-discord-id={discordId}
-  class:list={[
-    'coding-presence border-border/80 bg-surface/60 inline-flex items-center gap-2.5 rounded-full border px-3.5 py-1 text-xs font-mono text-muted backdrop-blur-md transition-colors shadow-xs',
-    className,
-  ]}
->
+<div id="coding-presence-widget" data-discord-id={discordId} class:list={[baseStyles, className]}>
   <span class="relative flex h-2 w-2 shrink-0">
     <span
       id="presence-ping"

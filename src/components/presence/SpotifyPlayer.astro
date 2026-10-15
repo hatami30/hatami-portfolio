@@ -1,18 +1,17 @@
 ---
 interface Props {
   class?: string;
+  variant?: 'card' | 'ghost';
 }
 
-const { class: className } = Astro.props;
+const { class: className, variant = 'card' } = Astro.props;
+const baseStyles =
+  variant === 'ghost'
+    ? 'flex items-center gap-3 text-xs'
+    : 'spotify-container border-border/80 bg-surface/60 rounded-xl border px-3.5 py-2 text-xs backdrop-blur-xs transition-colors';
 ---
 
-<div
-  id="spotify-widget"
-  class:list={[
-    'spotify-container border-border/80 bg-surface/60 rounded-xl border px-3.5 py-2 text-xs backdrop-blur-xs transition-colors',
-    className,
-  ]}
->
+<div id="spotify-widget" class:list={[baseStyles, className]}>
   <div class="flex items-center gap-3">
     <!-- Equalizer / Icon -->
     <div class="relative flex h-5 w-5 shrink-0 items-center justify-center">

@@ -8,10 +8,9 @@ import Container from '@/components/ui/Container.astro';
 import Button from '@/components/ui/Button.astro';
 import ProjectCard from '@/components/projects/ProjectCard.astro';
 import PostCard from '@/components/blog/PostCard.astro';
-import CodingPresence from '@/components/presence/CodingPresence.astro';
-import LiveTelemetry from '@/components/presence/LiveTelemetry.astro';
 import TextScrollReveal from '@/components/ui/TextScrollReveal.astro';
 import BentoGrid from '@/components/ui/BentoGrid.astro';
+import LiveFromTheDesk from '@/components/presence/LiveFromTheDesk.astro';
 import FaqAccordion from '@/components/ui/FaqAccordion.astro';
 import HeroBackground from '@/components/ui/HeroBackground.astro';
 
@@ -27,8 +26,12 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
       <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <!-- Left: Editorial identity -->
         <div class="flex flex-col items-start">
-          <div class="mb-6">
-            <CodingPresence />
+          <div class="border-border/80 bg-surface/60 mb-6 inline-flex items-center gap-2.5 rounded-full border px-3.5 py-1 font-mono text-xs text-muted shadow-xs backdrop-blur-md">
+            <span class="relative flex h-2 w-2 shrink-0">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+            </span>
+            <span>{t.home.statusAvailable}</span>
           </div>
 
           <h1 class="flex flex-col">
@@ -101,11 +104,6 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
             <p class="text-[15px] font-medium leading-relaxed tracking-wide text-fg sm:text-base">
               {t.home.speechBubble}
             </p>
-
-            <!-- Live micro-telemetry: proof of craft, kept as a single status line -->
-            <div class="mt-5 border-t border-border/60 pt-4">
-              <LiveTelemetry variant="ghost" />
-            </div>
           </div>
         </div>
       </div>
@@ -137,7 +135,7 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
         </div>
         <ul class="grid gap-6 sm:grid-cols-2">
           {featured.map((project) => (
-            <li>
+            <li class="min-w-0">
               <ProjectCard project={project} />
             </li>
           ))}
@@ -171,6 +169,10 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
       </section>
     </Container>
   )}
+
+  <Container>
+    <LiveFromTheDesk />
+  </Container>
 
   <Container>
     <FaqAccordion />

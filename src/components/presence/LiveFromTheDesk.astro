@@ -1,0 +1,71 @@
+---
+import { t } from '@/config/strings';
+import SpotifyPlayer from '@/components/presence/SpotifyPlayer.astro';
+import CodingPresence from '@/components/presence/CodingPresence.astro';
+import LiveTelemetry from '@/components/presence/LiveTelemetry.astro';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<section class:list={['py-16 sm:py-24', className]} aria-labelledby="desk-title">
+  <div class="mb-10">
+    <div class="border-border/70 bg-surface/80 text-accent mb-3 inline-flex items-center gap-2 rounded-full border px-3.5 py-1 font-mono text-xs font-medium backdrop-blur-md">
+      <span class="relative flex h-1.5 w-1.5">
+        <span class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
+        <span class="bg-accent relative inline-flex h-1.5 w-1.5 rounded-full"></span>
+      </span>
+      <span>{t.desk.tag}</span>
+    </div>
+    <h2 id="desk-title" class="text-3xl font-bold tracking-tight sm:text-4xl">
+      {t.desk.title}
+    </h2>
+    <p class="text-muted mt-3 max-w-[62ch] text-base leading-relaxed sm:text-lg">
+      {t.desk.description}
+    </p>
+  </div>
+
+  <!-- Instrument panel: one board, three live signals. Reads as a status board, not a card grid. -->
+  <div class="border-border/80 bg-surface/70 overflow-hidden rounded-3xl border backdrop-blur-md">
+    <div class="border-border/60 flex items-center justify-between border-b px-6 py-3.5">
+      <span class="text-muted flex items-center gap-2 font-mono text-[11px] tracking-widest uppercase">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+        </span>
+        Live
+      </span>
+      <span class="text-muted font-mono text-[11px]">Signals refresh automatically</span>
+    </div>
+
+    <dl class="divide-border/60 divide-y">
+      <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-[9rem_1fr] sm:items-center sm:gap-6">
+        <dt class="text-muted font-mono text-[11px] tracking-widest uppercase">
+          {t.desk.nowPlaying}
+        </dt>
+        <dd class="min-w-0">
+          <SpotifyPlayer variant="ghost" />
+        </dd>
+      </div>
+
+      <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-[9rem_1fr] sm:items-center sm:gap-6">
+        <dt class="text-muted font-mono text-[11px] tracking-widest uppercase">
+          {t.desk.currently}
+        </dt>
+        <dd class="min-w-0">
+          <CodingPresence variant="ghost" />
+        </dd>
+      </div>
+
+      <div class="grid grid-cols-1 gap-2 px-6 py-5 sm:grid-cols-[9rem_1fr] sm:items-center sm:gap-6">
+        <dt class="text-muted font-mono text-[11px] tracking-widest uppercase">{t.desk.local}</dt>
+        <dd class="min-w-0">
+          <LiveTelemetry variant="ghost" />
+        </dd>
+      </div>
+    </dl>
+  </div>
+</section>

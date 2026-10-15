@@ -19,7 +19,7 @@ const baseStyles =
       <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
     </span>
     <span id="telemetry-clock">00:00:00 UTC</span>
-    <span class="text-[10px] text-muted font-medium">LOCAL</span>
+    {variant === 'card' && <span class="text-[10px] text-muted font-medium">LOCAL</span>}
   </div>
 
   <!-- Live Edge Latency -->
