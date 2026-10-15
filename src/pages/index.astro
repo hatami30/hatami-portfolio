@@ -15,6 +15,7 @@ import TechMarquee from '@/components/ui/TechMarquee.astro';
 import TextScrollReveal from '@/components/ui/TextScrollReveal.astro';
 import BentoGrid from '@/components/ui/BentoGrid.astro';
 import FaqAccordion from '@/components/ui/FaqAccordion.astro';
+import HeroBackground from '@/components/ui/HeroBackground.astro';
 
 const featured = await getFeaturedProjects(3);
 const latestPosts = (await getPublishedPosts()).slice(0, 3);
@@ -22,6 +23,7 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
 
 <BaseLayout title={site.role} home jsonLd={[personJsonLd(), websiteJsonLd()]}>
   <div class="relative overflow-hidden border-b border-border/50">
+    <HeroBackground />
     <div class="bg-ambient-top" aria-hidden="true"></div>
 
     <Container class="relative z-10 py-16 sm:py-24 lg:py-28">

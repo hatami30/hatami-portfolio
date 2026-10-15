@@ -1,0 +1,113 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Deterministic coordinate offsets for ambient shimmering grid squares
+const gridSquares = [
+  { x: 2, y: 1, delay: '0s', duration: '4.5s' },
+  { x: 5, y: 3, delay: '1.2s', duration: '5s' },
+  { x: 10, y: 2, delay: '2.4s', duration: '4s' },
+  { x: 3, y: 6, delay: '0.8s', duration: '5.5s' },
+  { x: 12, y: 5, delay: '3.1s', duration: '4.2s' },
+  { x: 16, y: 3, delay: '1.7s', duration: '6s' },
+  { x: 8, y: 8, delay: '2.9s', duration: '4.8s' },
+  { x: 14, y: 9, delay: '0.4s', duration: '5.2s' },
+  { x: 1, y: 9, delay: '2.1s', duration: '4.6s' },
+  { x: 18, y: 7, delay: '1.5s', duration: '5.8s' },
+];
+---
+
+<div
+  class:list={[
+    'hero-background pointer-events-none absolute inset-0 overflow-hidden select-none z-0',
+    className,
+  ]}
+  aria-hidden="true"
+>
+  <!-- 1. Ambient Vertical Gradient Tint -->
+  <div class="absolute inset-0 bg-linear-to-b from-accent/5 via-transparent to-transparent"></div>
+
+  <!-- 2. Dual Glow Orbs (Top-Left & Bottom-Right) -->
+  <div class="absolute -top-24 left-0 h-96 w-96 -translate-x-1/3 rounded-full bg-accent/10 blur-[130px] transform-gpu"></div>
+  <div class="absolute -bottom-20 right-0 h-80 w-80 translate-x-1/4 rounded-full bg-accent/5 blur-[110px] transform-gpu"></div>
+
+  <!-- 3. Animated Grid Pattern with Radial Mask -->
+  <div class="grid-mask absolute inset-0">
+    <svg class="h-full w-full text-fg/10" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <defs>
+        <pattern
+          id="hero-grid-pattern"
+          width="40"
+          height="40"
+          patternUnits="userSpaceOnUse"
+          x="-1"
+          y="-1"
+        >
+          <path
+            d="M.5 40V.5H40"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-opacity="0.8"
+          ></path>
+        </pattern>
+      </defs>
+
+      <!-- Base Grid Lines -->
+      <rect width="100%" height="100%" fill="url(#hero-grid-pattern)"></rect>
+
+      <!-- Ambient Shimmering Accent Cells -->
+      <svg x="-1" y="-1" class="overflow-visible">
+        {gridSquares.map((sq) => (
+          <rect
+            width="39"
+            height="39"
+            x={sq.x * 40 + 1}
+            y={sq.y * 40 + 1}
+            class="grid-square-pulse fill-accent/15 stroke-accent/40"
+            stroke-width="1"
+            style={`animation-delay: ${sq.delay}; animation-duration: ${sq.duration};`}
+          />
+        ))}
+      </svg>
+    </svg>
+  </div>
+</div>
+
+<style>
+  .grid-mask {
+    -webkit-mask-image: radial-gradient(
+      ellipse 70% 60% at 50% 40%,
+      rgba(0, 0, 0, 1) 30%,
+      transparent 80%
+    );
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(0, 0, 0, 1) 30%, transparent 80%);
+  }
+
+  @keyframes grid-pulse {
+    0%,
+    100% {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1);
+    }
+  }
+
+  .grid-square-pulse {
+    animation: grid-pulse ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grid-square-pulse {
+      animation: none;
+      opacity: 0.25;
+    }
+  }
+</style>

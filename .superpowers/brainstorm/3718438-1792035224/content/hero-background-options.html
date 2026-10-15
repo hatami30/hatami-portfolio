@@ -1,0 +1,78 @@
+<h2>Eksplorasi Konsep Background Hero</h2>
+<p class="subtitle">
+  Pilih gaya background yang paling sesuai untuk section hero hatami.tech (terinspirasi dari
+  sincan.dev)
+</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Full Layered Ambient + Orbiting Tech Stack</h3>
+      <p>
+        Mengadopsi seluruh layer sincan.dev: Animated Grid Pattern (radial mask), dual ambient glow
+        orbs warna aksen (emerald/lime blur), dan lingkaran orbit ikon tech stack berputar halus di
+        latar belakang.
+      </p>
+      <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap">
+        <span class="badge">Animated Grid</span>
+        <span class="badge">Dual Glow Orbs</span>
+        <span class="badge">Orbiting Tech Icons</span>
+        <span class="badge">Dynamic Gradient Tint</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Clean Grid Pattern + Ambient Glow Orbs (Recommended)</h3>
+      <p>
+        Fokus pada estetika bersih dan performa maksimal: Animated Grid Pattern dengan radial mask
+        gradient dan dual ambient glow orbs (top-left & bottom-right). Tanpa orbit berputar agar
+        tidak bertumpuk/bersaing dengan widget Telemetry Console & Spotify di sisi kanan.
+      </p>
+      <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap">
+        <span class="badge">Animated Grid</span>
+        <span class="badge">Dual Glow Orbs</span>
+        <span class="badge">High Readability</span>
+        <span class="badge">Lightweight (Zero Extra Assets)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Concentric Radar Rings + Grid Matrix</h3>
+      <p>
+        Menggabungkan Animated Grid dengan lingkaran konsentris radar teknis (subtle radar sweep)
+        dan ambient glow, memperkuat tema "Developer Telemetry / System Architecture".
+      </p>
+      <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap">
+        <span class="badge">Animated Grid</span>
+        <span class="badge">Concentric Telemetry Rings</span>
+        <span class="badge">Accent Glow</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  style="
+    margin-top: 24px;
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  "
+>
+  <h4 style="margin: 0 0 8px 0; color: #10b981">
+    ⚡ Rekomendasi Teknis (Quality Budgets & Lighthouse 100):
+  </h4>
+  <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #a1a1aa">
+    Semua opsi akan dibangun menggunakan <strong>Pure CSS & SVG inline statis</strong> (tanpa
+    library berat eksternal seperti Framer Motion atau library JS runtime lainnya), tetap mendukung
+    <code>prefers-reduced-motion</code>, dan menjamin skor Lighthouse tetap 100/100.
+  </p>
+</div>
