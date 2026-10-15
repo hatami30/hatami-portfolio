@@ -28,6 +28,8 @@ const en = {
     closingTitle: 'Let’s work together',
     closingText: 'Have a role or a project in mind? Send me a message.',
   },
+  manifesto:
+    'Writing clean code and designing intuitive UI that never confuses users. The focus: turning complex business challenges into simple, elegant software.',
   capabilities: {
     tag: 'SERVICES & CAPABILITIES',
     title: 'What I Build & Engineer',
@@ -151,6 +153,8 @@ const id: Strings = {
     closingTitle: 'Mari berkolaborasi',
     closingText: 'Punya peran atau proyek yang ingin dibicarakan? Kirim pesan kepada saya.',
   },
+  manifesto:
+    'Nulis kode yang rapi dan bikin desain UI yang gak bikin user bingung. Fokusnya: nyelesaiin masalah bisnis kamu yang ribet jadi simpel.',
   capabilities: {
     tag: 'LAYANAN & SPESIALISASI',
     title: 'Keahlian & Rekayasa Sistem',

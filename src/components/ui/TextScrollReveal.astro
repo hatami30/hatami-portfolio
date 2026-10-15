@@ -1,117 +1,206 @@
 ---
+import { t } from '@/config/strings';
+
 interface Props {
   text?: string;
-  tagline?: string;
   class?: string;
 }
 
-const defaultText =
-  'Engineering resilient high-performance systems, crafting tactile interfaces, and designing clean modular architectures that turn complex technical challenges into effortless user experiences.';
-
-const { text = defaultText, tagline = 'ENGINEERING PHILOSOPHY', class: className } = Astro.props;
-
+const { text = t.manifesto, class: className } = Astro.props;
 const words = text.split(' ');
 ---
 
-<section
-  id="scroll-reveal-container"
-  class:list={['relative min-h-[170vh] bg-surface/20 border-b border-border/50', className]}
-  aria-label="Engineering manifesto"
->
-  <div class="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-4 sm:px-8">
-    <!-- Subtle architectural noise & radial backdrop -->
-    <div
-      class="pointer-events-none absolute inset-0 z-0 opacity-40 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"
-      aria-hidden="true"
-    >
-      <div class="absolute inset-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:24px_24px]"></div>
-    </div>
-
-    <div class="relative z-10 mx-auto max-w-4xl text-center">
-      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3.5 py-1 text-xs font-mono font-medium text-accent backdrop-blur-md shadow-xs">
-        <span class="h-1.5 w-1.5 rounded-full bg-accent animate-pulse"></span>
-        <span>{tagline}</span>
+<section class:list={['relative z-0', className]} aria-label="Manifesto">
+  <div id="scroll-reveal-track" class="relative z-0 h-[220vh]">
+    <div class="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-bg transition-colors duration-300">
+      <!-- Flickering Grid canvas background with radial mask -->
+      <div
+        class="flickering-grid-wrapper absolute inset-0 z-0 h-full w-full opacity-40 dark:opacity-50 pointer-events-none"
+        aria-hidden="true"
+      >
+        <canvas id="flickering-grid-canvas" class="pointer-events-none w-full h-full"></canvas>
       </div>
 
-      <p
-        id="scroll-reveal-paragraph"
-        class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-snug sm:leading-tight"
-      >
-        {words.map((word, idx) => (
-          <span
-            class="reveal-word inline-block mx-1 sm:mx-1.5 transition-opacity duration-150 text-fg"
-            data-idx={idx}
-          >
-            {word}
-          </span>
-        ))}
-      </p>
+      <!-- Text Content -->
+      <div class="relative z-10 mx-auto max-w-4xl px-4 py-20 select-none">
+        <span class="flex flex-wrap justify-center p-5 text-2xl font-bold text-fg/20 md:p-8 md:text-3xl lg:p-10 lg:text-4xl xl:text-5xl text-center leading-snug tracking-tight">
+          {words.map((word, idx) => (
+            <span class="reveal-word relative mx-1 lg:mx-1.5" data-index={idx}>
+              <span class="absolute opacity-30 select-none text-fg/30">{word}</span>
+              <span
+                class="reveal-word-fill text-fg transition-opacity duration-75"
+                style="opacity: 0;"
+              >
+                {word}
+              </span>
+            </span>
+          ))}
+        </span>
+      </div>
     </div>
   </div>
 </section>
 
-<script>
-  function setupScrollReveal() {
-    const container = document.getElementById('scroll-reveal-container');
-    const words = document.querySelectorAll<HTMLElement>('.reveal-word');
-    if (!container || words.length === 0) return;
+<style>
+  .flickering-grid-wrapper {
+    -webkit-mask-image: radial-gradient(550px circle at center, white, transparent);
+    mask-image: radial-gradient(550px circle at center, white, transparent);
+  }
+</style>
 
-    // Respect prefers-reduced-motion
+<script>
+  function initScrollRevealSection() {
+    // 1. Setup Flickering Grid Canvas
+    const canvas = document.getElementById('flickering-grid-canvas') as HTMLCanvasElement | null;
+    const track = document.getElementById('scroll-reveal-track');
+    const wordFills = document.querySelectorAll<HTMLElement>('.reveal-word-fill');
+
+    if (!canvas || !track || wordFills.length === 0) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const squareSize = 4;
+    const gridGap = 6;
+    const flickerChance = 0.2;
+    const maxOpacity = 0.35;
+    const colorRgb = '16, 185, 129'; // emerald accent
+
+    let cols = 0;
+    let rows = 0;
+    let squares = new Float32Array(0);
+    let dpr = 1;
+    let animationFrameId: number | null = null;
+    let isIntersecting = false;
+    let lastTime = 0;
+
+    function resizeGrid() {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+
+      cols = Math.ceil(rect.width / (squareSize + gridGap));
+      rows = Math.ceil(rect.height / (squareSize + gridGap));
+      squares = new Float32Array(cols * rows);
+
+      for (let i = 0; i < squares.length; i++) {
+        squares[i] = Math.random() * maxOpacity;
+      }
+      drawGrid();
+    }
+
+    function updateGrid(dt: number) {
+      for (let i = 0; i < squares.length; i++) {
+        if (Math.random() < flickerChance * dt) {
+          squares[i] = Math.random() * maxOpacity;
+        }
+      }
+    }
+
+    function drawGrid() {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const step = (squareSize + gridGap) * dpr;
+      const size = squareSize * dpr;
+
+      for (let col = 0; col < cols; col++) {
+        for (let row = 0; row < rows; row++) {
+          const opacity = squares[col * rows + row];
+          if (opacity > 0) {
+            ctx.fillStyle = `rgba(${colorRgb}, ${opacity})`;
+            ctx.fillRect(col * step, row * step, size, size);
+          }
+        }
+      }
+    }
+
+    function gridLoop(time: number) {
+      if (!isIntersecting) return;
+      const dt = lastTime === 0 ? 0.016 : (time - lastTime) / 1000;
+      lastTime = time;
+
+      updateGrid(dt);
+      drawGrid();
+      animationFrameId = requestAnimationFrame(gridLoop);
+    }
+
+    const resizeObserver = new ResizeObserver(() => resizeGrid());
+    resizeObserver.observe(canvas);
+
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting) {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            drawGrid();
+            return;
+          }
+          lastTime = performance.now();
+          if (!animationFrameId) {
+            animationFrameId = requestAnimationFrame(gridLoop);
+          }
+        } else if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+      },
+      { threshold: 0 },
+    );
+    intersectionObserver.observe(canvas);
+
+    // 2. Setup Scroll Progress Reveal
+    const totalWords = wordFills.length;
+    let ticking = false;
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      words.forEach((w) => (w.style.opacity = '1'));
+      wordFills.forEach((fill) => (fill.style.opacity = '1'));
       return;
     }
 
-    // Initialize baseline dimmed state dynamically
-    words.forEach((w) => (w.style.opacity = '0.2'));
-
-    let ticking = false;
-
     function onScroll() {
       if (!ticking) {
-        requestAnimationFrame(updateWordOpacities);
+        requestAnimationFrame(updateWords);
         ticking = true;
       }
     }
 
-    function updateWordOpacities() {
+    function updateWords() {
       ticking = false;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
+      if (!track) return;
+      const rect = track.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      const totalScrollable = rect.height - windowHeight;
+      const scrollableDistance = rect.height - windowHeight;
 
-      if (totalScrollable <= 0) return;
+      if (scrollableDistance <= 0) return;
 
       const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
 
-      const totalWords = words.length;
-      const litIndex = progress * totalWords;
-
-      words.forEach((w, i) => {
-        if (i < litIndex) {
-          // Calculate individual word interpolation for ultra smooth lighting
-          const diff = litIndex - i;
-          if (diff >= 1) {
-            w.style.opacity = '1';
-          } else {
-            w.style.opacity = `${0.2 + diff * 0.8}`;
-          }
-        } else {
-          w.style.opacity = '0.2';
-        }
+      wordFills.forEach((fill, index) => {
+        const start = 0.15 + (index / totalWords) * 0.7;
+        const end = start + (1 / totalWords) * 0.7;
+        const opacity = Math.max(0, Math.min(1, (progress - start) / (end - start)));
+        fill.style.opacity = String(opacity);
       });
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    updateWordOpacities();
+    updateWords();
 
-    document.addEventListener('astro:before-swap', () => {
-      window.removeEventListener('scroll', onScroll);
-    });
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        resizeObserver.disconnect();
+        intersectionObserver.disconnect();
+        window.removeEventListener('scroll', onScroll);
+      },
+      { once: true },
+    );
   }
 
-  setupScrollReveal();
-  document.addEventListener('astro:page-load', setupScrollReveal);
+  initScrollRevealSection();
+  document.addEventListener('astro:page-load', initScrollRevealSection);
 </script>
