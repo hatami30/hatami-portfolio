@@ -9,8 +9,6 @@ import Button from '@/components/ui/Button.astro';
 import ProjectCard from '@/components/projects/ProjectCard.astro';
 import PostCard from '@/components/blog/PostCard.astro';
 import CodingPresence from '@/components/presence/CodingPresence.astro';
-import SpotifyPlayer from '@/components/presence/SpotifyPlayer.astro';
-import LiveTelemetry from '@/components/presence/LiveTelemetry.astro';
 import TextScrollReveal from '@/components/ui/TextScrollReveal.astro';
 import BentoGrid from '@/components/ui/BentoGrid.astro';
 import FaqAccordion from '@/components/ui/FaqAccordion.astro';
@@ -25,117 +23,51 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
     <HeroBackground />
 
     <Container class="relative z-10 pt-28 sm:pt-32 pb-16 sm:pb-24 lg:pb-28">
-      <div class="grid items-start gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
-        <!-- Left: Editorial Identity -->
-        <div class="flex flex-col items-start">
-          <div class="mb-5">
-            <CodingPresence />
-          </div>
-
-          <h1 class="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">{site.name}</h1>
-          <p class="text-accent mt-3 text-xl font-medium sm:text-2xl tracking-tight">{site.role}</p>
-          <p class="text-muted mt-5 max-w-[54ch] text-base sm:text-lg leading-relaxed">
-            {site.description}
-          </p>
-
-          <div class="mt-8 flex flex-wrap items-center gap-3.5">
-            <Button href="/projects">{t.home.ctaProjects}</Button>
-            <Button href="/contact" variant="secondary">
-              {t.home.ctaContact}
-            </Button>
-          </div>
-
-          <!-- Architecture & Stack Spec Line -->
-          <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border/50 pt-6 text-xs font-mono text-muted">
-            <span class="flex items-center gap-1.5">
-              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-              High-Performance Systems
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
-              Full-Stack & Cloud Architecture
-            </span>
-          </div>
+      <div class="mx-auto flex max-w-4xl flex-col items-center text-center">
+        <!-- Floating Status Pill -->
+        <div class="mb-6">
+          <CodingPresence />
         </div>
 
-        <!-- Right: Telemetry & Activity Console -->
-        <div class="w-full">
-          <div class="card-interactive rounded-2xl border border-border/80 bg-surface/80 p-5 sm:p-6 backdrop-blur-md shadow-xs">
-            <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
-              <div class="flex items-center gap-2">
-                <span class="relative flex h-2 w-2">
-                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                  <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                </span>
-                <span class="font-mono text-xs font-semibold tracking-wider uppercase text-fg">
-                  Developer Telemetry
-                </span>
-              </div>
-              <span class="font-mono text-[11px] text-muted">Live Feed</span>
-            </div>
+        <!-- Main Heading: Name & Role -->
+        <h1 class="text-4xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">{site.name}</h1>
+        <p class="mt-4 text-xl font-medium sm:text-2xl md:text-3xl tracking-tight text-accent">
+          {site.role}
+        </p>
 
-            <div class="space-y-4">
-              <!-- Live System Latency & Clock -->
-              <LiveTelemetry />
+        <!-- Concise Description -->
+        <p class="text-muted mt-6 max-w-[58ch] text-base sm:text-lg lg:text-xl leading-relaxed">
+          {site.description}
+        </p>
 
-              <!-- Live Audio / Spotify -->
-              <div>
-                <p class="font-mono text-[11px] text-muted uppercase tracking-wider mb-1.5">
-                  Listening Activity
-                </p>
-                <SpotifyPlayer />
-              </div>
+        <!-- Call to Action Buttons -->
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3.5">
+          <Button href="/projects">{t.home.ctaProjects}</Button>
+          <Button href="/contact" variant="secondary">
+            {t.home.ctaContact}
+          </Button>
+        </div>
 
-              <!-- Quick System Specs / Stack -->
-              <div class="rounded-xl border border-border/50 bg-surface/50 p-3.5 text-xs">
-                <div class="flex items-center justify-between font-mono text-[11px] text-muted mb-2">
-                  <span>TECH ARSENAL</span>
-                  <span>PRODUCTION</span>
-                </div>
-                <div class="flex flex-wrap gap-1.5">
-                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
-                    TypeScript
-                  </span>
-                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
-                    Astro
-                  </span>
-                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
-                    Tailwind CSS
-                  </span>
-                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
-                    Node.js
-                  </span>
-                  <span class="rounded-md border border-border/60 bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">
-                    Vercel Edge
-                  </span>
-                </div>
-              </div>
-
-              <!-- Location & Availability -->
-              <div class="flex items-center justify-between rounded-xl border border-border/50 px-3.5 py-2.5 text-xs font-mono text-muted">
-                <span class="flex items-center gap-1.5">
-                  <svg
-                    class="h-3.5 w-3.5 text-muted"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="2" y1="12" x2="22" y2="12" />
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                  </svg>
-                  <span>Remote / Global Reach</span>
-                </span>
-                <span class="text-emerald-700 dark:text-emerald-400 font-medium">
-                  Open to Connect
-                </span>
-              </div>
-            </div>
-          </div>
+        <!-- Clean Minimalist Tech Focus Strip -->
+        <div class="mt-12 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 text-xs font-mono text-muted">
+          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
+            TypeScript
+          </span>
+          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
+            Astro
+          </span>
+          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
+            Tailwind CSS
+          </span>
+          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
+            Node.js
+          </span>
+          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
+            Distributed Systems
+          </span>
+          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
+            Vercel Edge
+          </span>
         </div>
       </div>
     </Container>
