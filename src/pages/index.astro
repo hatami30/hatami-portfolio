@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button.astro';
 import ProjectCard from '@/components/projects/ProjectCard.astro';
 import PostCard from '@/components/blog/PostCard.astro';
 import CodingPresence from '@/components/presence/CodingPresence.astro';
+import LiveTelemetry from '@/components/presence/LiveTelemetry.astro';
 import TextScrollReveal from '@/components/ui/TextScrollReveal.astro';
 import BentoGrid from '@/components/ui/BentoGrid.astro';
 import FaqAccordion from '@/components/ui/FaqAccordion.astro';
@@ -19,55 +20,93 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
 ---
 
 <BaseLayout title={site.role} home jsonLd={[personJsonLd(), websiteJsonLd()]}>
-  <div class="relative min-h-screen flex flex-col justify-center overflow-hidden">
+  <div class="relative flex min-h-screen flex-col justify-center overflow-hidden">
     <HeroBackground />
 
     <Container class="relative z-10 pt-28 sm:pt-32 pb-16 sm:pb-24 lg:pb-28">
-      <div class="mx-auto flex max-w-4xl flex-col items-center text-center">
-        <!-- Floating Status Pill -->
-        <div class="mb-6">
-          <CodingPresence />
+      <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <!-- Left: Editorial identity -->
+        <div class="flex flex-col items-start">
+          <div class="mb-6">
+            <CodingPresence />
+          </div>
+
+          <h1 class="flex flex-col">
+            <span class="text-base font-medium tracking-wide text-muted sm:text-lg">
+              {t.home.greeting}
+            </span>
+            <span class="mt-1 text-4xl font-extrabold leading-[1.05] tracking-tight text-accent sm:text-5xl lg:text-6xl">
+              {site.name}
+            </span>
+          </h1>
+
+          <h2 class="mt-5 text-xl font-medium leading-snug tracking-tight text-fg sm:text-2xl">
+            {site.role}
+          </h2>
+
+          <p class="mt-5 max-w-[52ch] text-base leading-relaxed text-muted sm:text-lg">
+            {site.description}
+          </p>
+
+          <div class="mt-8 flex flex-wrap items-center gap-3.5">
+            <Button href="/projects">{t.home.ctaProjects}</Button>
+            <Button href="/contact" variant="secondary">
+              {t.home.ctaContact}
+            </Button>
+          </div>
         </div>
 
-        <!-- Main Heading: Name & Role -->
-        <h1 class="text-4xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">{site.name}</h1>
-        <p class="mt-4 text-xl font-medium sm:text-2xl md:text-3xl tracking-tight text-accent">
-          {site.role}
-        </p>
+        <!-- Right: Speech bubble with live micro-telemetry -->
+        <div class="relative w-full lg:mt-6">
+          <!-- Bubble tail (desktop: pointing left toward the intro) -->
+          <svg
+            class="absolute -left-9 bottom-1 hidden h-12 w-12 text-surface lg:block"
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+          >
+            <path
+              d="M32 0v24C24 24 16 32 0 32C12 28 20 20 24 12C28 4 30 0 32 0Z"
+              fill="currentColor"
+            />
+            <path
+              d="M32 24C24 24 16 32 0 32C12 28 20 20 24 12"
+              fill="none"
+              stroke="var(--border)"
+              stroke-width="1"
+              vector-effect="non-scaling-stroke"
+              stroke-linecap="round"
+            />
+          </svg>
+          <!-- Bubble tail (mobile: pointing up toward the intro) -->
+          <svg
+            class="absolute -top-[35px] left-3 h-12 w-12 text-surface lg:hidden"
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+          >
+            <path
+              d="M0 32h24C24 24 32 16 32 0C28 12 20 20 12 24C4 28 0 30 0 32Z"
+              fill="currentColor"
+            />
+            <path
+              d="M24 32C24 24 32 16 32 0C28 12 20 20 12 24"
+              fill="none"
+              stroke="var(--border)"
+              stroke-width="1"
+              vector-effect="non-scaling-stroke"
+              stroke-linecap="round"
+            />
+          </svg>
 
-        <!-- Concise Description -->
-        <p class="text-muted mt-6 max-w-[58ch] text-base sm:text-lg lg:text-xl leading-relaxed">
-          {site.description}
-        </p>
+          <div class="relative rounded-3xl rounded-tl-none border border-border/80 bg-surface px-6 py-6 shadow-sm sm:px-7 sm:py-7 lg:rounded-tl-3xl lg:rounded-bl-none">
+            <p class="text-[15px] font-medium leading-relaxed tracking-wide text-fg sm:text-base">
+              {t.home.speechBubble}
+            </p>
 
-        <!-- Call to Action Buttons -->
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3.5">
-          <Button href="/projects">{t.home.ctaProjects}</Button>
-          <Button href="/contact" variant="secondary">
-            {t.home.ctaContact}
-          </Button>
-        </div>
-
-        <!-- Clean Minimalist Tech Focus Strip -->
-        <div class="mt-12 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 text-xs font-mono text-muted">
-          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
-            TypeScript
-          </span>
-          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
-            Astro
-          </span>
-          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
-            Tailwind CSS
-          </span>
-          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
-            Node.js
-          </span>
-          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
-            Distributed Systems
-          </span>
-          <span class="rounded-full border border-border/60 bg-surface/50 px-3.5 py-1 backdrop-blur-xs transition-colors hover:border-border hover:text-fg">
-            Vercel Edge
-          </span>
+            <!-- Live micro-telemetry: proof of craft, kept as a single status line -->
+            <div class="mt-5 border-t border-border/60 pt-4">
+              <LiveTelemetry variant="ghost" />
+            </div>
+          </div>
         </div>
       </div>
     </Container>

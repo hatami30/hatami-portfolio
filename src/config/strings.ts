@@ -19,6 +19,8 @@ const en = {
   home: {
     statusAvailable: 'Available for new projects & roles',
     greeting: 'Hello, I am',
+    speechBubble:
+      'Building high-performance web systems and intuitive user interfaces. Focused on turning complex technical challenges into simple, reliable software. Open for collaboration!',
     ctaProjects: 'View projects',
     ctaContact: 'Get in touch',
     featuredProjects: 'Featured projects',
@@ -144,6 +146,8 @@ const id: Strings = {
   home: {
     statusAvailable: 'Terbuka untuk proyek & peran baru',
     greeting: 'Halo, saya',
+    speechBubble:
+      'Membangun sistem web berperforma tinggi dan antarmuka yang intuitif. Fokus mengubah tantangan teknis yang rumit jadi perangkat lunak yang simpel dan andal. Terbuka untuk kolaborasi!',
     ctaProjects: 'Lihat proyek',
     ctaContact: 'Hubungi saya',
     featuredProjects: 'Proyek pilihan',

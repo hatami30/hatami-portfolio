@@ -1,17 +1,17 @@
 ---
 interface Props {
   class?: string;
+  variant?: 'card' | 'ghost';
 }
 
-const { class: className } = Astro.props;
+const { class: className, variant = 'card' } = Astro.props;
+const baseStyles =
+  variant === 'ghost'
+    ? 'flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-muted'
+    : 'flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-surface/40 px-3.5 py-2 text-xs font-mono backdrop-blur-xs';
 ---
 
-<div
-  class:list={[
-    'live-telemetry flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-surface/40 px-3.5 py-2 text-xs font-mono backdrop-blur-xs',
-    className,
-  ]}
->
+<div class:list={['live-telemetry', baseStyles, className]}>
   <!-- Live Clock -->
   <div class="flex items-center gap-2 text-muted">
     <span class="relative flex h-2 w-2">
