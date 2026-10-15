@@ -60,7 +60,7 @@ const isActive = (href: string) =>
         <button
           id="header-cmd-palette-btn"
           type="button"
-          class="text-muted hover:text-fg hover:border-accent/50 border-border/80 bg-surface/80 hidden min-h-11 cursor-pointer items-center gap-1.5 rounded-full border px-3 font-mono text-xs transition-colors sm:inline-flex"
+          class="text-muted hover:text-fg hover:border-accent/50 border-border/80 bg-surface/80 hidden cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs transition-colors sm:inline-flex"
           title="Open command palette (Cmd+K)"
           aria-label="Open command palette"
         >
@@ -74,7 +74,7 @@ const isActive = (href: string) =>
         <!-- CTA Contact Pill (Desktop only; the mobile menu carries its own full-size CTA).
              max-md:hidden rather than hidden+md:inline-flex: the base class already sets
              inline-flex, and two competing display utilities resolve by stylesheet order. -->
-        <Button href="/contact" size="xs" shape="pill" class="max-md:hidden">
+        <Button href="/contact" size="xs" class="max-md:hidden">
           {t.home.ctaContact}
         </Button>
 
@@ -160,7 +160,7 @@ const isActive = (href: string) =>
           <span>K</span>
           <span class="text-fg ml-1 font-sans text-xs">Search</span>
         </button>
-        <Button href="/contact" size="sm" shape="pill" class="flex-1">
+        <Button href="/contact" size="sm" class="flex-1">
           {t.home.ctaContact}
         </Button>
       </div>

@@ -114,16 +114,16 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
           </div>
 
           <div class="flex w-full flex-col gap-4 px-4 sm:w-auto sm:flex-row sm:gap-5 lg:flex-col lg:px-0">
-            <Button href="/projects" size="lg" shape="pill" class="w-full sm:w-auto">
-              {t.home.ctaProjects}
-            </Button>
             <Button
-              href="/contact"
-              variant="secondary"
+              href="/projects"
               size="lg"
-              shape="pill"
+              icon="arrow-right"
+              iconPosition="trailing"
               class="w-full sm:w-auto"
             >
+              {t.home.ctaProjects}
+            </Button>
+            <Button href="/contact" variant="secondary" size="lg" class="w-full sm:w-auto">
               {t.home.ctaContact}
             </Button>
           </div>

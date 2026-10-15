@@ -8,6 +8,13 @@ interface Props {
   size?: 'xs' | 'sm' | 'lg';
   shape?: 'rounded' | 'pill';
   disabled?: boolean;
+  /**
+   * A purpose-named glyph. Add one only when it names the action the control performs
+   * (R-04/R-08): forward navigation gets an arrow, a download gets the download glyph, a
+   * submit gets the send glyph. A decorative icon on every button is the forbidden pattern.
+   */
+  icon?: 'arrow-right' | 'arrow-left' | 'download' | 'send';
+  iconPosition?: 'leading' | 'trailing';
   class?: string;
 }
 
@@ -17,21 +24,25 @@ const {
   type = 'button',
   variant = 'primary',
   size = 'sm',
-  shape = 'rounded',
+  shape = 'pill',
   disabled = false,
+  icon,
+  iconPosition = 'leading',
   class: className,
 } = Astro.props;
 
 /**
- * Hover changes elevation and border only, never the fill behind the label: lightening a
- * solid accent button on hover would drop its text contrast below AA. Elevation reads as
- * feedback without touching the colour pair.
+ * Hover changes elevation, edge, and light only, never the fill behind the label:
+ * lightening a solid accent button on hover would drop its text contrast below AA (R-25).
+ * Each species lights differently, and that split is the point of the variant: the primary
+ * CTA blooms (a colored glow plus a 1px lift, the one focal element per screen per R-13),
+ * the secondary ignites its edge instead of glowing.
  */
 const variants = {
   primary:
-    'bg-accent text-accent-fg shadow-sm hover:shadow-md hover:shadow-accent/25 active:shadow-sm',
+    'bg-accent text-accent-fg shadow-sm hover:-translate-y-px hover:shadow-md hover:shadow-accent/30 active:translate-y-0 active:shadow-sm',
   secondary:
-    'border border-border/80 bg-surface/80 text-fg backdrop-blur-xs hover:border-accent/50 hover:bg-surface',
+    'border border-border/80 bg-surface/80 text-fg backdrop-blur-xs hover:border-accent/60 hover:bg-surface',
 };
 
 /**
@@ -50,28 +61,74 @@ const shapes = {
   pill: 'rounded-full',
 };
 
+/** One path per glyph, drawn in the house stroke style (24px grid, 2px stroke). */
+const ICON_PATHS: Record<NonNullable<Props['icon']>, string> = {
+  'arrow-right': 'M5 12h14M12 5l7 7-7 7',
+  'arrow-left': 'M19 12H5M12 19l-7-7 7-7',
+  download: 'M12 3v12M7 10l5 5 5-5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4',
+  send: 'M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z',
+};
+
+/** Directional glyphs lean toward their destination on hover; the others stay put. */
+const ICON_NUDGE: Partial<Record<NonNullable<Props['icon']>, string>> = {
+  'arrow-right': 'group-hover/btn:translate-x-0.5',
+  'arrow-left': 'group-hover/btn:-translate-x-0.5',
+};
+
+const iconPath = icon ? ICON_PATHS[icon] : undefined;
+const iconClasses = icon
+  ? ['h-4 w-4 shrink-0 transition-transform duration-200', ICON_NUDGE[icon]]
+  : [];
+
 const classes = [
-  'inline-flex items-center justify-center gap-2 text-center font-medium whitespace-nowrap transition-all duration-200',
+  'group/btn inline-flex items-center justify-center gap-2 text-center font-medium whitespace-nowrap transition-all duration-200',
   variants[variant],
   sizes[size],
   shapes[shape],
   disabled ? 'pointer-events-none opacity-55' : 'active:scale-[0.98]',
   className,
 ];
+
+const isButton = !href;
+const Tag = href ? 'a' : 'button';
 ---
 
-{href ? (
-  <a
-    href={href}
-    id={id}
-    class:list={classes}
-    aria-disabled={disabled ? 'true' : undefined}
-    tabindex={disabled ? -1 : undefined}
-  >
-    <slot />
-  </a>
-) : (
-  <button id={id} type={type} class:list={classes} disabled={disabled}>
-    <slot />
-  </button>
-)}
+<Tag
+  href={href}
+  id={id}
+  type={isButton ? type : undefined}
+  class:list={classes}
+  aria-disabled={!isButton && disabled ? 'true' : undefined}
+  tabindex={!isButton && disabled ? -1 : undefined}
+  disabled={isButton && disabled ? true : undefined}
+>
+  {iconPath && iconPosition === 'leading' && (
+    <svg
+      class:list={iconClasses}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d={iconPath}></path>
+    </svg>
+  )}
+  <slot />
+  {iconPath && iconPosition === 'trailing' && (
+    <svg
+      class:list={iconClasses}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d={iconPath}></path>
+    </svg>
+  )}
+</Tag>
