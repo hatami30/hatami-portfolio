@@ -1,41 +1,77 @@
 ---
 interface Props {
-  href: string;
+  /** Renders an <a>. Omit to render a <button>. */
+  href?: string;
+  id?: string;
+  type?: 'button' | 'submit' | 'reset';
   variant?: 'primary' | 'secondary';
-  size?: 'sm' | 'lg';
+  size?: 'xs' | 'sm' | 'lg';
   shape?: 'rounded' | 'pill';
+  disabled?: boolean;
   class?: string;
 }
 
-const { href, variant = 'primary', size = 'sm', shape = 'rounded', class: className } = Astro.props;
+const {
+  href,
+  id,
+  type = 'button',
+  variant = 'primary',
+  size = 'sm',
+  shape = 'rounded',
+  disabled = false,
+  class: className,
+} = Astro.props;
 
+/**
+ * Hover changes elevation and border only, never the fill behind the label: lightening a
+ * solid accent button on hover would drop its text contrast below AA. Elevation reads as
+ * feedback without touching the colour pair.
+ */
 const variants = {
   primary:
-    'bg-accent text-accent-fg hover:opacity-95 shadow-sm hover:shadow-accent/20 hover:shadow-md',
+    'bg-accent text-accent-fg shadow-sm hover:shadow-md hover:shadow-accent/25 active:shadow-sm',
   secondary:
-    'border border-border/80 bg-surface/80 hover:bg-surface text-fg hover:border-border backdrop-blur-xs',
+    'border border-border/80 bg-surface/80 text-fg backdrop-blur-xs hover:border-accent/50 hover:bg-surface',
 };
 
+/**
+ * All sizes meet the 44px touch target. xs differs only in width, type scale and padding,
+ * for the compact desktop navbar pill; the floating navbar's height is already set by the
+ * 44px theme toggle beside it, so a 44px CTA there costs no extra vertical space.
+ */
 const sizes = {
-  sm: 'px-5 py-2.5 text-sm',
-  lg: 'px-8 py-3.5 text-base',
+  xs: 'min-h-11 px-3.5 py-1 text-xs',
+  sm: 'min-h-11 px-5 py-2.5 text-sm',
+  lg: 'min-h-12 px-8 py-3.5 text-base',
 };
 
 const shapes = {
   rounded: 'rounded-xl',
   pill: 'rounded-full',
 };
+
+const classes = [
+  'inline-flex items-center justify-center gap-2 text-center font-medium whitespace-nowrap transition-all duration-200',
+  variants[variant],
+  sizes[size],
+  shapes[shape],
+  disabled ? 'pointer-events-none opacity-55' : 'active:scale-[0.98]',
+  className,
+];
 ---
 
-<a
-  href={href}
-  class:list={[
-    'inline-flex items-center justify-center font-medium transition-all duration-200 active:scale-[0.98]',
-    variants[variant],
-    sizes[size],
-    shapes[shape],
-    className,
-  ]}
->
-  <slot />
-</a>
+{href ? (
+  <a
+    href={href}
+    id={id}
+    class:list={classes}
+    aria-disabled={disabled ? 'true' : undefined}
+    tabindex={disabled ? -1 : undefined}
+  >
+    <slot />
+  </a>
+) : (
+  <button id={id} type={type} class:list={classes} disabled={disabled}>
+    <slot />
+  </button>
+)}

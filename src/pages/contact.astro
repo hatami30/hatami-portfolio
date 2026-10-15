@@ -5,6 +5,7 @@ import { hasValue } from '@/lib/placeholder';
 import { breadcrumbJsonLd, webPageJsonLd } from '@/lib/seo';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/ui/Container.astro';
+import Button from '@/components/ui/Button.astro';
 
 const field = 'border-border bg-bg mt-1.5 w-full rounded-lg border px-3 py-2';
 const fieldError = 'mt-1 hidden text-sm text-red-700 dark:text-red-400';
@@ -94,12 +95,9 @@ const fieldError = 'mt-1 hidden text-sm text-red-700 dark:text-red-400';
         </div>
 
         <div class="flex flex-wrap items-center gap-4">
-          <button
-            type="submit"
-            class="bg-accent text-accent-fg rounded-lg px-5 py-2.5 text-sm font-medium transition hover:opacity-90 disabled:opacity-60"
-          >
+          <Button id="contact-submit" type="submit" size="sm">
             {t.contact.send}
-          </button>
+          </Button>
           <p id="form-status" role="status" class="text-sm"></p>
         </div>
       </form>

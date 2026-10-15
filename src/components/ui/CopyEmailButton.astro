@@ -6,19 +6,23 @@ interface Props {
 }
 
 const { class: className } = Astro.props;
+
+const email = site.email.includes('[PLACEHOLDER') ? 'hello@hatami.tech' : site.email;
 ---
 
 <button
   type="button"
   data-email={site.email}
   class:list={[
-    'copy-email-btn group relative inline-flex items-center gap-2 rounded-xl border border-border/80 bg-surface/80 px-3.5 py-2 text-xs font-mono text-muted backdrop-blur-xs transition-all duration-150 hover:border-accent hover:text-fg hover:shadow-xs active:scale-95 cursor-pointer',
+    'copy-email-btn border-border/80 bg-surface/80 text-muted hover:border-accent/50 hover:text-fg group inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3.5 font-mono text-xs backdrop-blur-xs transition-colors',
     className,
   ]}
-  title="Click to copy email address"
+  aria-label={`Copy email address ${email}`}
+  title="Copy email address"
 >
+  <!-- Icon swaps on success: a real state change rather than a glyph appended to text. -->
   <svg
-    class="h-3.5 w-3.5 text-accent transition-transform duration-150 group-hover:scale-110"
+    class="copy-email-icon-copy text-accent h-3.5 w-3.5 shrink-0"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -30,10 +34,23 @@ const { class: className } = Astro.props;
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
   </svg>
-  <span class="copy-email-status truncate max-w-[180px]" aria-live="polite">
-    {site.email.includes('[PLACEHOLDER') ? 'hello@hatami.tech' : site.email}
-  </span>
-  <span class="rounded bg-accent/10 px-1 py-0.5 text-[10px] text-accent">Copy</span>
+  <svg
+    class="copy-email-icon-done hidden h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+
+  <span class="copy-email-label max-w-[180px] truncate">{email}</span>
+
+  <!-- Confirmation is announced, not drawn into the label, so the address stays readable. -->
+  <span class="copy-email-status sr-only" role="status" aria-live="polite"></span>
 </button>
 
 <script>
@@ -44,8 +61,12 @@ const { class: className } = Astro.props;
       if ((btn as unknown as { __copyBound?: boolean }).__copyBound) return;
       (btn as unknown as { __copyBound?: boolean }).__copyBound = true;
 
-      const label = btn.querySelector<HTMLElement>('.copy-email-status');
-      if (!label) return;
+      const copyIcon = btn.querySelector<HTMLElement>('.copy-email-icon-copy');
+      const doneIcon = btn.querySelector<HTMLElement>('.copy-email-icon-done');
+      const status = btn.querySelector<HTMLElement>('.copy-email-status');
+      if (!copyIcon || !doneIcon) return;
+
+      let resetTimer: number | undefined;
 
       btn.addEventListener('click', async () => {
         const email = btn.getAttribute('data-email');
@@ -53,17 +74,21 @@ const { class: className } = Astro.props;
 
         try {
           await navigator.clipboard.writeText(textToCopy);
-          const originalText = label.textContent;
-          label.textContent = 'Copied to clipboard! ✓';
-          btn.classList.add('border-emerald-500/60', 'text-emerald-500');
+          copyIcon.classList.add('hidden');
+          doneIcon.classList.remove('hidden');
+          btn.classList.add('border-emerald-500/50');
+          if (status) status.textContent = 'Email address copied to clipboard';
 
-          setTimeout(() => {
-            label.textContent = originalText;
-            btn.classList.remove('border-emerald-500/60', 'text-emerald-500');
+          window.clearTimeout(resetTimer);
+          resetTimer = window.setTimeout(() => {
+            copyIcon.classList.remove('hidden');
+            doneIcon.classList.add('hidden');
+            btn.classList.remove('border-emerald-500/50');
+            if (status) status.textContent = '';
           }, 2000);
         } catch {
-          // Fallback if clipboard API blocked
-          label.textContent = textToCopy;
+          // Clipboard blocked (insecure context or denied): surface the address instead.
+          if (status) status.textContent = textToCopy;
         }
       });
     });

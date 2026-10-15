@@ -53,7 +53,7 @@ import { site } from '@/config/site';
           role="option"
           aria-selected="true"
           tabindex="-1"
-          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+          class="palette-item flex min-h-11 items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">01</span>
@@ -68,7 +68,7 @@ import { site } from '@/config/site';
           role="option"
           aria-selected="false"
           tabindex="-1"
-          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+          class="palette-item flex min-h-11 items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">02</span>
@@ -83,7 +83,7 @@ import { site } from '@/config/site';
           role="option"
           aria-selected="false"
           tabindex="-1"
-          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+          class="palette-item flex min-h-11 items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">03</span>
@@ -98,7 +98,7 @@ import { site } from '@/config/site';
           role="option"
           aria-selected="false"
           tabindex="-1"
-          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+          class="palette-item flex min-h-11 items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">04</span>
@@ -113,7 +113,7 @@ import { site } from '@/config/site';
           role="option"
           aria-selected="false"
           tabindex="-1"
-          class="palette-item flex items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
+          class="palette-item flex min-h-11 items-center justify-between rounded-lg px-2.5 py-2 hover:bg-accent/10 hover:text-accent transition-colors"
         >
           <span class="flex items-center gap-2">
             <span class="font-mono text-muted">05</span>
@@ -137,7 +137,7 @@ import { site } from '@/config/site';
           aria-selected="false"
           tabindex="-1"
           data-email={site.email}
-          class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
+          class="palette-item flex min-h-11 w-full items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
         >
           <span class="flex items-center gap-2">
             <svg
@@ -167,7 +167,7 @@ import { site } from '@/config/site';
           role="option"
           aria-selected="false"
           tabindex="-1"
-          class="palette-item w-full flex items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
+          class="palette-item flex min-h-11 w-full items-center justify-between rounded-lg px-2.5 py-2 text-left hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
         >
           <span class="flex items-center gap-2">
             <svg
@@ -302,19 +302,21 @@ import { site } from '@/config/site';
     copyBtn?.addEventListener('click', async () => {
       const email = copyBtn.getAttribute('data-email');
       const textToCopy = email && !email.includes('[PLACEHOLDER') ? email : 'hello@hatami.tech';
+
+      const settle = (label: string) => {
+        if (copyLabel) copyLabel.textContent = label;
+        setTimeout(() => {
+          if (copyLabel) copyLabel.textContent = 'Copy Direct Email';
+          closePalette();
+        }, 1200);
+      };
+
       try {
         await navigator.clipboard.writeText(textToCopy);
-        if (copyLabel) copyLabel.textContent = 'Copied to clipboard! ✓';
-        setTimeout(() => {
-          if (copyLabel) copyLabel.textContent = 'Copy Direct Email';
-          closePalette();
-        }, 1200);
+        settle('Email address copied');
       } catch {
-        if (copyLabel) copyLabel.textContent = 'hello@hatami.tech';
-        setTimeout(() => {
-          if (copyLabel) copyLabel.textContent = 'Copy Direct Email';
-          closePalette();
-        }, 1200);
+        // Clipboard blocked (insecure context or denied): surface the address instead.
+        settle('hello@hatami.tech');
       }
     });
 
