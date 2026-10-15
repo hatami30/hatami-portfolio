@@ -1,62 +1,244 @@
 ---
 import { site } from '@/config/site';
 import { t } from '@/config/strings';
-import Container from '@/components/ui/Container.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
 const path = Astro.url.pathname;
-const isActive = (href: string) => path === href || path.startsWith(href);
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href);
 ---
 
-<header class="border-border/60 bg-bg/80 sticky top-0 z-40 border-b backdrop-blur-md transition-colors">
-  <Container class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-3.5">
-    <a href="/" class="flex items-center gap-2 font-semibold tracking-tight hover:opacity-90">
-      <span class="bg-accent/20 border-accent/40 text-accent flex h-7 w-7 items-center justify-center rounded-lg border text-xs font-mono font-bold">
-        H
-      </span>
-      <span>{site.name}</span>
-    </a>
-    <div class="flex items-center gap-4">
-      <nav aria-label={t.mainNav}>
-        <ul class="flex items-center gap-1 sm:gap-2 text-sm">
-          {site.nav.map((item) => (
+<header class="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 mt-3 sm:mt-4">
+    <!-- Floating Nav Pill -->
+    <nav
+      aria-label={t.mainNav}
+      class="pointer-events-auto flex items-center justify-between rounded-full border border-border/80 bg-surface/85 px-4 sm:px-6 py-2.5 sm:py-3 shadow-xs backdrop-blur-xl transition-colors duration-200"
+    >
+      <!-- Left: Monogram Logo -->
+      <a
+        href="/"
+        class="group flex items-center gap-2.5 font-semibold tracking-tight hover:opacity-95"
+        aria-label={`${site.name} - Home`}
+      >
+        <span class="flex h-8 w-8 items-center justify-center rounded-full border border-accent/40 bg-accent/15 text-xs font-mono font-bold text-accent transition-transform duration-200 group-hover:scale-105 shadow-2xs">
+          H
+        </span>
+        <span class="text-sm font-semibold tracking-tight text-fg truncate max-w-[130px] sm:max-w-none">
+          {site.name}
+        </span>
+      </a>
+
+      <!-- Center: Navigation Links (Desktop) -->
+      <ul class="hidden md:flex items-center gap-6 lg:gap-8 text-sm">
+        {site.nav.map((item) => {
+          const active = isActive(item.href);
+          return (
             <li>
               <a
                 href={item.href}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-                class="text-muted hover:text-fg aria-[current=page]:text-fg aria-[current=page]:bg-surface aria-[current=page]:border-border/80 inline-flex items-center min-h-[36px] rounded-md border border-transparent px-2.5 py-1 transition-colors"
+                aria-current={active ? 'page' : undefined}
+                class:list={[
+                  'relative inline-flex items-center py-1 text-xs sm:text-sm font-medium transition-colors',
+                  active ? 'text-fg font-semibold' : 'text-muted hover:text-fg',
+                ]}
               >
                 {t.nav[item.key]}
+                {active && (
+                  <span class="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-accent" />
+                )}
               </a>
             </li>
-          ))}
-        </ul>
-      </nav>
-      <div class="bg-border/60 h-4 w-px"></div>
-      <button
-        id="header-cmd-palette-btn"
-        type="button"
-        class="text-muted hover:text-fg hover:border-accent/80 border-border/70 bg-surface/80 hidden sm:inline-flex items-center gap-1.5 rounded-lg border px-2 py-1 font-mono text-xs transition-colors cursor-pointer"
-        title="Open command palette (Cmd+K)"
-        aria-label="Open command palette"
-      >
-        <span class="text-[10px]">⌘</span>
-        <span>K</span>
-      </button>
-      <ThemeToggle />
+          );
+        })}
+      </ul>
+
+      <!-- Right: Action Controls (Desktop + Mobile Toggle) -->
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        <!-- Command Palette Trigger (Desktop) -->
+        <button
+          id="header-cmd-palette-btn"
+          type="button"
+          class="text-muted hover:text-fg hover:border-accent/80 border-border/80 bg-surface/80 hidden sm:inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs transition-colors cursor-pointer"
+          title="Open command palette (Cmd+K)"
+          aria-label="Open command palette"
+        >
+          <span class="text-[10px] text-muted">⌘</span>
+          <span class="text-xs">K</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <ThemeToggle />
+
+        <!-- CTA Contact Pill (Desktop) -->
+        <a
+          href="/contact"
+          class="hidden md:inline-flex items-center justify-center gap-1.5 rounded-full font-semibold transition-all duration-200 bg-accent text-accent-fg hover:opacity-90 shadow-2xs px-3.5 sm:px-4 py-1.5 text-xs"
+        >
+          {t.home.ctaContact}
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button
+          id="mobile-nav-toggle"
+          type="button"
+          class="md:hidden flex h-8 w-8 items-center justify-center rounded-full text-fg hover:bg-surface/90 focus:outline-hidden transition-colors cursor-pointer"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="mobile-nav-dropdown"
+        >
+          <!-- Hamburger icon -->
+          <svg
+            id="mobile-nav-icon-open"
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="4" y1="6" x2="20" y2="6"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="18" x2="20" y2="18"></line>
+          </svg>
+          <!-- Close (X) icon -->
+          <svg
+            id="mobile-nav-icon-close"
+            class="hidden h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Dropdown Panel -->
+    <div
+      id="mobile-nav-dropdown"
+      class="hidden md:hidden pointer-events-auto mt-2 overflow-hidden rounded-2xl border border-border/80 bg-surface/95 p-5 shadow-xl backdrop-blur-2xl transition-all duration-200"
+    >
+      <ul class="flex flex-col gap-3 text-sm font-medium">
+        {site.nav.map((item) => {
+          const active = isActive(item.href);
+          return (
+            <li>
+              <a
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                class:list={[
+                  'flex items-center justify-between rounded-lg px-3 py-2 transition-colors',
+                  active
+                    ? 'bg-accent/15 text-accent font-semibold'
+                    : 'text-muted hover:bg-surface/80 hover:text-fg',
+                ]}
+              >
+                <span>{t.nav[item.key]}</span>
+                {active && <span class="h-1.5 w-1.5 rounded-full bg-accent" />}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div class="mt-4 pt-4 border-t border-border/60 flex items-center justify-between gap-3">
+        <button
+          id="mobile-cmd-palette-btn"
+          type="button"
+          class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-border/80 bg-surface/80 py-2 font-mono text-xs text-muted hover:text-fg transition-colors cursor-pointer"
+        >
+          <span class="text-[10px]">⌘</span>
+          <span>K</span>
+          <span class="text-fg font-sans ml-1 text-xs">Search</span>
+        </button>
+        <a
+          href="/contact"
+          class="flex-1 inline-flex items-center justify-center rounded-full bg-accent text-accent-fg py-2 font-semibold text-xs transition-opacity hover:opacity-90 shadow-2xs"
+        >
+          {t.home.ctaContact}
+        </a>
+      </div>
     </div>
-  </Container>
+  </div>
 </header>
 
 <script>
-  function setupHeaderCmdBtn() {
-    const btn = document.getElementById('header-cmd-palette-btn');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
+  function setupHeaderInteractions() {
+    const desktopCmdBtn = document.getElementById('header-cmd-palette-btn');
+    const mobileCmdBtn = document.getElementById('mobile-cmd-palette-btn');
+    const mobileToggle = document.getElementById('mobile-nav-toggle');
+    const mobileDropdown = document.getElementById('mobile-nav-dropdown');
+    const iconOpen = document.getElementById('mobile-nav-icon-open');
+    const iconClose = document.getElementById('mobile-nav-icon-close');
+
+    // 1. Command Palette Trigger
+    function openPalette() {
       window.dispatchEvent(new CustomEvent('open-command-palette'));
+    }
+
+    desktopCmdBtn?.addEventListener('click', openPalette);
+    mobileCmdBtn?.addEventListener('click', () => {
+      closeMobileMenu();
+      openPalette();
+    });
+
+    // 2. Mobile Nav Toggle
+    function toggleMobileMenu() {
+      if (!mobileDropdown || !mobileToggle) return;
+      const isOpen = !mobileDropdown.classList.contains('hidden');
+
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        mobileDropdown.classList.remove('hidden');
+        iconOpen?.classList.add('hidden');
+        iconClose?.classList.remove('hidden');
+        mobileToggle.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function closeMobileMenu() {
+      if (!mobileDropdown || !mobileToggle) return;
+      mobileDropdown.classList.add('hidden');
+      iconOpen?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+      mobileToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    mobileToggle?.addEventListener('click', toggleMobileMenu);
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node | null;
+      if (
+        mobileDropdown &&
+        !mobileDropdown.classList.contains('hidden') &&
+        target &&
+        !mobileDropdown.contains(target) &&
+        !mobileToggle?.contains(target)
+      ) {
+        closeMobileMenu();
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileDropdown && !mobileDropdown.classList.contains('hidden')) {
+        closeMobileMenu();
+        mobileToggle?.focus();
+      }
     });
   }
 
-  setupHeaderCmdBtn();
-  document.addEventListener('astro:page-load', setupHeaderCmdBtn);
+  setupHeaderInteractions();
+  document.addEventListener('astro:page-load', setupHeaderInteractions);
 </script>
