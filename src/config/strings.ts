@@ -14,6 +14,9 @@ const en = {
   footer: {
     rss: 'RSS feed',
     resume: 'Resume',
+    email: 'Email',
+    navigate: 'Navigate',
+    elsewhere: 'Elsewhere',
     rights: (year: number, name: string) => `© ${year} ${name}`,
   },
   home: {
@@ -154,6 +157,9 @@ const id: Strings = {
   footer: {
     rss: 'RSS feed',
     resume: 'CV',
+    email: 'Email',
+    navigate: 'Navigasi',
+    elsewhere: 'Lainnya',
     rights: (year, name) => `© ${year} ${name}`,
   },
   home: {

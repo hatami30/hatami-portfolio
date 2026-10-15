@@ -4,35 +4,216 @@ import { t } from '@/config/strings';
 import { hasValue } from '@/lib/placeholder';
 import Container from '@/components/ui/Container.astro';
 
-const socials = [
+const year = new Date().getFullYear();
+
+/** The owner's role, shown only once it is real (never the bracketed placeholder). */
+const role = hasValue(site.role) ? site.role : null;
+
+/**
+ * The giant wordmark is the brand word taken from the canonical host (hatami.tech -> "hatami"),
+ * so it stays correct if the domain moves. It is decorative: the name is already in the
+ * copyright line, so the mark is aria-hidden rather than repeated to screen readers.
+ */
+const brand = (() => {
+  try {
+    return new URL(site.url).hostname.replace(/^www\./, '').split('.')[0];
+  } catch {
+    return site.name;
+  }
+})();
+
+/** Brand marks are filled glyphs, not the house stroke icons: they must read as the real logo. */
+const SOCIAL_PATHS: Record<'github' | 'linkedin', string> = {
+  github:
+    'M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.6 8.21 11.16.6.11.82-.25.82-.57v-2.2c-3.34.71-4.04-1.58-4.04-1.58-.55-1.37-1.34-1.74-1.34-1.74-1.09-.73.08-.72.08-.72 1.21.08 1.84 1.22 1.84 1.22 1.07 1.8 2.81 1.28 3.5.98.11-.76.42-1.28.76-1.58-2.67-.3-5.47-1.31-5.47-5.83 0-1.29.47-2.34 1.24-3.17-.13-.3-.54-1.5.12-3.12 0 0 1.01-.32 3.3 1.21a11.5 11.5 0 0 1 3-.4c1.02 0 2.05.14 3 .4 2.29-1.53 3.3-1.21 3.3-1.21.66 1.62.25 2.82.12 3.12.77.83 1.24 1.88 1.24 3.17 0 4.53-2.81 5.53-5.49 5.82.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57A12.02 12.02 0 0 0 24 12.29C24 5.78 18.63.5 12 .5z',
+  linkedin:
+    'M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z',
+};
+
+/** Only links with a real destination render (R-24/R-38): empty and placeholder values drop out. */
+const socials = (
+  [
+    { label: 'GitHub', href: site.socials.github, icon: 'github' as const },
+    { label: 'LinkedIn', href: site.socials.linkedin, icon: 'linkedin' as const },
+  ] as const
+).filter((s) => hasValue(s.href));
+
+const elsewhere = [
   { label: 'GitHub', href: site.socials.github },
   { label: 'LinkedIn', href: site.socials.linkedin },
-].filter((item) => hasValue(item.href));
+  { label: t.footer.resume, href: site.resumeUrl },
+  { label: t.footer.email, href: hasValue(site.email) ? `mailto:${site.email}` : '' },
+  { label: t.footer.rss, href: '/rss.xml' },
+].filter((link) => hasValue(link.href));
 ---
 
-<footer class="border-border mt-16 border-t">
-  <Container class="text-muted flex flex-wrap items-center justify-between gap-4 py-8 text-sm">
-    <p>{t.footer.rights(new Date().getFullYear(), site.name)}</p>
-    <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
-      {socials.map((item) => (
-        <li>
-          <a href={item.href} rel="me noopener" class="hover:text-fg">
-            {item.label}
-          </a>
-        </li>
-      ))}
-      {hasValue(site.resumeUrl) && (
-        <li>
-          <a href={site.resumeUrl} class="hover:text-fg">
-            {t.footer.resume}
-          </a>
-        </li>
-      )}
-      <li>
-        <a href="/rss.xml" class="hover:text-fg">
-          {t.footer.rss}
-        </a>
-      </li>
-    </ul>
+<footer data-footer-beam class="border-border relative isolate mt-16 overflow-hidden border-t">
+  <!-- Ambient light: a slow diagonal shaft plus a glow that tracks the pointer.
+       One light language for the whole closing section (R-13), behind all content. -->
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="footer-beam"></div>
+    <div class="footer-glow"></div>
+  </div>
+
+  <Container class="relative">
+    <div class="grid gap-10 pt-14 sm:pt-16 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr] lg:gap-12">
+      <!-- Identity: copyright, role, and the glassy social buttons -->
+      <div>
+        <p class="text-fg text-sm font-medium">{t.footer.rights(year, site.name)}</p>
+        {role && <p class="text-muted mt-1.5 text-sm">{role}</p>}
+
+        {socials.length > 0 && (
+          <ul class="mt-6 flex items-center gap-3">
+            {socials.map((social) => (
+              <li>
+                <a
+                  href={social.href}
+                  rel="me noopener"
+                  target="_blank"
+                  aria-label={social.label}
+                  class="border-border/80 bg-surface/70 text-muted hover:border-accent/50 hover:text-fg flex h-10 w-10 items-center justify-center rounded-xl border backdrop-blur-md transition-colors"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d={SOCIAL_PATHS[social.icon]} />
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <!-- Navigate: the site's own routes, nothing that does not exist -->
+      <nav aria-labelledby="footer-navigate">
+        <h2 id="footer-navigate" class="text-accent font-mono text-xs tracking-wider uppercase">
+          {t.footer.navigate}
+        </h2>
+        <ul class="mt-4 space-y-2.5">
+          {site.nav.map((item) => (
+            <li>
+              <a href={item.href} class="text-muted hover:text-fg text-sm transition-colors">
+                {t.nav[item.key]}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- Elsewhere: off-site destinations plus the feed -->
+      <nav aria-labelledby="footer-elsewhere">
+        <h2 id="footer-elsewhere" class="text-accent font-mono text-xs tracking-wider uppercase">
+          {t.footer.elsewhere}
+        </h2>
+        <ul class="mt-4 space-y-2.5">
+          {elsewhere.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                rel={link.href.startsWith('http') ? 'me noopener' : undefined}
+                target={link.href.startsWith('http') ? '_blank' : undefined}
+                class="text-muted hover:text-fg text-sm transition-colors"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   </Container>
+
+  <!-- Giant wordmark, cropped by the bottom edge so the closing section ends on the brand -->
+  <div
+    class="pointer-events-none relative mt-12 select-none overflow-hidden px-4 sm:mt-16 sm:px-6"
+    aria-hidden="true"
+  >
+    <span class="footer-wordmark text-accent block translate-y-[0.22em] text-center font-extrabold tracking-tighter whitespace-nowrap [font-size:clamp(4rem,22vw,15rem)] leading-none">
+      {brand}
+    </span>
+  </div>
 </footer>
+
+<script>
+  function setupFooterBeam() {
+    const footer = document.querySelector<HTMLElement>('[data-footer-beam]');
+    if (!footer) return;
+    // Guard: astro:page-load can fire again on client navigation.
+    if (footer.dataset.beamBound === 'true') return;
+    footer.dataset.beamBound = 'true';
+
+    // Motion is an enhancement: no listener at all when the visitor asked for calm.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let frame = 0;
+    footer.addEventListener('pointermove', (event) => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        const rect = footer.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+        footer.style.setProperty('--beam-x', `${x}%`);
+        footer.style.setProperty('--beam-y', `${y}%`);
+        frame = 0;
+      });
+    });
+  }
+
+  setupFooterBeam();
+  document.addEventListener('astro:page-load', setupFooterBeam);
+</script>
+
+<style>
+  [data-footer-beam] {
+    --beam-x: 50%;
+    --beam-y: 18%;
+  }
+
+  /* The diagonal shaft: one soft band of accent light, blurred, drifting slowly. */
+  .footer-beam {
+    position: absolute;
+    inset: -40% -20%;
+    background: linear-gradient(
+      115deg,
+      transparent 34%,
+      color-mix(in oklab, var(--accent) 14%, transparent) 48%,
+      color-mix(in oklab, var(--accent) 24%, transparent) 52%,
+      transparent 66%
+    );
+    filter: blur(46px);
+    will-change: transform;
+    animation: footer-beam-drift 16s ease-in-out infinite alternate;
+  }
+
+  /* The pointer glow: sits behind the wordmark so the light reads as passing through it. */
+  .footer-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      340px circle at var(--beam-x) var(--beam-y),
+      color-mix(in oklab, var(--accent) 13%, transparent),
+      transparent 68%
+    );
+  }
+
+  @keyframes footer-beam-drift {
+    from {
+      transform: translateX(-4%);
+    }
+    to {
+      transform: translateX(4%);
+    }
+  }
+
+  /* Depth on the cropped mark: the tops of the letters fall away into the section. */
+  .footer-wordmark {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 34%);
+    mask-image: linear-gradient(to bottom, transparent, #000 34%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer-beam {
+      animation: none;
+      transform: none;
+    }
+  }
+</style>
