@@ -60,9 +60,11 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
         <!-- Right: speech bubble and CTAs, dropped to sit below the orbit core -->
         <div class="z-10 flex w-full flex-col items-center text-center lg:mt-32 lg:w-5/12 lg:items-start lg:text-left">
           <div class="relative mb-10 flex w-full justify-center lg:justify-start">
-            <!-- Bubble tail (desktop: pointing left toward the intro) -->
+            <!-- Bubble tail (desktop: pointing left toward the intro).
+                 z-20 lifts the filled tail above the bubble so its fill covers the
+                 bubble's left border at the joint and its stroke closes the outline. -->
             <svg
-              class="text-surface absolute bottom-1 -left-9 hidden h-12 w-12 lg:block"
+              class="text-surface pointer-events-none absolute bottom-1 -left-9 z-20 hidden h-12 w-12 lg:block"
               viewBox="0 0 32 32"
               aria-hidden="true"
             >
@@ -74,6 +76,7 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
                 d="M32 24C24 24 16 32 0 32C12 28 20 20 24 12"
                 fill="none"
                 stroke="var(--border)"
+                stroke-opacity="0.8"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
                 stroke-linecap="round"
@@ -81,7 +84,7 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
             </svg>
             <!-- Bubble tail (mobile: pointing up toward the intro) -->
             <svg
-              class="text-surface absolute -top-[35px] left-3 h-12 w-12 lg:hidden"
+              class="text-surface pointer-events-none absolute -top-[35px] left-3 z-20 h-12 w-12 lg:hidden"
               viewBox="0 0 32 32"
               aria-hidden="true"
             >
@@ -93,6 +96,7 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
                 d="M24 32C24 24 32 16 32 0C28 12 20 20 12 24"
                 fill="none"
                 stroke="var(--border)"
+                stroke-opacity="0.8"
                 stroke-width="1"
                 vector-effect="non-scaling-stroke"
                 stroke-linecap="round"
