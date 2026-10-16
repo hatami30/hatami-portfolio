@@ -53,6 +53,32 @@ const en = {
     title: 'How I Help Build & Scale Your Product',
     description:
       'Helping founders and engineering teams ship fast, clean-architecture digital products built to scale seamlessly over time.',
+    items: [
+      {
+        title: 'UI Design & Frontend Engineering',
+        description:
+          'Crafting high-speed, responsive, and accessible web interfaces with Astro, Next.js, and Tailwind CSS. Zero layout shifts and strict WCAG AA compliance.',
+        stack: ['Astro', 'Next.js / React', 'Tailwind CSS', 'WCAG AA'],
+      },
+      {
+        title: 'Fullstack & Web Architecture',
+        description:
+          'Building end-to-end web applications with type-safe data flows, resilient API integrations, and efficient edge computing without unnecessary bloat.',
+        stack: ['TypeScript', 'Node.js', 'Edge Runtime', 'API Design'],
+      },
+      {
+        title: 'Backend & API Performance',
+        description:
+          'Architecting robust RESTful APIs, optimizing relational database queries, and configuring Redis caching to guarantee ultra-low latency under heavy traffic.',
+        stack: ['PostgreSQL', 'Redis', 'Fastify / Express', 'REST API'],
+      },
+      {
+        title: 'AI Agents & Workflow Automation',
+        description:
+          'Integrating autonomous LLM agents into business operations, automating repetitive technical tasks, and orchestrating internal tools with modern protocols.',
+        stack: ['Autonomous Agents', 'Tool Calling', 'LLM Pipelines', 'Automation'],
+      },
+    ],
   },
   faq: {
     tag: 'FREQUENT QUESTIONS',
@@ -196,6 +222,32 @@ const id: Strings = {
     title: 'Keahlian & Solusi Rekayasa Produk',
     description:
       'Membantu founder dan tim teknik mewujudkan produk digital yang cepat, berarsitektur bersih, dan mudah dirawat dalam jangka panjang.',
+    items: [
+      {
+        title: 'UI Design & Frontend Engineering',
+        description:
+          'Membangun antarmuka web responsif, mulus, dan berkecepatan tinggi dengan Astro, Next.js, dan Tailwind CSS. Bebas layout shift dan ramah aksesibilitas.',
+        stack: ['Astro', 'Next.js / React', 'Tailwind CSS', 'WCAG AA'],
+      },
+      {
+        title: 'Fullstack & Web Architecture',
+        description:
+          'Membangun aplikasi web end-to-end dengan tipe data aman (type-safe), integrasi API rapi, dan runtime edge global yang cepat.',
+        stack: ['TypeScript', 'Node.js', 'Edge Runtime', 'API Design'],
+      },
+      {
+        title: 'Backend & API Performance',
+        description:
+          'Merancang arsitektur API yang kokoh, optimasi query database relational, dan caching Redis untuk menjamin latensi rendah saat beban puncak.',
+        stack: ['PostgreSQL', 'Redis', 'Fastify / Express', 'REST API'],
+      },
+      {
+        title: 'AI Agents & Workflow Automation',
+        description:
+          'Mengintegrasikan LLM & autonomous agent ke alur kerja bisnis, mengotomatisasi tugas repetitif, dan menghubungkan tools internal dengan protokol modern.',
+        stack: ['Autonomous Agents', 'Tool Calling', 'LLM Pipelines', 'Automation'],
+      },
+    ],
   },
   faq: {
     tag: 'PERTANYAAN UMUM',
