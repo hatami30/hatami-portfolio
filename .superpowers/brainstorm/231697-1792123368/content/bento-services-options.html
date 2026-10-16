@@ -1,0 +1,836 @@
+<style>
+  .preview-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding-bottom: 3rem;
+  }
+
+  .intro-block {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .intro-block h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+  }
+  .intro-block p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Color Theme Switcher in Mockup */
+  .theme-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    padding: 0.6rem 1.25rem;
+    border-radius: 9999px;
+    margin: 0 auto;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+  .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: transparent;
+    color: inherit;
+    transition: all 0.2s ease;
+  }
+  .theme-btn:hover {
+    background: var(--bg-tertiary);
+  }
+  .theme-btn.active {
+    background: var(--bg-tertiary);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
+  .theme-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* Options Grid */
+  .options-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: 1rem;
+  }
+
+  .choice-card {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .choice-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .choice-card.selected {
+    border-color: var(--accent);
+    background: var(--selected-bg);
+  }
+  .choice-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .choice-letter {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .choice-card.selected .choice-letter {
+    background: var(--accent);
+    color: #ffffff;
+  }
+  .badge-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+  }
+  .choice-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .choice-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .choice-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem;
+  }
+  .choice-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .choice-features li::before {
+    content: '✓';
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  /* ========================================================
+     LIVE DEMO SECTION (sincan.dev replica)
+     ======================================================== */
+  .demo-container {
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: #08080a;
+    color: #f4f4f5;
+    position: relative;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  }
+
+  .demo-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(18, 18, 22, 0.75);
+    backdrop-filter: blur(8px);
+    font-size: 0.8rem;
+    color: #a1a1aa;
+  }
+
+  .live-section {
+    position: relative;
+    padding: 4rem 1.5rem;
+    overflow: hidden;
+  }
+
+  /* SVG Dot Grid Background */
+  .dot-bg {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.35;
+    mask-image: radial-gradient(650px circle at center, white, transparent 75%);
+    -webkit-mask-image: radial-gradient(650px circle at center, white, transparent 75%);
+  }
+
+  /* Section Titles */
+  .section-intro {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 3.5rem auto;
+  }
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+  }
+  .section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    position: relative;
+    display: inline-block;
+  }
+  .highlight-word {
+    position: relative;
+    display: inline-block;
+    color: #09090b;
+    padding: 0 0.4rem;
+  }
+  .highlight-svg {
+    position: absolute;
+    inset: -4px -6px -2px -6px;
+    z-index: -1;
+    pointer-events: none;
+    width: calc(100% + 12px);
+    height: calc(100% + 8px);
+  }
+  .section-desc {
+    color: #a1a1aa;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Bento 12-col Grid */
+  .bento-grid {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .col-7 {
+    grid-column: span 7;
+  }
+  .col-5 {
+    grid-column: span 5;
+  }
+
+  @media (max-width: 860px) {
+    .col-7,
+    .col-5 {
+      grid-column: span 12;
+    }
+  }
+
+  /* Sincan Card Core & Hover Animations */
+  .sincan-card {
+    position: relative;
+    height: 100%;
+    min-height: 250px;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(24, 24, 27, 0.45);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+  }
+
+  /* Hover effect: Glow Blob */
+  .card-glow-blob {
+    pointer-events: none;
+    position: absolute;
+    right: -3rem;
+    top: -3rem;
+    width: 12rem;
+    height: 12rem;
+    border-radius: 50%;
+    filter: blur(48px);
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Watermark Number */
+  .watermark-num {
+    position: absolute;
+    right: 0.5rem;
+    bottom: -1.75rem;
+    font-size: 8rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-weight: 900;
+    line-height: 1;
+    user-select: none;
+    color: rgba(255, 255, 255, 0.04);
+    transition: all 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Icon Container */
+  .card-icon-box {
+    position: relative;
+    z-index: 10;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid transparent;
+  }
+  .card-icon-box svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    transition: stroke 0.3s ease;
+  }
+
+  /* Card Texts */
+  .card-body {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .card-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    transition: color 0.3s ease;
+    padding-right: 2rem;
+  }
+  .card-text {
+    font-size: 0.95rem;
+    color: #a1a1aa;
+    line-height: 1.55;
+    max-width: 90%;
+  }
+
+  /* HOVER STATES */
+  .sincan-card:hover {
+    transform: translateY(-2px);
+  }
+  .sincan-card:hover .card-glow-blob {
+    opacity: 1;
+  }
+  .sincan-card:hover .watermark-num {
+    transform: translateY(-0.75rem) scale(1.06);
+  }
+  .sincan-card:hover .card-icon-box {
+    transform: scale(1.05);
+  }
+
+  /* Dynamic Color Palette Classes */
+  /* Palette 1: Lime (sincan.dev default) */
+  .palette-lime {
+    --accent-color: #84cc16;
+    --accent-light: #a3e635;
+    --accent-bg-10: rgba(132, 204, 22, 0.1);
+    --accent-bg-20: rgba(132, 204, 22, 0.2);
+    --card-hover-border: rgba(132, 204, 22, 0.4);
+    --card-hover-shadow: 0 15px 35px -5px rgba(132, 204, 22, 0.08);
+  }
+  /* Palette 2: Indigo (hatami.tech default) */
+  .palette-indigo {
+    --accent-color: #6366f1;
+    --accent-light: #818cf8;
+    --accent-bg-10: rgba(99, 102, 241, 0.12);
+    --accent-bg-20: rgba(99, 102, 241, 0.25);
+    --card-hover-border: rgba(99, 102, 241, 0.45);
+    --card-hover-shadow: 0 15px 35px -5px rgba(99, 102, 241, 0.12);
+  }
+  /* Palette 3: Cyan (modern tech) */
+  .palette-cyan {
+    --accent-color: #06b6d4;
+    --accent-light: #22d3ee;
+    --accent-bg-10: rgba(6, 182, 212, 0.12);
+    --accent-bg-20: rgba(6, 182, 212, 0.25);
+    --card-hover-border: rgba(6, 182, 212, 0.45);
+    --card-hover-shadow: 0 15px 35px -5px rgba(6, 182, 212, 0.12);
+  }
+
+  .demo-container.palette-lime .section-badge {
+    border: 1px solid rgba(132, 204, 22, 0.3);
+    background: rgba(132, 204, 22, 0.08);
+    color: #a3e635;
+  }
+  .demo-container.palette-indigo .section-badge {
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    background: rgba(99, 102, 241, 0.1);
+    color: #a5b4fc;
+  }
+  .demo-container.palette-cyan .section-badge {
+    border: 1px solid rgba(6, 182, 212, 0.35);
+    background: rgba(6, 182, 212, 0.1);
+    color: #67e8f9;
+  }
+
+  .demo-container .sincan-card:hover {
+    border-color: var(--card-hover-border);
+    box-shadow: var(--card-hover-shadow);
+  }
+  .demo-container .card-glow-blob {
+    background: var(--accent-bg-20);
+  }
+  .demo-container .sincan-card:hover .watermark-num {
+    color: var(--accent-bg-10);
+  }
+  .demo-container .card-icon-box {
+    background: var(--accent-bg-10);
+    border-color: var(--accent-bg-20);
+    color: var(--accent-light);
+  }
+  .demo-container .sincan-card:hover .card-icon-box {
+    background: var(--accent-light);
+    color: #09090b;
+    border-color: var(--accent-light);
+  }
+  .demo-container .sincan-card:hover .card-title {
+    color: var(--accent-light);
+  }
+</style>
+
+<div class="preview-wrapper">
+  <div class="intro-block">
+    <span
+      class="badge-tag"
+      style="
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        display: inline-block;
+      "
+      >Visual Exploration</span
+    >
+    <h1>Bento Grid & Layanan (sincan.dev style)</h1>
+    <p>
+      Berikut perbandingan 3 opsi arah konten dan interaksi kartu bento sincan.dev. Silakan klik
+      kartu opsi yang Anda sukai, lalu coba arahkan kursor (hover) pada live demo di bawah untuk
+      merasakan animasinya.
+    </p>
+  </div>
+
+  <!-- 3 Options to Choose -->
+  <div class="options-section">
+    <div class="options-grid">
+      <!-- Opsi A -->
+      <div class="choice-card selected" data-choice="opsi-a" onclick="selectOption(this, 'a')">
+        <div class="choice-header">
+          <div class="choice-letter">A</div>
+          <span class="badge-tag" style="background: rgba(99, 102, 241, 0.15); color: var(--accent)"
+            >Rekomendasi</span
+          >
+        </div>
+        <h3>Dual: Keahlian & Layanan</h3>
+        <p>
+          Kombinasi reputasi engineering andal & solusi produk praktis. Bahasa ramah, profesional,
+          dan meyakinkan bagi recruiter maupun founder.
+        </p>
+        <ul class="choice-features">
+          <li>Badge: <strong>LAYANAN & SPESIALISASI</strong></li>
+          <li>Kartu 01: UI & Frontend Engineering</li>
+          <li>Kartu 02: Full-Stack & System Architecture</li>
+          <li>Kartu 03: Backend, API & Data Reliability</li>
+          <li>Kartu 04: AI Agent & Workflow Automation</li>
+          <li>Aksen fleksibel: Cocok dengan Indigo / Lime</li>
+        </ul>
+      </div>
+
+      <!-- Opsi B -->
+      <div class="choice-card" data-choice="opsi-b" onclick="selectOption(this, 'b')">
+        <div class="choice-header">
+          <div class="choice-letter">B</div>
+          <span
+            class="badge-tag"
+            style="background: var(--bg-tertiary); color: var(--text-secondary)"
+            >Gaya sincan.dev</span
+          >
+        </div>
+        <h3>Santai & Freelance-First</h3>
+        <p>
+          Gaya santai khas sincan.dev dengan persona "Gue Ngebantu Kamu". Sangat disukai startup
+          tahap awal & founder UMKM digital.
+        </p>
+        <ul class="choice-features">
+          <li>Badge: <strong>LAYANAN</strong></li>
+          <li>Headline: "Gimana Cara Gue Ngebantu Kamu"</li>
+          <li>Tone: Santai ("ngebut", "mulus", "nggak gampang down")</li>
+          <li>Target: Solusi cepat rilis produk</li>
+          <li>Warna bawaan: Lime Green (#84cc16)</li>
+        </ul>
+      </div>
+
+      <!-- Opsi C -->
+      <div class="choice-card" data-choice="opsi-c" onclick="selectOption(this, 'c')">
+        <div class="choice-header">
+          <div class="choice-letter">C</div>
+          <span
+            class="badge-tag"
+            style="background: var(--bg-tertiary); color: var(--text-secondary)"
+            >Senior Engineer</span
+          >
+        </div>
+        <h3>Pure Technical Specialist</h3>
+        <p>
+          Mempertahankan konten awal hatami.tech yang berfokus mendalam pada metrik teknis
+          (low-latency, edge, type-safety, database concurrency).
+        </p>
+        <ul class="choice-features">
+          <li>Badge: <strong>KAPABILITAS TEKNIS</strong></li>
+          <li>Headline: "Keahlian & Arsitektur Sistem"</li>
+          <li>Kartu 01: Low-Latency Systems (<150ms)</li>
+          <li>Kartu 02: Modern Edge & Static Speed</li>
+          <li>Target: Engineering manager & enterprise tech lead</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Color Switcher for the Demo -->
+  <div class="theme-bar">
+    <span>Coba Ganti Warna Aksen Demo:</span>
+    <button class="theme-btn active" onclick="setPalette('indigo', this)">
+      <span class="theme-dot" style="background: #6366f1"></span> Indigo (Portfolio Hatami)
+    </button>
+    <button class="theme-btn" onclick="setPalette('lime', this)">
+      <span class="theme-dot" style="background: #84cc16"></span> Lime (Asli sincan.dev)
+    </button>
+    <button class="theme-btn" onclick="setPalette('cyan', this)">
+      <span class="theme-dot" style="background: #06b6d4"></span> Cyan Modern
+    </button>
+  </div>
+
+  <!-- ========================================================
+       LIVE INTERACTIVE DEMO OF SINCAN.DEV CARD + BACKGROUND
+       ======================================================== -->
+  <div class="demo-container palette-indigo" id="liveDemoContainer">
+    <div class="demo-header-bar">
+      <span>● ● ● Live Section Preview (Arahkan kursor ke kartu untuk test hover)</span>
+      <span id="activePaletteLabel">Theme: Indigo Accent</span>
+    </div>
+
+    <div class="live-section">
+      <!-- Dot Grid SVG Pattern with Radial Center Mask -->
+      <svg class="dot-bg" aria-hidden="true">
+        <defs>
+          <pattern id="dotPattern" width="24" height="24" patternUnits="userSpaceOnUse">
+            <circle cx="1.5" cy="1.5" r="1.5" fill="#71717a"></circle>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#dotPattern)"></rect>
+      </svg>
+
+      <!-- Section Title & Rough Highlight -->
+      <div class="section-intro">
+        <span class="section-badge" id="demoBadge">LAYANAN & SPESIALISASI</span>
+        <h2 class="section-title" id="demoTitle">
+          Keahlian & Cara Saya Ngebantu
+          <span class="highlight-word">
+            <svg class="highlight-svg" viewBox="0 0 120 40" preserveAspectRatio="none">
+              <!-- Hand-drawn rough stroke annotation -->
+              <path
+                d="M 5 24 Q 55 12 115 18 Q 65 34 8 28"
+                fill="var(--accent-color)"
+                opacity="0.95"
+              ></path>
+            </svg>
+            <span style="position: relative; z-index: 2; color: #09090b; font-weight: 900"
+              >Produkmu</span
+            >
+          </span>
+        </h2>
+        <p class="section-desc" id="demoDesc">
+          Membantu founder & tim merilis web app berkualitas tinggi, berarsitektur bersih, dan siap
+          scale tanpa ribet di kemudian hari.
+        </p>
+      </div>
+
+      <!-- Bento 12-Column Grid -->
+      <div class="bento-grid">
+        <!-- Card 01 (Col 7) -->
+        <div class="col-7">
+          <div class="sincan-card">
+            <div class="card-glow-blob"></div>
+            <div class="watermark-num">01</div>
+
+            <div class="card-icon-box">
+              <!-- Code XML icon -->
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m18 16 4-4-4-4"></path>
+                <path d="m6 8-4 4 4 4"></path>
+                <path d="m14.5 4-5 16"></path>
+              </svg>
+            </div>
+
+            <div class="card-body">
+              <h3 class="card-title" id="card1Title">UI Design & Frontend Engineering</h3>
+              <p class="card-text" id="card1Desc">
+                Membangun antarmuka web yang responsif, mulus, dan berkecepatan tinggi dengan Astro,
+                Next.js, dan Tailwind CSS. Bebas layout shift dan ramah aksesibilitas.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 02 (Col 5) -->
+        <div class="col-5">
+          <div class="sincan-card">
+            <div class="card-glow-blob"></div>
+            <div class="watermark-num">02</div>
+
+            <div class="card-icon-box">
+              <!-- Layers icon -->
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="m12.83 2.18-10.23 4.5a1 1 0 0 0 0 1.83l10.23 4.5a2 2 0 0 0 1.66 0l10.23-4.5a1 1 0 0 0 0-1.83l-10.23-4.5a2 2 0 0 0-1.66 0Z"
+                ></path>
+                <path d="m2.6 12.91 8.57 3.91a2 2 0 0 0 1.66 0l8.57-3.91"></path>
+                <path d="m2.6 17.91 8.57 3.91a2 2 0 0 0 1.66 0l8.57-3.91"></path>
+              </svg>
+            </div>
+
+            <div class="card-body">
+              <h3 class="card-title" id="card2Title">Fullstack & Web Architecture</h3>
+              <p class="card-text" id="card2Desc">
+                Membangun aplikasi web end-to-end dengan tipe data aman (type-safe), integrasi API
+                rapi, dan state management efisien tanpa bloatware.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 03 (Col 5) -->
+        <div class="col-5">
+          <div class="sincan-card">
+            <div class="card-glow-blob"></div>
+            <div class="watermark-num">03</div>
+
+            <div class="card-icon-box">
+              <!-- Server icon -->
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="20" height="8" x="2" y="2" rx="2" ry="2"></rect>
+                <rect width="20" height="8" x="2" y="14" rx="2" ry="2"></rect>
+                <line x1="6" x2="6.01" y1="6" y2="6"></line>
+                <line x1="6" x2="6.01" y1="18" y2="18"></line>
+              </svg>
+            </div>
+
+            <div class="card-body">
+              <h3 class="card-title" id="card3Title">Backend & API Performance</h3>
+              <p class="card-text" id="card3Desc">
+                Merancang arsitektur RESTful API yang kokoh, optimasi query database relational, dan
+                caching Redis untuk menjamin latensi tetap rendah saat trafik tinggi.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 04 (Col 7) -->
+        <div class="col-7">
+          <div class="sincan-card">
+            <div class="card-glow-blob"></div>
+            <div class="watermark-num">04</div>
+
+            <div class="card-icon-box">
+              <!-- Bot icon -->
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 8V4H8"></path>
+                <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+                <path d="M2 14h2"></path>
+                <path d="M20 14h2"></path>
+                <path d="M15 13v2"></path>
+                <path d="M9 13v2"></path>
+              </svg>
+            </div>
+
+            <div class="card-body">
+              <h3 class="card-title" id="card4Title">AI Agents & Workflow Automation</h3>
+              <p class="card-text" id="card4Desc">
+                Mengintegrasikan LLM & autonomous agent ke alur kerja bisnis, mengotomatisasi tugas
+                repetitif, dan menghubungkan tools internal dengan protokol modern.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function selectOption(el, opt) {
+    document.querySelectorAll('.choice-card').forEach((c) => c.classList.remove('selected'));
+    el.classList.add('selected');
+
+    if (window.sendEvent) {
+      window.sendEvent('choice_selected', { choice: opt });
+    }
+
+    // Dynamic copy update based on choice
+    const badge = document.getElementById('demoBadge');
+    const desc = document.getElementById('demoDesc');
+    const c1 = document.getElementById('card1Title');
+    const c1d = document.getElementById('card1Desc');
+    const c2 = document.getElementById('card2Title');
+    const c2d = document.getElementById('card2Desc');
+    const c3 = document.getElementById('card3Title');
+    const c3d = document.getElementById('card3Desc');
+    const c4 = document.getElementById('card4Title');
+    const c4d = document.getElementById('card4Desc');
+
+    if (opt === 'a') {
+      badge.textContent = 'LAYANAN & SPESIALISASI';
+      desc.textContent =
+        'Membantu founder & tim merilis web app berkualitas tinggi, berarsitektur bersih, dan siap scale tanpa ribet di kemudian hari.';
+      c1.textContent = 'UI Design & Frontend Engineering';
+      c1d.textContent =
+        'Membangun antarmuka web responsif, mulus, dan berkecepatan tinggi dengan Astro, Next.js, dan Tailwind CSS.';
+      c2.textContent = 'Fullstack & Web Architecture';
+      c2d.textContent =
+        'Membangun aplikasi web end-to-end dengan tipe data aman (type-safe) dan arsitektur modular.';
+      c3.textContent = 'Backend & API Performance';
+      c3d.textContent =
+        'Merancang arsitektur API yang kokoh, optimasi database relational, dan caching Redis agar latensi tetap rendah.';
+      c4.textContent = 'AI Agents & Workflow Automation';
+      c4d.textContent =
+        'Mengintegrasikan LLM & autonomous agent ke alur kerja bisnis untuk mengotomatisasi tugas repetitif.';
+    } else if (opt === 'b') {
+      badge.textContent = 'LAYANAN';
+      desc.textContent =
+        'Ngebantu founder & tim rilis produk digital lebih cepet, pakai kode yang bersih biar gampang di-maintain ke depannya.';
+      c1.textContent = 'UI Design & Frontend Engineering';
+      c1d.textContent =
+        'Bikin UI yang ngebut dan responsif pakai React & Next.js. Biar user ngerasa mulus buka web kamu dari HP maupun laptop.';
+      c2.textContent = 'Fullstack Web Development';
+      c2d.textContent =
+        'Bikin web app end-to-end. Dari ngatur flow data yang ribet sampai integrasi API, semua dihandle dengan aman.';
+      c3.textContent = 'Backend & API Development';
+      c3d.textContent =
+        'Ngrancang RESTful API & backend service yang solid. Biar data aman dan webnya nggak gampang down pas lagi rame.';
+      c4.textContent = 'AI Agent & Automation Engineering';
+      c4d.textContent =
+        'Ngebangun AI Agent cerdas & otomatisasi workflow yang bisa mikir, ngejawab, dan nyelesaiin tugas repetitif bisnis kamu 24/7.';
+    } else if (opt === 'c') {
+      badge.textContent = 'KAPABILITAS TEKNIS';
+      desc.textContent =
+        'Fondasi rekayasa perangkat lunak yang kokoh, arsitektur rendah latensi, dan ketelitian detail di seluruh tumpukan teknologi.';
+      c1.textContent = 'Low-Latency Systems & Backend';
+      c1d.textContent =
+        'Merancang backend tangguh, optimasi query relasional, caching Redis, menjaga response time < 150ms pada beban puncak.';
+      c2.textContent = 'Modern Full-Stack & Edge Architecture';
+      c2d.textContent =
+        'Aplikasi web type-safe dengan Astro, TS, dan Vercel Edge. Zero framework JS berlebih dan bebas layout shift.';
+      c3.textContent = 'Database Engineering & Concurrency';
+      c3d.textContent =
+        'Skema relasional ternormalisasi, ACID compliance, migrasi tanpa downtime, dan indeks terarah.';
+      c4.textContent = 'Autonomous AI & Intelligent Systems';
+      c4d.textContent =
+        'Implementasi agen otonom, pipeline RAG, dan integrasi API model LLM terkini yang aman dan efisien.';
+    }
+  }
+
+  function setPalette(palette, btn) {
+    const container = document.getElementById('liveDemoContainer');
+    container.classList.remove('palette-lime', 'palette-indigo', 'palette-cyan');
+    container.classList.add('palette-' + palette);
+
+    document.querySelectorAll('.theme-btn').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const label = document.getElementById('activePaletteLabel');
+    if (palette === 'indigo') label.textContent = 'Theme: Indigo Accent (Portfolio Hatami)';
+    if (palette === 'lime') label.textContent = 'Theme: Lime Accent (sincan.dev)';
+    if (palette === 'cyan') label.textContent = 'Theme: Cyan Modern Accent';
+
+    if (window.sendEvent) {
+      window.sendEvent('palette_changed', { palette: palette });
+    }
+  }
+</script>
