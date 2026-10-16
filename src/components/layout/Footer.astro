@@ -47,10 +47,17 @@ const elsewhere = [
 ].filter((link) => hasValue(link.href));
 ---
 
-<footer data-footer-beam class="border-border relative isolate mt-16 overflow-hidden border-t">
+<footer data-footer-beam class="relative isolate overflow-hidden">
+  <!-- The footer shares the page's own background, so the join needs no wall: it is the
+       site's architectural rule, a hairline that fades at both ends with a quiet accent
+       beat at its centre. The light below gathers at this seam, so the two sections read
+       as one field rather than two stacked bands. -->
+  <div class="bg-ambient-top" aria-hidden="true"></div>
+
   <!-- Ambient light: a slow diagonal shaft plus a glow that tracks the pointer.
        One light language for the whole closing section (R-13), behind all content. -->
   <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="footer-seam"></div>
     <div class="footer-beam"></div>
     <div class="footer-glow"></div>
   </div>
@@ -219,6 +226,21 @@ const elsewhere = [
   [data-footer-beam] {
     --beam-x: 50%;
     --beam-y: 18%;
+  }
+
+  /* The seam light: a wide pool centred on the top edge, so the section above appears to
+     pour its light down into the footer and the two read as one field. It sits inside the
+     footer (clipped by overflow-hidden) rather than bleeding over the section above, which
+     would let the footer's light land on top of that section's text. */
+  .footer-seam {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 14rem;
+    background: radial-gradient(
+      130% 100% at 50% 0%,
+      color-mix(in oklab, var(--accent) 9%, transparent),
+      transparent 68%
+    );
   }
 
   /* The diagonal shaft: one soft band of accent light, blurred, drifting slowly. */
