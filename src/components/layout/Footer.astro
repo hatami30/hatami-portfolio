@@ -122,14 +122,23 @@ const elsewhere = [
     </div>
   </Container>
 
-  <!-- Giant wordmark, cropped by the bottom edge so the closing section ends on the brand -->
+  <!-- Giant wordmark, cropped by the bottom edge so the closing section ends on the brand.
+       Two stacked copies: a dim base, and a bright copy revealed only where the spotlights
+       pass. The light therefore reads as falling on the letters, not merely behind them. -->
   <div
-    class="pointer-events-none relative mt-12 select-none overflow-hidden px-4 sm:mt-16 sm:px-6"
+    class="footer-wordmark-wrap pointer-events-none relative mt-12 select-none overflow-hidden sm:mt-16"
     aria-hidden="true"
   >
-    <span class="footer-wordmark text-accent block translate-y-[0.22em] text-center font-extrabold tracking-tighter whitespace-nowrap [font-size:clamp(4rem,22vw,15rem)] leading-none">
+    <span class="footer-wordmark-base block translate-y-[0.22em] px-4 text-center font-extrabold tracking-tighter whitespace-nowrap [font-size:clamp(4rem,22vw,15rem)] leading-none sm:px-6">
       {brand}
     </span>
+    <!-- Parent carries the vertical crop fade; the child carries the two spotlight masks,
+         so the two spotlight pools union and the fade clips them (no mask-composite needed). -->
+    <div class="footer-wordmark-fade absolute inset-0">
+      <span class="footer-wordmark-lit block translate-y-[0.22em] px-4 text-center font-extrabold tracking-tighter whitespace-nowrap [font-size:clamp(4rem,22vw,15rem)] leading-none sm:px-6">
+        {brand}
+      </span>
+    </div>
   </div>
 </footer>
 
@@ -144,18 +153,62 @@ const elsewhere = [
     // Motion is an enhancement: no listener at all when the visitor asked for calm.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    const wrapEl = footer.querySelector<HTMLElement>('.footer-wordmark-wrap');
+    if (!wrapEl) return;
+    const wrap = wrapEl;
+    const root = footer;
+
+    // Two spotlights: the primary sits on the pointer, the secondary trails to the left.
+    // Both ease toward their target so the light glides instead of snapping, and the
+    // modest offset keeps both beams over the letters rather than drifting into empty space.
+    const OFFSET_X = -16;
+    const OFFSET_Y = 5;
+    const target = { x: 50, y: 34 };
+    const current = { x: 50, y: 34 };
+
+    const clamp = (v: number) => Math.max(-10, Math.min(110, v));
+
+    // Cache the wrap's box; refresh on the events that move it, so pointermove itself
+    // never forces a layout read between the mask writes of the previous frame.
+    let rect = wrap.getBoundingClientRect();
+    const refreshRect = () => {
+      rect = wrap.getBoundingClientRect();
+    };
+
     let frame = 0;
-    footer.addEventListener('pointermove', (event) => {
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        const rect = footer.getBoundingClientRect();
-        const x = ((event.clientX - rect.left) / rect.width) * 100;
-        const y = ((event.clientY - rect.top) / rect.height) * 100;
-        footer.style.setProperty('--beam-x', `${x}%`);
-        footer.style.setProperty('--beam-y', `${y}%`);
-        frame = 0;
-      });
-    });
+    function tick() {
+      current.x += (target.x - current.x) * 0.14;
+      current.y += (target.y - current.y) * 0.14;
+
+      const x2 = clamp(current.x + OFFSET_X);
+      const y2 = clamp(current.y + OFFSET_Y);
+      wrap.style.setProperty('--spot1-x', `${current.x}%`);
+      wrap.style.setProperty('--spot1-y', `${current.y}%`);
+      wrap.style.setProperty('--spot2-x', `${x2}%`);
+      wrap.style.setProperty('--spot2-y', `${y2}%`);
+      root.style.setProperty('--beam-x', `${current.x}%`);
+      root.style.setProperty('--beam-y', `${current.y}%`);
+
+      const settled =
+        Math.abs(target.x - current.x) < 0.15 && Math.abs(target.y - current.y) < 0.15;
+      frame = settled ? 0 : requestAnimationFrame(tick);
+    }
+
+    footer.addEventListener(
+      'pointermove',
+      (event) => {
+        target.x = clamp(((event.clientX - rect.left) / rect.width) * 100);
+        target.y = clamp(((event.clientY - rect.top) / rect.height) * 100);
+        if (!frame) frame = requestAnimationFrame(tick);
+      },
+      { passive: true },
+    );
+
+    window.addEventListener('scroll', refreshRect, { passive: true });
+    window.addEventListener('resize', refreshRect);
+
+    // Start from the resting position so the mark is lit before the first pointer move.
+    tick();
   }
 
   setupFooterBeam();
@@ -184,14 +237,14 @@ const elsewhere = [
     animation: footer-beam-drift 16s ease-in-out infinite alternate;
   }
 
-  /* The pointer glow: sits behind the wordmark so the light reads as passing through it. */
+  /* The pointer glow: a soft pool behind everything, giving the light a source. */
   .footer-glow {
     position: absolute;
     inset: 0;
     background: radial-gradient(
-      340px circle at var(--beam-x) var(--beam-y),
-      color-mix(in oklab, var(--accent) 13%, transparent),
-      transparent 68%
+      360px circle at var(--beam-x) var(--beam-y),
+      color-mix(in oklab, var(--accent) 12%, transparent),
+      transparent 70%
     );
   }
 
@@ -204,10 +257,37 @@ const elsewhere = [
     }
   }
 
-  /* Depth on the cropped mark: the tops of the letters fall away into the section. */
-  .footer-wordmark {
+  .footer-wordmark-wrap {
+    --spot1-x: 50%;
+    --spot1-y: 34%;
+    --spot2-x: 20%;
+    --spot2-y: 41%;
+  }
+
+  /* Base mark: the brand at rest, dim, under the top-down crop mask. */
+  .footer-wordmark-base {
+    color: color-mix(in oklab, var(--accent) 34%, var(--bg));
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 34%);
     mask-image: linear-gradient(to bottom, transparent, #000 34%);
+  }
+
+  /* Parent: the vertical crop fade, applied to the whole lit layer. */
+  .footer-wordmark-fade {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 34%);
+    mask-image: linear-gradient(to bottom, transparent, #000 34%);
+  }
+
+  /* Lit mark: a bright copy revealed only inside the two spotlight pools, so the beams
+     read as falling on the letters. Narrow tall ellipses read as beams, not blobs.
+     Listing two radial masks unions them (default add). */
+  .footer-wordmark-lit {
+    color: var(--accent);
+    -webkit-mask-image:
+      radial-gradient(ellipse 9% 120% at var(--spot1-x) var(--spot1-y), #000 0%, transparent 70%),
+      radial-gradient(ellipse 7% 115% at var(--spot2-x) var(--spot2-y), #000 0%, transparent 68%);
+    mask-image:
+      radial-gradient(ellipse 9% 120% at var(--spot1-x) var(--spot1-y), #000 0%, transparent 70%),
+      radial-gradient(ellipse 7% 115% at var(--spot2-x) var(--spot2-y), #000 0%, transparent 68%);
   }
 
   @media (prefers-reduced-motion: reduce) {
