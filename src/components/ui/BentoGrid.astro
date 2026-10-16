@@ -21,16 +21,16 @@ const capabilities = t.capabilities.items.map((item, index) => ({
 ---
 
 <section
-  class="relative py-20 sm:py-28 overflow-hidden bg-surface/30 border-y border-border/40 transition-colors duration-300"
+  class="relative py-20 sm:py-28 overflow-hidden transition-colors duration-300"
   aria-labelledby="capabilities-title"
 >
-  <!-- Background SVG Dot Grid with Radial Center Mask -->
+  <!-- Background SVG Dot Grid with Wide Elliptical Mask (Seamless Spread) -->
   <svg
     aria-hidden="true"
-    class="pointer-events-none absolute inset-0 z-0 h-full w-full text-muted/30 [mask-image:radial-gradient(800px_circle_at_center,white,transparent_75%)]"
+    class="pointer-events-none absolute inset-0 z-0 h-full w-full text-muted/25 dark:text-muted/30 [mask-image:radial-gradient(ellipse_95%_85%_at_50%_50%,white_20%,transparent_90%)]"
   >
     <defs>
-      <pattern id="bento-dot-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <pattern id="bento-dot-pattern" width="28" height="28" patternUnits="userSpaceOnUse">
         <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"></circle>
       </pattern>
     </defs>
@@ -69,9 +69,9 @@ const capabilities = t.capabilities.items.map((item, index) => ({
             aria-hidden="true"
           />
 
-          <!-- SVG Fractal Noise Grain Texture Overlay (fixed tile size, no numbering) -->
+          <!-- SVG Fractal Noise Grain Texture Overlay (Enhanced tactile visibility) -->
           <div
-            class="pointer-events-none absolute inset-0 z-0 opacity-[0.06] dark:opacity-[0.12] mix-blend-overlay bg-[size:140px_140px]"
+            class="pointer-events-none absolute inset-0 z-0 opacity-[0.20] dark:opacity-[0.30] mix-blend-overlay bg-[size:160px_160px]"
             style="background-image:url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;)"
             aria-hidden="true"
           />
