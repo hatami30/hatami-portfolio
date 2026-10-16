@@ -65,6 +65,7 @@ const words = text.split(' ');
     const flickerChance = 0.2;
     const maxOpacity = 0.35;
     const colorRgb = '16, 185, 129'; // emerald accent
+    const alphaLevels = 8; // opacity buckets for batched canvas fills
 
     let cols = 0;
     let rows = 0;
@@ -91,9 +92,16 @@ const words = text.split(' ');
       drawGrid();
     }
 
+    // Resample only a fraction of squares per frame. The per-square chance is
+    // scaled by the stride so the perceived flicker rate stays the same while
+    // the per-frame work drops by ~4x.
+    const updateStride = 4;
+
     function updateGrid(dt: number) {
-      for (let i = 0; i < squares.length; i++) {
-        if (Math.random() < flickerChance * dt) {
+      const chance = Math.min(1, flickerChance * dt * updateStride);
+      const offset = (Math.random() * updateStride) | 0;
+      for (let i = offset; i < squares.length; i += updateStride) {
+        if (Math.random() < chance) {
           squares[i] = Math.random() * maxOpacity;
         }
       }
@@ -105,20 +113,38 @@ const words = text.split(' ');
       const step = (squareSize + gridGap) * dpr;
       const size = squareSize * dpr;
 
+      // Bucket squares by opacity so we set the fill style a handful of times
+      // per frame instead of once per square (the dominant cost was building a
+      // fresh `rgba(...)` string for every one of the ~13k squares).
+      const paths: Path2D[] = [];
+      for (let i = 0; i < alphaLevels; i++) paths.push(new Path2D());
+
       for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
           const opacity = squares[col * rows + row];
-          if (opacity > 0) {
-            ctx.fillStyle = `rgba(${colorRgb}, ${opacity})`;
-            ctx.fillRect(col * step, row * step, size, size);
-          }
+          if (opacity <= 0.02) continue;
+          const level = Math.min(alphaLevels - 1, ((opacity / maxOpacity) * alphaLevels) | 0);
+          paths[level].rect(col * step, row * step, size, size);
         }
+      }
+
+      for (let i = 0; i < alphaLevels; i++) {
+        const alpha = ((i + 0.5) / alphaLevels) * maxOpacity;
+        ctx.fillStyle = `rgba(${colorRgb}, ${alpha.toFixed(3)})`;
+        ctx.fill(paths[i]);
       }
     }
 
     function gridLoop(time: number) {
       if (!isIntersecting) return;
-      const dt = lastTime === 0 ? 0.016 : (time - lastTime) / 1000;
+      // Cap the grid to ~30fps. It reads as a gentle ambient flicker either way,
+      // and halving the draw work leaves main-thread headroom so the scroll
+      // reveal can keep its own frame budget on fast scrolls.
+      if (time - lastTime < 33) {
+        animationFrameId = requestAnimationFrame(gridLoop);
+        return;
+      }
+      const dt = lastTime === 0 ? 0.016 : Math.min(0.1, (time - lastTime) / 1000);
       lastTime = time;
 
       updateGrid(dt);
@@ -152,32 +178,33 @@ const words = text.split(' ');
 
     // 2. Setup Scroll Progress Reveal
     const totalWords = wordFills.length;
-    let ticking = false;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       wordFills.forEach((fill) => (fill.style.opacity = '1'));
       return;
     }
 
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(updateWords);
-        ticking = true;
-      }
+    // The reveal is driven by scroll position, but a raw scroll→opacity map
+    // makes fast scrolling "skip": between two frames the wheel can jump the
+    // progress far enough that a whole run of words snaps from 0 to full at
+    // once. Instead we keep a smoothed `displayed` progress that eases toward
+    // the scroll-derived `target` every frame, so even a large jump resolves
+    // as a continuous sweep.
+    let targetProgress = 0;
+    let displayedProgress = 0;
+    let revealFrameId: number | null = null;
+    let lastRevealTime = 0;
+
+    function computeTargetProgress() {
+      if (!track) return 0;
+      const rect = track.getBoundingClientRect();
+      const scrollableDistance = rect.height - window.innerHeight;
+      if (scrollableDistance <= 0) return 0;
+      const scrolled = -rect.top;
+      return Math.max(0, Math.min(1, scrolled / scrollableDistance));
     }
 
-    function updateWords() {
-      ticking = false;
-      if (!track) return;
-      const rect = track.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const scrollableDistance = rect.height - windowHeight;
-
-      if (scrollableDistance <= 0) return;
-
-      const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
-
+    function renderWords(progress: number) {
       wordFills.forEach((fill, index) => {
         const start = 0.15 + (index / totalWords) * 0.7;
         const end = start + (1 / totalWords) * 0.7;
@@ -186,16 +213,56 @@ const words = text.split(' ');
       });
     }
 
+    function revealLoop(time: number) {
+      // Read the scroll target each frame so the loop tracks the wheel without
+      // forcing a layout on every individual scroll event.
+      targetProgress = computeTargetProgress();
+
+      // Frame-rate independent easing: close a fixed fraction of the remaining
+      // gap per second, so the sweep finishes in the same wall-clock time even
+      // if the flickering-grid canvas drops us to a handful of fps.
+      const dt = lastRevealTime === 0 ? 0.016 : Math.min(0.1, (time - lastRevealTime) / 1000);
+      lastRevealTime = time;
+
+      const diff = targetProgress - displayedProgress;
+      if (Math.abs(diff) < 0.0004) {
+        displayedProgress = targetProgress;
+      } else {
+        displayedProgress += diff * (1 - Math.exp(-9 * dt));
+      }
+      renderWords(displayedProgress);
+
+      // Keep animating while easing; otherwise idle to avoid a permanent loop.
+      if (displayedProgress !== targetProgress) {
+        revealFrameId = requestAnimationFrame(revealLoop);
+      } else {
+        revealFrameId = null;
+        lastRevealTime = 0;
+      }
+    }
+
+    function onScroll() {
+      if (revealFrameId === null) {
+        revealFrameId = requestAnimationFrame(revealLoop);
+      }
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    updateWords();
+    window.addEventListener('resize', onScroll, { passive: true });
+    // Jump straight to the correct fill on first paint (no animated intro).
+    displayedProgress = computeTargetProgress();
+    targetProgress = displayedProgress;
+    renderWords(displayedProgress);
 
     document.addEventListener(
       'astro:before-swap',
       () => {
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        if (revealFrameId !== null) cancelAnimationFrame(revealFrameId);
         resizeObserver.disconnect();
         intersectionObserver.disconnect();
         window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
       },
       { once: true },
     );
