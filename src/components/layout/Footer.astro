@@ -52,20 +52,17 @@ const elsewhere = [
 ].filter((link) => hasValue(link.href));
 ---
 
-<footer data-footer-beam class="relative">
-  <!-- Ambient light: one language for the whole closing section (R-13), behind all content.
-       The pool is centred on the footer's top edge, so its light blooms both up into the
-       section above and down into the footer and the two read as one field rather than two
-       stacked bands. The layer reaches above the footer but sits behind the page's own
-       content, so no light lands on the section above's text, and it is clipped sideways so
-       the drifting shaft never widens the page. -->
-  <div class="footer-light pointer-events-none" aria-hidden="true">
+<footer data-footer-beam class="relative isolate overflow-hidden">
+  <!-- A thin architectural rule, the site's own hairline: it fades at both ends with a quiet
+       accent beat at its centre, so the join reads as designed rather than as a wall. -->
+  <div class="bg-ambient-top" aria-hidden="true"></div>
+
+  <!-- Ambient light: one language for the whole closing section (R-13), behind all content and
+       held inside the footer, so nothing spills over the section above. It eases in from the
+       top edge, so the only thing the eye catches at the join is the thin rule above. -->
+  <div class="footer-ambient pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
     <div class="footer-seam"></div>
     <div class="footer-beam"></div>
-  </div>
-
-  <!-- Pointer glow: a soft pool that tracks the cursor, held to the footer's own box. -->
-  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
     <div class="footer-glow"></div>
   </div>
 
@@ -235,43 +232,32 @@ const elsewhere = [
     --beam-y: 18%;
   }
 
-  /* The whole closing section's light, in one layer. It begins above the footer's top edge
-     so the pool can bloom across the join, and it paints behind the page's content: the
-     footer is not a stacking context, so the negative z-index lifts this layer under the
-     section above rather than over its text. Overflow is clipped so the drifting shaft can
-     never widen the page. */
-  .footer-light {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: -20rem;
-    bottom: 0;
-    z-index: -1;
+  /* The ambient light eases in from the footer's top edge, so no layer is cut off at the join
+     and the eye catches only the thin rule. Sideways it is clipped too, so the drifting shaft
+     can never widen the page. */
+  .footer-ambient {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%);
+    mask-image: linear-gradient(to bottom, transparent, #000 14%);
     overflow: hidden;
   }
 
-  /* Centred on the footer's top edge, so the light is continuous across the join: it falls
-     away smoothly upward and downward, leaving no edge for the eye to catch. Kept faint so
-     the accent-tinted text just below the join (the nav headings) still clears WCAG AA: at
-     5% over 22rem the headings hold 4.61:1 (light) and 5.30:1 (dark). */
+  /* A soft wash that falls away from the top edge. Faint on purpose: the accent-tinted nav
+     headings sit just below the rule, where tint-on-tint is the tightest case for contrast. */
   .footer-seam {
     position: absolute;
-    left: 50%;
-    top: 20rem; /* the footer's top edge, measured inside this wrapper */
-    width: 170%;
+    inset: 0 0 auto 0;
     height: 22rem;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(
-      circle closest-side,
-      color-mix(in oklab, var(--accent) 5%, transparent),
-      transparent
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--accent) 6%, transparent),
+      transparent 74%
     );
   }
 
   /* The diagonal shaft: one soft band of accent light, blurred, drifting slowly. */
   .footer-beam {
     position: absolute;
-    inset: 0 -20% -40% -20%;
+    inset: -40% -20%;
     background: linear-gradient(
       115deg,
       transparent 34%,
