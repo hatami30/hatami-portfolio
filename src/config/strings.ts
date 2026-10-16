@@ -49,10 +49,10 @@ const en = {
   manifesto:
     'Writing clean code and designing intuitive UI that never confuses users. The focus: turning complex business challenges into simple, elegant software.',
   capabilities: {
-    tag: 'SERVICES & CAPABILITIES',
-    title: 'What I Build & Engineer',
+    tag: 'SERVICES & SPECIALIZATIONS',
+    title: 'How I Help Build & Scale Your Product',
     description:
-      'A foundation in core software engineering principles, low-latency architectures, and precision craftsmanship across the entire stack.',
+      'Helping founders and engineering teams ship fast, clean-architecture digital products built to scale seamlessly over time.',
   },
   faq: {
     tag: 'FREQUENT QUESTIONS',
@@ -193,9 +193,9 @@ const id: Strings = {
     'Nulis kode yang rapi dan bikin desain UI yang gak bikin user bingung. Fokusnya: nyelesaiin masalah bisnis kamu yang ribet jadi simpel.',
   capabilities: {
     tag: 'LAYANAN & SPESIALISASI',
-    title: 'Keahlian & Rekayasa Sistem',
+    title: 'Keahlian & Solusi Rekayasa Produk',
     description:
-      'Fondasi rekayasa perangkat lunak yang kokoh, arsitektur rendah latensi, dan ketelitian detail di seluruh tumpukan teknologi.',
+      'Membantu founder dan tim teknik mewujudkan produk digital yang cepat, berarsitektur bersih, dan mudah dirawat dalam jangka panjang.',
   },
   faq: {
     tag: 'PERTANYAAN UMUM',
