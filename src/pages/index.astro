@@ -134,20 +134,21 @@ const latestPosts = (await getPublishedPosts()).slice(0, 3);
 
   <TextScrollReveal />
 
-  <!-- Ambient wash: soft accent light and a gentle surface lift behind the content sections. -->
+  <BentoGrid />
+
+  <!-- Diagonal hairline field (sincan-style) plus a soft accent wash behind the content sections. -->
   <div class="relative isolate">
     <div
       aria-hidden="true"
-      class="pointer-events-none absolute inset-0 -z-10"
+      class="pointer-events-none absolute inset-0 -z-10 text-fg/[0.04] dark:text-fg/[0.05]"
       style="background-image:
+        repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 1px, transparent 16px),
         radial-gradient(55% 26% at 50% 4%, color-mix(in oklab, var(--accent) 6%, transparent), transparent 70%),
         radial-gradient(40% 22% at 6% 52%, color-mix(in oklab, var(--accent) 5%, transparent), transparent 75%),
         radial-gradient(45% 26% at 94% 86%, color-mix(in oklab, var(--accent) 5%, transparent), transparent 75%),
         linear-gradient(to bottom, transparent, color-mix(in oklab, var(--surface) 45%, transparent) 16%, color-mix(in oklab, var(--surface) 45%, transparent) 82%, transparent);
-        mask-image: linear-gradient(to bottom, transparent, black 360px, black calc(100% - 300px), transparent);"
+        mask-image: linear-gradient(to bottom, transparent, black 280px, black calc(100% - 280px), transparent);"
     ></div>
-
-    <BentoGrid />
 
     {featured.length > 0 && (
       <Container class="py-12">
