@@ -123,6 +123,19 @@ html {
   }
 }
 
+/* Theme toggle circular reveal (the clip-path animation is driven from ThemeToggle.astro). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
 /* Article typography: map the typography plugin onto our tokens (works in both themes). */
 .prose {
   --tw-prose-body: var(--fg);
