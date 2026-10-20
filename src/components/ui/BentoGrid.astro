@@ -21,23 +21,9 @@ const capabilities = t.capabilities.items.map((item, index) => ({
 ---
 
 <section
-  class="relative py-20 sm:py-28 overflow-hidden transition-colors duration-300"
+  class="relative py-20 sm:py-28 transition-colors duration-300"
   aria-labelledby="capabilities-title"
 >
-  <!-- Background SVG Dot Grid, masked top-to-bottom so it emerges from the manifesto -->
-  <svg
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-0 z-0 h-full w-full text-muted/25 dark:text-muted/30"
-    style="mask-image: linear-gradient(to bottom, transparent, black 20%), radial-gradient(ellipse 95% 85% at 50% 50%, white 20%, transparent 90%); mask-composite: intersect; -webkit-mask-composite: source-in;"
-  >
-    <defs>
-      <pattern id="bento-dot-pattern" width="28" height="28" patternUnits="userSpaceOnUse">
-        <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"></circle>
-      </pattern>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#bento-dot-pattern)"></rect>
-  </svg>
-
   <Container class="relative z-10">
     <!-- Centered Header -->
     <div class="mb-14 sm:mb-16 text-center">
