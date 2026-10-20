@@ -55,10 +55,7 @@ const faqs: FaqItem[] = [
           {...(index === 0 ? { open: true } : {})}
         >
           <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-base sm:text-lg text-fg rounded-xl p-1 transition-colors">
-            <span class="flex items-center gap-3">
-              <span class="font-mono text-xs text-accent font-bold">0{index + 1}</span>
-              <span>{faq.q}</span>
-            </span>
+            <span>{faq.q}</span>
             <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-surface text-muted transition-transform duration-200 group-open:rotate-180 group-open:text-accent">
               <svg
                 class="h-4 w-4"
